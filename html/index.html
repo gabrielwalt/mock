@@ -38,6 +38,7 @@
 
       /* Notice (orange - for in-progress) */
       --spectrum-orange-600: #fc7d00;
+      --spectrum-green-600: #2d9d78;
 
       /* Semantic aliases (Spectrum naming) */
       --spectrum-background-layer-1-color: var(--spectrum-gray-50);
@@ -60,12 +61,12 @@
       --spectrum-component-height-200: 40px;
       --spectrum-component-height-300: 48px;
       --spectrum-static-size-100: 8px;
-      --spectrum-static-size-200: 16px;
+      --spectrum-static-size-200: 20px;
       --spectrum-static-size-300: 24px;
       --spectrum-static-size-400: 32px;
       --spectrum-static-size-500: 40px;
       --spectrum-static-size-600: 48px;
-      --spectrum-icon-size-100: 18px;
+      --spectrum-icon-size-100: 20px;
       --spectrum-icon-size-200: 20px;
       --spectrum-icon-size-300: 24px;
       --spectrum-corner-radius-75: 4px;
@@ -92,13 +93,14 @@
       --main-radius: var(--spectrum-corner-radius-100);
       --spectrum-document-tree-width: 260px;
       --spectrum-document-tree-min-width: 150px;
-      --spectrum-chat-grid-min: 380px;
+      --spectrum-chat-grid-min: 400px;
       --spectrum-task-list-max-height: 480px;
       --spectrum-chat-textarea-min-height: 44px;
       --spectrum-chat-textarea-max-height: 120px;
       --spectrum-disclaimer-max-width: 280px;
       --spectrum-nav-item-size: 38px;
       --spectrum-nav-item-left-offset: calc((var(--nav-width) - var(--spectrum-nav-item-size)) / 2);
+      --toolbar-height: calc(var(--spectrum-component-height-100) + 2 * var(--spectrum-spacing-300));
     }
 
     /* --- Reset --- */
@@ -123,14 +125,15 @@
       width: var(--spectrum-component-height-100);
       height: var(--spectrum-component-height-100);
       border: none;
-      background: transparent;
+      background: var(--spectrum-gray-100);
       cursor: pointer;
+      color: var(--spectrum-gray-800);
       border-radius: var(--spectrum-corner-radius-100);
       color: var(--spectrum-neutral-content-color-default);
       padding: 0;
       transition: background-color 0.13s ease-out, color 0.13s ease-out;
     }
-    .icon-btn:hover { background: rgba(0,0,0,0.04); }
+    .icon-btn:hover { background: var(--spectrum-gray-200); }
     .icon-btn:focus-visible {
       outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
       outline-offset: var(--spectrum-focus-indicator-gap);
@@ -156,14 +159,15 @@
       width: var(--spectrum-component-height-150);
       height: var(--spectrum-component-height-150);
       border: none;
-      background: transparent;
+      background: var(--spectrum-gray-100);
       cursor: pointer;
+      color: var(--spectrum-gray-800);
       border-radius: var(--spectrum-corner-radius-100);
       color: var(--spectrum-neutral-content-color-default);
       padding: 0;
       transition: background-color 0.13s ease-out, color 0.13s ease-out;
     }
-    .icon-btn-sm:hover { background: rgba(0,0,0,0.04); }
+    .icon-btn-sm:hover { background: var(--spectrum-gray-200); }
     .icon-btn-sm:focus-visible {
       outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
       outline-offset: var(--spectrum-focus-indicator-gap);
@@ -184,6 +188,16 @@
     .preview-toolbar .toolbar-back-btn {
       width: var(--spectrum-component-height-100);
       height: var(--spectrum-component-height-100);
+      background: transparent;
+    }
+    .preview-toolbar .toolbar-back-btn:hover {
+      background: var(--spectrum-gray-100);
+    }
+    .preview-toolbar .toolbar-back-btn svg {
+      transition: transform 0.2s ease-out;
+    }
+    .preview-toolbar .toolbar-back-btn.collapsed svg {
+      transform: rotate(180deg);
     }
     .toolbar-back-btn svg {
       width: var(--spectrum-icon-size-100);
@@ -247,13 +261,14 @@
     .header-right {
       display: flex;
       align-items: center;
-      gap: var(--spectrum-spacing-75);
+      gap: var(--spectrum-spacing-200);
     }
     .request-support-link {
       display: inline-flex;
       align-items: center;
       gap: var(--spectrum-spacing-75);
-      font-size: var(--spectrum-font-size-75);
+      font-size: var(--spectrum-font-size-100);
+      font-weight: var(--spectrum-medium-font-weight);
       color: var(--spectrum-neutral-subdued-content-color-default);
       text-decoration: none;
       padding: var(--spectrum-spacing-75) var(--spectrum-spacing-100);
@@ -390,16 +405,51 @@
     /* === GRID: CHAT + PREVIEW === */
     .exmod-grid {
       display: grid;
-      grid-template-columns: minmax(var(--spectrum-chat-grid-min), 33.33%) 1fr;
+      min-width: 500px;
+      grid-template-columns: var(--chat-width, minmax(var(--spectrum-chat-grid-min), 33.33%)) 5px 1fr;
       grid-template-rows: 1fr;
       column-gap: 0;
       height: 100%;
       overflow: hidden;
     }
 
+    /* Resize handle: 1px visual line; child grip is 5px draggable zone (visible on hover/drag) */
+    .chat-resize-handle {
+      width: 1px;
+      min-width: 1px;
+      flex-shrink: 0;
+      align-self: stretch;
+      margin: 0 auto;
+      display: block;
+      position: relative;
+      z-index: 2;
+      overflow: visible;
+      background: var(--spectrum-gray-300);
+    }
+    .chat-resize-handle-grip {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 5px;
+      margin-left: -2.5px;
+      cursor: col-resize;
+      user-select: none;
+      background: transparent;
+      transition: background-color 0.13s ease-out;
+    }
+    .chat-resize-handle:hover .chat-resize-handle-grip,
+    .chat-resize-handle.dragging .chat-resize-handle-grip {
+      background: var(--spectrum-gray-200);
+    }
+    .chat-resize-handle.dragging .chat-resize-handle-grip {
+      background: var(--spectrum-blue-200);
+    }
+
     /* === TASK PROGRESS PANEL (Left) === */
     .exmod-chat {
       min-width: 0;
+      margin-right: -1px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -408,118 +458,220 @@
       display: flex;
       flex-direction: column;
       height: 100%;
-      border-right: var(--spectrum-border-width-100) solid var(--spectrum-gray-300);
       overflow: hidden;
       position: relative;
       background: #fff;
     }
 
-    /* Task Progress - ad-hoc sticky section at top */
+    /* Task Progress - docked to chat panel edges (top, left, right) */
     .task-progress-sticky {
-      flex-shrink: 0;
-      position: sticky;
+      position: absolute;
       top: 0;
+      left: 0;
+      right: 0;
       z-index: 10;
       background: #fff;
-      border-bottom: var(--spectrum-border-width-100) solid var(--spectrum-gray-200);
+      border-bottom: 1px solid var(--spectrum-gray-200);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      overflow: visible;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .task-progress-sticky.collapsed {
+      height: 60px;
+      border-bottom: none;
       box-shadow: 0 1px 2px rgba(0,0,0,0.04);
     }
-    .chat-header {
-      padding: var(--spectrum-spacing-200);
+    .chat-toolbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      cursor: pointer;
-      transition: background-color 0.13s ease-out;
+      height: 62px;
+      min-height: 62px;
+      border-bottom: 2px solid var(--spectrum-gray-200);
+      padding: var(--spectrum-spacing-300);
+      flex-shrink: 0;
+      box-sizing: border-box;
     }
-    .chat-header:hover {
-      background: var(--spectrum-gray-75);
-    }
-    .chat-header h3 {
-      font-size: var(--spectrum-font-size-100);
-      font-weight: var(--spectrum-bold-font-weight);
-      color: var(--spectrum-gray-900);
-    }
-    .chat-header-right {
+    .chat-toolbar-left {
       display: flex;
       align-items: center;
-      gap: var(--spectrum-spacing-100);
+      gap: var(--spectrum-spacing-200);
+      flex: 1;
+      min-width: 0;
+    }
+    .chat-toolbar h3 {
+      font-size: var(--spectrum-font-size-200);
+      font-weight: var(--spectrum-bold-font-weight);
+      color: var(--spectrum-gray-900);
+      margin: 0;
+    }
+    .chat-toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: var(--spectrum-spacing-200);
+    }
+    .chat-toolbar-btn {
+      width: var(--spectrum-component-height-100);
+      height: var(--spectrum-component-height-100);
+      border: none;
+      border-radius: var(--spectrum-corner-radius-100);
+      background: var(--spectrum-gray-100);
+      color: var(--spectrum-neutral-subdued-content-color-default);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.13s ease-out, color 0.13s ease-out;
+    }
+    .chat-toolbar-btn:hover {
+      background: var(--spectrum-gray-200);
+      color: var(--spectrum-neutral-content-color-default);
+    }
+    .chat-toolbar-btn:focus-visible {
+      outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
+      outline-offset: var(--spectrum-focus-indicator-gap);
+    }
+    .chat-toolbar-btn svg {
+      width: var(--spectrum-static-size-200);
+      height: var(--spectrum-static-size-200);
     }
     .task-progress-toggle {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: var(--spectrum-icon-size-200);
-      height: var(--spectrum-icon-size-200);
-      color: var(--spectrum-neutral-subdued-content-color-default);
+      width: 32px;
+      height: 32px;
+      color: var(--spectrum-gray-800);
       transition: transform 0.2s ease;
     }
     .task-progress-toggle svg {
-      width: var(--spectrum-static-size-200);
-      height: var(--spectrum-static-size-200);
+      width: 20px;
+      height: 20px;
     }
     .task-progress-sticky.collapsed .task-progress-toggle {
       transform: rotate(180deg);
     }
+    .task-progress-toggle-btn {
+      border: none;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      border-radius: var(--spectrum-corner-radius-100);
+    }
+    .task-progress-toggle-btn:hover {
+      background: var(--spectrum-gray-100);
+    }
+    .task-progress-toggle-btn:focus-visible {
+      outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
+    }
     .completed-count {
-      font-size: var(--spectrum-font-size-75);
+      font-size: var(--spectrum-font-size-100);
       color: var(--spectrum-neutral-subdued-content-color-default);
       font-weight: var(--spectrum-medium-font-weight);
+      margin-left: var(--spectrum-spacing-100);
     }
 
-    /* Task Progress collapsible content */
+    /* Task Progress collapsible content - unfolds below header when expanded */
     .task-progress-content {
       max-height: var(--spectrum-task-list-max-height);
       overflow: hidden;
       transition: max-height 0.25s ease-out;
+      background: var(--spectrum-background-layer-1-color);
     }
     .task-progress-sticky.collapsed .task-progress-content {
       max-height: 0 !important;
       overflow: hidden;
     }
-    /* Progress Bar (Spectrum Meter style) */
+    /* Progress Bar - edge to edge, acts as separator below header */
     .progress-bar-wrap {
-      padding: 0 var(--spectrum-spacing-300);
+      padding: 0;
       flex-shrink: 0;
-      margin-top: var(--spectrum-spacing-200);
-      margin-bottom: var(--spectrum-spacing-75);
-    }
-    .progress-bar {
-      height: var(--spectrum-spacing-75);
-      background: var(--spectrum-gray-200);
-      border-radius: var(--spectrum-corner-radius-75);
-      overflow: hidden;
+      margin-top: 2px; /* moved down 7px from -5px to compensate for toolbar height reduction (64→57) */
+      margin-bottom: -1px;
+      transform: translateY(0); /* moved up 1px from translateY(1px) */
+      height: 0;
+      position: relative;
     }
     .progress-fill {
-      height: 100%;
-      background: var(--spectrum-accent-background-color-default);
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 6px;
+      background:
+        repeating-linear-gradient(
+          -45deg,
+          transparent 0,
+          transparent 8px,
+          rgba(255,255,255,0.65) 8px,
+          rgba(255,255,255,0.65) 10px
+        ),
+        var(--spectrum-green-600);
+      background-size: 10px 10px, auto;
+      background-position: 0 0, 0 0;
       border-radius: var(--spectrum-corner-radius-75);
       transition: width 0.3s ease;
+      animation: progress-hatches 0.7s linear infinite;
+    }
+    @keyframes progress-hatches {
+      0% { background-position: 0 0, 0 0; }
+      100% { background-position: 10px 0, 0 0; }
     }
 
     /* Task List */
     .task-list {
-      padding: var(--spectrum-spacing-100) var(--spectrum-spacing-200);
+      padding: 12px 24px;
       flex-shrink: 0;
       border-bottom: var(--spectrum-border-width-100) solid var(--spectrum-gray-200);
     }
-    .task-section {
-      margin-bottom: var(--spectrum-spacing-75);
+    .task-completed-section {
+      margin-bottom: var(--spectrum-spacing-100);
     }
-    .task-section-header {
+    .task-completed-toggle {
       display: flex;
       align-items: center;
       gap: var(--spectrum-spacing-100);
-      padding: var(--spectrum-spacing-75) var(--spectrum-spacing-75);
-      font-size: var(--spectrum-font-size-75);
+      padding: 0;
+      font-size: var(--spectrum-font-size-100);
       font-weight: var(--spectrum-bold-font-weight);
       color: var(--spectrum-gray-900);
       cursor: pointer;
-      border-radius: var(--spectrum-corner-radius-100);
-      transition: background-color 0.13s ease-out;
     }
-    .task-section-header:hover { background: rgba(0,0,0,0.04); }
-    .task-indicator {
+    .task-completed-chevron {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: var(--spectrum-icon-size-100);
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+      transform: rotate(180deg); /* points down when expanded */
+    }
+    .task-completed-section.collapsed .task-completed-chevron {
+      transform: rotate(90deg); /* points right when collapsed */
+    }
+    .task-completed-section.collapsed .task-completed-items {
+      display: none;
+    }
+    .task-completed-items {
+      margin-top: var(--spectrum-spacing-75);
+    }
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spectrum-spacing-100);
+      padding: var(--spectrum-spacing-100) 0;
+      margin-bottom: var(--spectrum-spacing-75);
+    }
+    .task-item:last-child {
+      margin-bottom: 0;
+    }
+    .task-item-text {
+      flex: 1;
+      min-width: 0;
+      font-size: var(--spectrum-font-size-100);
+      color: var(--spectrum-neutral-subdued-content-color-default);
+      line-height: 1.4;
+    }
+    .task-item-check {
       width: var(--spectrum-icon-size-100);
       height: var(--spectrum-icon-size-100);
       border-radius: 50%;
@@ -528,82 +680,135 @@
       justify-content: center;
       flex-shrink: 0;
     }
-    .task-indicator.completed {
-      background: var(--spectrum-accent-background-color-default);
+    .task-item-check.completed {
+      background: transparent;
+      color: var(--spectrum-green-600);
+      border-radius: 0;
     }
-    .task-indicator.completed svg { width: var(--spectrum-spacing-200); height: var(--spectrum-spacing-200); fill: #fff; }
-    .task-indicator.in-progress {
-      background: var(--spectrum-orange-600);
+    .task-item-check.completed svg {
+      width: var(--spectrum-icon-size-100);
+      height: var(--spectrum-icon-size-100);
+      fill: currentColor;
     }
-    .task-indicator.in-progress svg { width: var(--spectrum-spacing-200); height: var(--spectrum-spacing-200); fill: #fff; }
-    .task-indicator.pending {
+    .task-item-check.pending {
+      width: var(--spectrum-icon-size-100);
+      height: var(--spectrum-icon-size-100);
       border: var(--spectrum-border-width-200) solid var(--spectrum-gray-400);
       background: transparent;
     }
-    .task-items {
-      padding-left: var(--spectrum-spacing-400);
-      margin-bottom: var(--spectrum-spacing-75);
-    }
-    .task-item {
-      display: flex;
-      align-items: flex-start;
-      gap: var(--spectrum-spacing-100);
-      padding: var(--spectrum-spacing-75) 0;
-      font-size: var(--spectrum-font-size-75);
+    .task-item-completed .task-item-text {
+      text-decoration: line-through;
       color: var(--spectrum-neutral-subdued-content-color-default);
-      line-height: 1.4;
     }
-    .task-item .check-icon {
-      width: var(--spectrum-font-size-100);
-      height: var(--spectrum-font-size-100);
+    .task-item-spinner {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
-      margin-top: var(--spectrum-border-width-100);
+      width: var(--spectrum-icon-size-100);
+      height: var(--spectrum-icon-size-100);
     }
-    .task-item .check-icon.done { color: var(--spectrum-accent-background-color-default); }
-    .task-item .check-icon.pending { color: var(--spectrum-gray-400); }
+    .task-item-spinner svg {
+      width: var(--spectrum-icon-size-100);
+      height: var(--spectrum-icon-size-100);
+    }
+    .task-item-spinner .task-spinner-track {
+      stroke: var(--spectrum-gray-400);
+    }
+    .task-item-spinner .task-spinner-arc {
+      stroke: var(--spectrum-blue-1000);
+      transform-origin: center;
+      animation: task-spinner-rotate 0.8s linear infinite;
+    }
+    @keyframes task-spinner-rotate {
+      to { transform: rotate(360deg); }
+    }
+    .task-item-in-progress .task-item-text {
+      font-weight: var(--spectrum-bold-font-weight);
+      color: var(--spectrum-gray-900);
+    }
 
-    /* Chat Messages Area */
+    /* Chat Messages Area - padding-top reserves space for overlay header */
     .chat-messages {
       flex: 1;
       min-height: 0;
       overflow-y: auto;
       padding: var(--spectrum-spacing-200);
+      padding-top: 80px;
       display: flex;
       flex-direction: column;
-      gap: var(--spectrum-spacing-100);
+      gap: 0;
     }
     .chat-msg {
-      padding: var(--spectrum-spacing-200) var(--spectrum-spacing-200);
-      border-radius: var(--spectrum-corner-radius-100);
-      font-size: var(--spectrum-font-size-75);
+      padding: var(--spectrum-spacing-200) 0;
+      font-size: var(--spectrum-font-size-100);
       line-height: 1.5;
-      max-width: 90%;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 0 1px rgba(0,0,0,0.08);
-    }
-    .chat-msg.ai {
-      background: var(--spectrum-gray-75);
-      align-self: flex-start;
-      color: var(--spectrum-neutral-content-color-default);
-    }
-    .chat-msg.user {
-      background: var(--spectrum-blue-subtle-background-color-default);
-      align-self: flex-end;
-      color: var(--spectrum-gray-900);
-    }
-    .chat-msg.system {
-      background: var(--spectrum-gray-75);
-      border: var(--spectrum-border-width-100) solid var(--spectrum-gray-300);
       align-self: stretch;
       max-width: 100%;
-      font-size: var(--spectrum-font-size-75);
     }
-    .chat-msg strong { font-weight: var(--spectrum-bold-font-weight); }
+    .chat-msg + .chat-msg {
+      margin-top: var(--spectrum-spacing-100);
+    }
+    .chat-msg.ai {
+      background: transparent;
+      color: var(--spectrum-neutral-content-color-default);
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+    .chat-msg.ai + .chat-msg.ai {
+      border-top: 1px solid var(--spectrum-gray-200);
+      margin-top: var(--spectrum-spacing-200);
+      padding-top: var(--spectrum-spacing-200);
+    }
+    .chat-msg.user {
+      background-color: rgb(203, 226, 254);
+      color: var(--spectrum-gray-900);
+      border-radius: var(--spectrum-corner-radius-100);
+      padding: 11px;
+      border: 1px solid rgb(172, 207, 253);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .chat-msg.system {
+      background: transparent;
+      color: var(--spectrum-neutral-subdued-content-color-default);
+      font-size: var(--spectrum-font-size-100);
+    }
+    .chat-msg strong {
+      font-weight: var(--spectrum-bold-font-weight);
+      color: var(--spectrum-gray-900);
+    }
     .chat-msg code {
       font-family: "Source Code Pro", Monaco, Consolas, monospace;
-      font-size: var(--spectrum-font-size-75);
-      background: rgba(0,0,0,0.04);
-      padding: var(--spectrum-border-width-100) var(--spectrum-spacing-75);
+      font-size: 0.95em;
+      font-weight: 500;
+      background: var(--spectrum-gray-100);
+      color: var(--spectrum-gray-900);
+      padding: 2px 6px;
       border-radius: var(--spectrum-corner-radius-75);
+    }
+    .chat-thinking {
+      display: flex;
+      align-items: center;
+      gap: var(--spectrum-spacing-100);
+      padding: var(--spectrum-spacing-200) 0;
+      padding-left: 12px;
+      color: var(--spectrum-neutral-subdued-content-color-default);
+      font-size: var(--spectrum-font-size-100);
+    }
+    .chat-thinking-spinner {
+      display: inline-flex;
+      flex-shrink: 0;
+    }
+    .chat-thinking-spinner .chat-spinner-track {
+      stroke: var(--spectrum-gray-400);
+    }
+    .chat-thinking-spinner .chat-spinner-arc {
+      stroke: var(--spectrum-blue-1000);
+      transform-origin: center;
+      animation: chat-spinner-rotate 0.8s linear infinite;
+    }
+    @keyframes chat-spinner-rotate {
+      to { transform: rotate(360deg); }
     }
 
     /* Chat Input */
@@ -649,10 +854,10 @@
     .chat-input-actions {
       display: flex;
       align-items: center;
-      gap: var(--spectrum-spacing-100);
+      gap: var(--spectrum-spacing-200);
     }
     .chat-disclaimer {
-      font-size: var(--spectrum-font-size-75);
+      font-size: var(--spectrum-font-size-100);
       color: var(--spectrum-neutral-subdued-content-color-default);
       line-height: 1.4;
       flex-shrink: 0;
@@ -674,8 +879,8 @@
       height: var(--spectrum-component-height-100);
       border: none;
       border-radius: var(--spectrum-corner-radius-100);
-      background: transparent;
-      color: var(--spectrum-neutral-subdued-content-color-default);
+      background: var(--spectrum-gray-100);
+      color: var(--spectrum-gray-800);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -684,16 +889,16 @@
       transition: background-color 0.13s ease-out, color 0.13s ease-out;
     }
     .chat-attach-btn:hover {
-      background: rgba(0,0,0,0.04);
+      background: var(--spectrum-gray-200);
       color: var(--spectrum-neutral-content-color-default);
     }
     .chat-mode-btn {
       width: var(--spectrum-component-height-100);
       height: var(--spectrum-component-height-100);
-      border: var(--spectrum-border-width-100) solid var(--spectrum-gray-300);
-      border-radius: var(--spectrum-corner-radius-100);
-      background: #fff;
-      color: var(--spectrum-neutral-content-color-default);
+      border: none;
+      border-radius: calc(var(--spectrum-corner-radius-100) - 2px);
+      background: transparent;
+      color: var(--spectrum-gray-800);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -702,7 +907,11 @@
       transition: background-color 0.13s ease-out, border-color 0.13s ease-out;
     }
     .chat-mode-btn:hover {
-      background: var(--spectrum-gray-75);
+      background: var(--spectrum-gray-200);
+    }
+    .chat-mode-btn.active {
+      background: #fff;
+      border: 2px solid var(--spectrum-gray-800);
     }
     .chat-attach-btn svg,
     .chat-mode-btn svg,
@@ -712,26 +921,9 @@
     }
     .chat-mode-switcher {
       display: flex;
-      gap: 0;
-    }
-    .chat-mode-switcher .chat-mode-btn {
-      border-radius: 0;
-      border-right: none;
-    }
-    .chat-mode-switcher .chat-mode-btn:first-child {
-      border-radius: var(--spectrum-corner-radius-100) 0 0 var(--spectrum-corner-radius-100);
-    }
-    .chat-mode-switcher .chat-mode-btn:last-child {
-      border-radius: 0 var(--spectrum-corner-radius-100) var(--spectrum-corner-radius-100) 0;
-      border-right: var(--spectrum-border-width-100) solid var(--spectrum-gray-300);
-    }
-    .chat-mode-btn.active {
-      background: var(--spectrum-gray-800);
-      border-color: var(--spectrum-gray-800);
-      color: #fff;
-    }
-    .chat-mode-switcher .chat-mode-btn.active {
-      border-right-color: var(--spectrum-gray-800);
+      gap: 2px;
+      border-radius: var(--spectrum-corner-radius-100);
+      background: var(--spectrum-gray-100);
     }
     .chat-send-btn {
       width: var(--spectrum-component-height-100);
@@ -755,34 +947,36 @@
 
     /* === PREVIEW PANEL (Right) === */
     .exmod-preview {
-      min-width: 0;
+      min-width: 600px;
+      margin-left: -1px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
 
-    /* Preview Toolbar */
+    /* Preview Toolbar - height minus border so total matches chat toolbar */
     .preview-toolbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      min-height: calc(var(--spectrum-component-height-100) + 2 * var(--spectrum-spacing-300));
+      min-height: calc(var(--toolbar-height) - 2px);
+      height: calc(var(--toolbar-height) - 2px);
       padding: var(--spectrum-spacing-300);
       flex-shrink: 0;
       background: white;
-      border-bottom: var(--spectrum-border-width-100) solid var(--spectrum-gray-200);
+      border-bottom: 2px solid var(--spectrum-gray-200);
       box-sizing: border-box;
     }
     .toolbar-left {
       display: flex;
       align-items: center;
-      gap: var(--spectrum-spacing-100);
+      gap: var(--spectrum-spacing-200);
       min-width: 0;
       flex: 1;
     }
     .preview-toolbar .page-title {
-      font-size: var(--spectrum-font-size-100);
+      font-size: 18px;
       font-weight: var(--spectrum-bold-font-weight);
       color: var(--spectrum-gray-900);
       white-space: nowrap;
@@ -802,7 +996,7 @@
     .toolbar-preview-only {
       display: flex;
       align-items: center;
-      gap: var(--spectrum-spacing-200);
+      gap: var(--spectrum-spacing-300);
     }
     .preview-toolbar.view-mode-document .toolbar-preview-only {
       display: none;
@@ -835,12 +1029,12 @@
     .preview-toolbar .btn-ghost {
       display: inline-flex;
       align-items: center;
-      gap: var(--spectrum-spacing-75);
+      gap: var(--spectrum-spacing-200);
       height: var(--spectrum-component-height-100);
       padding: 0 var(--spectrum-spacing-200);
       background: transparent;
-      color: var(--spectrum-neutral-subdued-content-color-default);
-      border: var(--spectrum-border-width-100) solid var(--spectrum-gray-300);
+      color: var(--spectrum-gray-800);
+      border: none;
       border-radius: var(--spectrum-corner-radius-100);
       font-size: var(--spectrum-font-size-75);
       font-weight: var(--spectrum-medium-font-weight);
@@ -850,8 +1044,7 @@
       transition: background-color 0.13s ease-out, border-color 0.13s ease-out;
     }
     .btn-ghost:hover {
-      background: rgba(0,0,0,0.04);
-      border-color: var(--spectrum-gray-400);
+      background: var(--spectrum-gray-100);
     }
     .btn-ghost:focus-visible {
       outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
@@ -873,12 +1066,13 @@
     }
 
     .breadcrumb-sep {
-      color: var(--spectrum-gray-600);
-      font-size: 1.15em;
+      color: var(--spectrum-gray-700);
+      font-size: 1.4em;
       margin: 0 var(--spectrum-focus-indicator-gap);
+      flex-shrink: 0;
       cursor: default !important;
     }
-    .breadcrumb-sep:hover { text-decoration: none !important; color: var(--spectrum-gray-600) !important; }
+    .breadcrumb-sep:hover { text-decoration: none !important; color: var(--spectrum-gray-700) !important; }
 
     /* Preview Content Area */
     .preview-content {
@@ -903,16 +1097,31 @@
       min-width: 0;
       overflow: hidden;
     }
+    /* Inner wrapper keeps content fixed during collapse animation (clipped, not reflowed) */
+    .document-tree-inner {
+      min-width: var(--spectrum-document-tree-width);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
     .tree-breadcrumbs {
       display: flex;
       align-items: center;
+      flex-wrap: nowrap;
       gap: var(--spectrum-spacing-75);
-      padding: var(--spectrum-spacing-100) var(--spectrum-spacing-200);
-      font-size: var(--spectrum-font-size-100);
+      min-height: var(--spectrum-component-height-100);
+      padding: var(--spectrum-spacing-200) var(--spectrum-spacing-300);
+      font-size: 14px;
       font-weight: var(--spectrum-medium-font-weight);
       color: var(--spectrum-neutral-subdued-content-color-default);
       border-bottom: var(--spectrum-border-width-100) solid var(--spectrum-gray-200);
       flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: var(--spectrum-background-layer-1-color);
     }
     .tree-breadcrumbs .crumb {
       cursor: pointer;
@@ -924,13 +1133,73 @@
       color: var(--spectrum-neutral-content-color-default);
     }
     .tree-breadcrumbs .crumb-current:hover { text-decoration: none; }
+    .breadcrumb-path-dropdown {
+      position: relative;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .breadcrumb-path-trigger {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      border-radius: var(--spectrum-corner-radius-100);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--spectrum-neutral-subdued-content-color-default);
+      transition: background-color 0.13s ease-out, color 0.13s ease-out;
+    }
+    .breadcrumb-path-trigger:focus-visible {
+      outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
+      outline-offset: var(--spectrum-focus-indicator-gap);
+    }
+    .breadcrumb-path-trigger svg {
+      width: 20px;
+      height: 20px;
+    }
+    .breadcrumb-path-overlay {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: var(--spectrum-spacing-75);
+      min-width: 140px;
+      background: var(--spectrum-background-layer-1-color);
+      border: var(--spectrum-border-width-100) solid var(--spectrum-gray-300);
+      border-radius: var(--spectrum-corner-radius-100);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 100;
+      overflow: hidden;
+    }
+    .breadcrumb-path-dropdown.open .breadcrumb-path-overlay {
+      display: block;
+    }
+    .breadcrumb-path-option {
+      display: block;
+      width: 100%;
+      padding: var(--spectrum-spacing-100) var(--spectrum-spacing-200);
+      border: none;
+      background: transparent;
+      font-size: var(--spectrum-font-size-100);
+      color: var(--spectrum-neutral-content-color-default);
+      cursor: pointer;
+      text-align: left;
+      font-family: var(--spectrum-sans-serif-font-family);
+      transition: background-color 0.13s ease-out;
+    }
+    .breadcrumb-path-option:hover {
+      background: var(--spectrum-gray-75);
+    }
     .file-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: var(--spectrum-spacing-100) var(--spectrum-spacing-75);
+      flex: 0 0 auto;
+      padding: 12px var(--spectrum-spacing-200);
       display: flex;
       flex-direction: column;
-      gap: var(--spectrum-spacing-200);
+      gap: var(--spectrum-spacing-100);
     }
     .file-item {
       display: flex;
@@ -939,7 +1208,7 @@
       padding: var(--spectrum-spacing-75) var(--spectrum-spacing-100);
       border-radius: var(--spectrum-corner-radius-100);
       cursor: pointer;
-      font-size: var(--spectrum-font-size-100);
+      font-size: 14px;
       font-weight: var(--spectrum-medium-font-weight);
       color: var(--spectrum-neutral-content-color-default);
       transition: background-color 0.13s ease-out;
@@ -959,6 +1228,17 @@
       flex-grow: 0;
       aspect-ratio: 1;
       fill: currentColor;
+    }
+    .file-item .file-name {
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .file-item .file-item-text {
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
     /* Iframe Container */
@@ -989,36 +1269,41 @@
     }
 
     /* Viewport Toggles (inline in toolbar) */
-    .preview-toolbar .viewport-btn {
+    /* Viewport switcher - matches view-mode-switcher style */
+    .viewport-switcher {
+      display: flex;
+      gap: 2px;
+      border-radius: var(--spectrum-corner-radius-100);
+      background: var(--spectrum-gray-100);
+    }
+    .viewport-btn {
       width: var(--spectrum-component-height-100);
       height: var(--spectrum-component-height-100);
       border: none;
+      border-radius: calc(var(--spectrum-corner-radius-100) - 2px);
       background: transparent;
-      border-radius: var(--spectrum-corner-radius-100);
+      color: var(--spectrum-gray-800);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--spectrum-neutral-subdued-content-color-default);
-      transition: background-color 0.13s ease-out, color 0.13s ease-out;
+      transition: background-color 0.13s ease-out, border-color 0.13s ease-out;
     }
-    .viewport-btn:hover { background: rgba(0,0,0,0.04); color: var(--spectrum-neutral-content-color-default); }
-    .viewport-btn:focus-visible {
-      outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
-      outline-offset: var(--spectrum-focus-indicator-gap);
+    .viewport-btn:hover {
+      background: var(--spectrum-gray-200);
     }
     .viewport-btn.active {
-      background: var(--spectrum-gray-800);
-      color: var(--spectrum-gray-50);
+      background: #fff;
+      border: 2px solid var(--spectrum-gray-800);
     }
     .viewport-btn svg {
       width: var(--spectrum-static-size-200);
       height: var(--spectrum-static-size-200);
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 1.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
+      fill: currentColor;
+    }
+    .viewport-btn:focus-visible {
+      outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
+      outline-offset: var(--spectrum-focus-indicator-gap);
     }
 
     /* Toolbar icon buttons (32x32) */
@@ -1027,16 +1312,17 @@
       width: var(--spectrum-component-height-100);
       height: var(--spectrum-component-height-100);
       border: none;
-      background: transparent;
+      background: var(--spectrum-gray-100);
       border-radius: var(--spectrum-corner-radius-100);
       cursor: pointer;
       display: flex;
+      color: var(--spectrum-gray-800);
       align-items: center;
       justify-content: center;
       color: var(--spectrum-neutral-subdued-content-color-default);
       transition: background-color 0.13s ease-out, color 0.13s ease-out;
     }
-    .toolbar-icon-btn:hover { background: rgba(0,0,0,0.04); color: var(--spectrum-neutral-content-color-default); }
+    .toolbar-icon-btn:hover { background: var(--spectrum-gray-200); color: var(--spectrum-neutral-content-color-default); }
     .toolbar-icon-btn:focus-visible {
       outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
       outline-offset: var(--spectrum-focus-indicator-gap);
@@ -1051,6 +1337,37 @@
     /* Spectrum-style tooltip (immediate on hover, fixed to escape overflow) */
     [data-tooltip] {
       position: relative;
+    }
+    /* Tooltip arrow (triangle pointing to icon) */
+    [data-tooltip]::before {
+      content: '';
+      position: fixed;
+      left: var(--tt-x, 0);
+      top: calc(var(--tt-y, 0) - 6px);
+      width: 10px;
+      height: 6px;
+      background: var(--spectrum-gray-800);
+      clip-path: polygon(50% 100%, 0 0, 100% 0);
+      transform: translate(-50%, 0);
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.1s ease-out, visibility 0.1s ease-out;
+      z-index: 10001;
+    }
+    [data-tooltip]:hover::before {
+      opacity: 1;
+      visibility: visible;
+    }
+    /* Right-positioned tooltips: arrow points left */
+    .exmod-nav [data-tooltip]::before,
+    [data-tooltip-position="right"]::before {
+      left: calc(var(--tt-x, 0) - 6px);
+      top: var(--tt-y, 0);
+      width: 6px;
+      height: 10px;
+      clip-path: polygon(0 50%, 100% 0, 100% 100%);
+      transform: translate(0, -50%);
     }
     [data-tooltip]::after {
       content: attr(data-tooltip);
@@ -1075,6 +1392,10 @@
       opacity: 1;
       visibility: visible;
     }
+    .exmod-nav [data-tooltip]::after,
+    [data-tooltip-position="right"]::after {
+      transform: translate(0, -50%);
+    }
 
     /* Responsive dropdown */
     .responsive-dropdown {
@@ -1084,7 +1405,7 @@
       width: var(--spectrum-component-height-100);
       height: var(--spectrum-component-height-100);
       border: none;
-      background: transparent;
+      background: var(--spectrum-gray-100);
       border-radius: var(--spectrum-corner-radius-100);
       cursor: pointer;
       display: flex;
@@ -1093,7 +1414,7 @@
       color: var(--spectrum-neutral-subdued-content-color-default);
       transition: background-color 0.13s ease-out, color 0.13s ease-out;
     }
-    .responsive-dropdown-trigger:hover { background: rgba(0,0,0,0.04); color: var(--spectrum-neutral-content-color-default); }
+    .responsive-dropdown-trigger:hover { background: var(--spectrum-gray-200); color: var(--spectrum-neutral-content-color-default); }
     .responsive-dropdown-trigger:focus-visible {
       outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
       outline-offset: var(--spectrum-focus-indicator-gap);
@@ -1107,7 +1428,7 @@
       display: none;
       position: absolute;
       top: 100%;
-      right: 0;
+      left: 0;
       margin-top: var(--spectrum-spacing-75);
       min-width: 140px;
       background: white;
@@ -1126,6 +1447,7 @@
       gap: var(--spectrum-spacing-100);
       width: 100%;
       padding: var(--spectrum-spacing-100) var(--spectrum-spacing-200);
+      padding-left: calc((var(--spectrum-component-height-100) - var(--spectrum-static-size-200)) / 2);
       border: none;
       background: transparent;
       font-size: var(--spectrum-font-size-100);
@@ -1148,34 +1470,29 @@
     /* View mode switcher (Preview / Document view) */
     .view-mode-switcher {
       display: flex;
-      gap: 0;
+      gap: 2px;
+      border-radius: var(--spectrum-corner-radius-100);
+      background: var(--spectrum-gray-100);
     }
     .view-mode-btn {
       width: var(--spectrum-component-height-100);
       height: var(--spectrum-component-height-100);
-      border: var(--spectrum-border-width-100) solid var(--spectrum-gray-300);
-      border-radius: 0;
-      background: #fff;
-      color: var(--spectrum-neutral-subdued-content-color-default);
+      border: none;
+      border-radius: calc(var(--spectrum-corner-radius-100) - 2px);
+      background: transparent;
+      color: var(--spectrum-gray-800);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background-color 0.13s ease-out, border-color 0.13s ease-out, color 0.13s ease-out;
+      transition: background-color 0.13s ease-out, border-color 0.13s ease-out;
     }
-    .view-mode-btn:first-child {
-      border-radius: var(--spectrum-corner-radius-100) 0 0 var(--spectrum-corner-radius-100);
-      border-right: none;
+    .view-mode-btn:hover {
+      background: var(--spectrum-gray-200);
     }
-    .view-mode-btn:last-child {
-      border-radius: 0 var(--spectrum-corner-radius-100) var(--spectrum-corner-radius-100) 0;
-      border-left: none;
-    }
-    .view-mode-btn:hover { background: var(--spectrum-gray-75); }
     .view-mode-btn.active {
-      background: var(--spectrum-gray-800);
-      border-color: var(--spectrum-gray-800);
-      color: var(--spectrum-gray-50);
+      background: #fff;
+      border: 2px solid var(--spectrum-gray-800);
     }
     .view-mode-btn svg {
       width: var(--spectrum-static-size-200);
@@ -1192,7 +1509,7 @@
       padding: 0 var(--spectrum-spacing-300);
       background: var(--spectrum-accent-background-color-default);
       color: var(--spectrum-gray-25);
-      border: none;
+      border: var(--spectrum-border-width-100) solid var(--spectrum-accent-background-color-hover);
       border-radius: 9999px;
       font-size: var(--spectrum-font-size-100);
       font-weight: var(--spectrum-bold-font-weight);
@@ -1201,7 +1518,10 @@
       font-family: var(--spectrum-sans-serif-font-family);
       transition: background-color 0.13s ease-out;
     }
-    .btn-upload:hover { background: var(--spectrum-accent-background-color-hover); }
+    .btn-upload:hover {
+      background: var(--spectrum-accent-background-color-hover);
+      border-color: var(--spectrum-accent-background-color-hover);
+    }
     .btn-upload:focus-visible {
       outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
       outline-offset: var(--spectrum-focus-indicator-gap);
@@ -1214,7 +1534,7 @@
     <!-- ====== GLOBAL HEADER ====== -->
     <header class="exmod-header">
       <div class="header-left">
-        <button class="icon-btn" data-tooltip="Open menu" aria-label="Show navigation menu">
+        <button class="icon-btn header-hamburger" data-tooltip="Open menu" data-tooltip-position="right" aria-label="Show navigation menu">
           <svg class="spectrum-icon-outline" viewBox="0 0 24 24"><path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
         </button>
         <div class="header-brand">
@@ -1227,9 +1547,6 @@
           <svg class="spectrum-icon-outline" viewBox="0 0 24 24"><path d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/></svg>
           <span>Request support</span>
         </a>
-        <button class="icon-btn" aria-label="Notifications">
-          <svg class="spectrum-icon-outline" viewBox="0 0 24 24"><path d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
-        </button>
         <div class="user-avatar" aria-label="User menu">
           <svg class="spectrum-icon-outline" viewBox="0 0 24 24"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
         </div>
@@ -1269,76 +1586,78 @@
             <div class="chat-container">
 
               <!-- Task Progress (sticky, collapsible) -->
-              <div class="task-progress-sticky" id="task-progress">
-                <div class="chat-header" id="task-progress-toggle" role="button" tabindex="0" aria-expanded="true" aria-controls="task-progress-content">
-                  <h3>Task Progress</h3>
-                  <div class="chat-header-right">
+              <div class="task-progress-sticky collapsed" id="task-progress">
+                <div class="chat-toolbar">
+                  <div class="chat-toolbar-left">
+                    <button type="button" class="task-progress-toggle task-progress-toggle-btn" id="task-progress-toggle" aria-expanded="false" aria-controls="task-progress-content" aria-label="Toggle task progress">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M3.545 12.237c0-.196.077-.393.23-.54L9.48 6.21c.29-.28.749-.28 1.039 0l5.716 5.5c.3.287.308.763.02 1.06-.286.298-.76.308-1.059.02L9.998 7.791l-5.184 4.986c-.297.288-.772.279-1.06-.02-.14-.145-.21-.332-.21-.52"></path></svg>
+                    </button>
+                    <h3>Task Progress</h3>
                     <span class="completed-count">2/6 completed</span>
-                    <span class="task-progress-toggle" aria-hidden="true">
-                      <svg class="spectrum-icon-outline" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="miter"><path d="M5 16L12 8L19 16"/></svg>
-                    </span>
+                  </div>
+                  <div class="chat-toolbar-right">
+                    <button type="button" class="chat-toolbar-btn" data-tooltip="Clear chat" aria-label="Clear chat">
+                      <svg viewBox="0 0 20 20" focusable="false"><path fill="currentColor" d="M8.249 15.021c-.4 0-.733-.317-.748-.72l-.25-6.5c-.017-.414.307-.763.72-.779H8c.4 0 .733.317.748.72l.25 6.5c.017.414-.307.763-.72.778zM11.751 15.021h-.03c-.413-.016-.737-.365-.72-.779l.25-6.5c.015-.403.348-.72.748-.72h.03c.413.016.737.365.72.779l-.25 6.5c-.015.403-.348.72-.748.72"/><path fill="currentColor" d="M17 4h-3.5v-.75C13.5 2.01 12.49 1 11.25 1h-2.5C7.51 1 6.5 2.01 6.5 3.25V4H3c-.414 0-.75.336-.75.75s.336.75.75.75h.52l.422 10.342C3.99 17.052 4.98 18 6.19 18h7.62c1.211 0 2.2-.948 2.248-2.158L16.48 5.5H17c.414 0 .75-.336.75-.75S17.414 4 17 4m-9-.75c0-.413.337-.75.75-.75h2.5c.413 0 .75.337.75.75V4H8zm6.56 12.531c-.017.404-.346.719-.75.719H6.19c-.404 0-.733-.315-.75-.719L5.02 5.5h9.96z"/></svg>
+                    </button>
+                    <button type="button" class="chat-toolbar-btn" data-tooltip="Download chat" aria-label="Download chat">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M13.53 9.427c-.292-.292-.766-.294-1.06 0l-1.717 1.714V2.75c0-.414-.336-.75-.75-.75s-.75.336-.75.75v8.4L7.53 9.426c-.293-.293-.767-.293-1.06 0s-.293.767 0 1.06l2.998 2.998c.146.147.338.22.53.22.191 0 .384-.073.53-.22l3.002-2.998c.293-.292.293-.767 0-1.06"></path><path fill="currentColor" d="M15.75 18H4.25C3.01 18 2 16.99 2 15.75v-2.021c0-.415.336-.75.75-.75s.75.335.75.75v2.021c0 .413.337.75.75.75h11.5c.413 0 .75-.337.75-.75v-2.021c0-.415.336-.75.75-.75s.75.335.75.75v2.021c0 1.24-1.01 2.25-2.25 2.25"></path></svg>
+                    </button>
                   </div>
                 </div>
-                <div class="task-progress-content" id="task-progress-content">
-              <!-- Progress Bar -->
-              <div class="progress-bar-wrap">
-                <div class="progress-bar">
+                <!-- Progress Bar - always visible, edge to edge -->
+                <div class="progress-bar-wrap">
                   <div class="progress-fill" style="width: 33.33%"></div>
                 </div>
-              </div>
-
+                <div class="task-progress-content" id="task-progress-content">
               <!-- Task List -->
               <div class="task-list">
-                <!-- Completed section -->
-                <div class="task-section">
-                  <div class="task-section-header">
-                    <span class="task-indicator completed">
-                      <svg viewBox="0 0 10 10"><path d="M2 5l2.5 2.5L8 3" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <!-- Completed toggle -->
+                <div class="task-completed-section collapsed" id="task-completed-section">
+                  <div class="task-completed-toggle" id="task-completed-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="task-completed-items">
+                    <span class="task-completed-chevron" aria-hidden="true">
+                      <svg viewBox="0 0 20 20" width="16" height="16"><path fill="currentColor" d="M3.545 12.237c0-.196.077-.393.23-.54L9.48 6.21c.29-.28.749-.28 1.039 0l5.716 5.5c.3.287.308.763.02 1.06-.286.298-.76.308-1.059.02L9.998 7.791l-5.184 4.986c-.297.288-.772.279-1.06-.02-.14-.145-.21-.332-.21-.52"></path></svg>
                     </span>
-                    1 completed
+                    2 completed
                   </div>
-                </div>
-
-                <!-- In-progress section -->
-                <div class="task-section">
-                  <div class="task-section-header">
-                    <span class="task-indicator in-progress">
-                      <svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="2" fill="white"/></svg>
-                    </span>
-                    Analyzing source pages for block definitions
-                  </div>
-                  <div class="task-items">
-                    <div class="task-item">
-                      <svg class="check-icon done" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 7l2 2 3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-                      Create new block implementations (LISTEN) for leadership lists and governance
+                  <div class="task-completed-items" id="task-completed-items">
+                    <div class="task-item task-item-completed">
+                      <span class="task-item-check completed">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M10 18.75c-4.825 0-8.75-3.925-8.75-8.75S5.175 1.25 10 1.25s8.75 3.925 8.75 8.75-3.925 8.75-8.75 8.75m0-16c-3.998 0-7.25 3.252-7.25 7.25s3.252 7.25 7.25 7.25 7.25-3.252 7.25-7.25S13.998 2.75 10 2.75"></path><path fill="currentColor" d="M9.223 13.5c-.212 0-.415-.09-.558-.248l-2.51-2.792c-.278-.309-.253-.782.055-1.06s.781-.252 1.06.056l1.893 2.107 3.487-4.756c.244-.334.711-.41 1.048-.161.334.244.406.713.161 1.047l-4.032 5.5c-.133.183-.342.295-.567.306z"></path></svg>
+                      </span>
+                      <span class="task-item-text">Create session directory structure and session.json</span>
                     </div>
-                    <div class="task-item">
-                      <svg class="check-icon done" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 7l2 2 3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-                      Check blocks against original site and iterate on styles
-                    </div>
-                    <div class="task-item">
-                      <svg class="check-icon pending" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
-                      Update import parsers for the new blocks
-                    </div>
-                    <div class="task-item">
-                      <svg class="check-icon pending" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
-                      Re-import leadership list and governance pages
+                    <div class="task-item task-item-completed">
+                      <span class="task-item-check completed">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M10 18.75c-4.825 0-8.75-3.925-8.75-8.75S5.175 1.25 10 1.25s8.75 3.925 8.75 8.75-3.925 8.75-8.75 8.75m0-16c-3.998 0-7.25 3.252-7.25 7.25s3.252 7.25 7.25 7.25 7.25-3.252 7.25-7.25S13.998 2.75 10 2.75"></path><path fill="currentColor" d="M9.223 13.5c-.212 0-.415-.09-.558-.248l-2.51-2.792c-.278-.309-.253-.782.055-1.06s.781-.252 1.06.056l1.893 2.107 3.487-4.756c.244-.334.711-.41 1.048-.161.334.244.406.713.161 1.047l-4.032 5.5c-.133.183-.342.295-.567.306z"></path></svg>
+                      </span>
+                      <span class="task-item-text">Inspect original page - full screenshot and element collection</span>
                     </div>
                   </div>
                 </div>
 
-                <!-- Pending sections -->
-                <div class="task-section">
-                  <div class="task-section-header">
-                    <span class="task-indicator pending"></span>
-                    Update import parsers for the new blocks
-                  </div>
+                <!-- In-progress task (with rotating chevron) -->
+                <div class="task-item task-item-in-progress">
+                  <span class="task-item-spinner" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+                      <circle class="task-spinner-track" cx="12" cy="12" r="9" stroke-width="2"/>
+                      <circle class="task-spinner-arc" cx="12" cy="12" r="9" stroke-width="2" stroke-dasharray="28 56" stroke-linecap="round"/>
+                    </svg>
+                  </span>
+                  <span class="task-item-text">Create new block implementations (LISTEN) for leadership lists and governance</span>
                 </div>
-                <div class="task-section">
-                  <div class="task-section-header">
-                    <span class="task-indicator pending"></span>
-                    Re-import leadership list and governance pages
-                  </div>
+
+                <!-- Remaining tasks -->
+                <div class="task-item">
+                  <span class="task-item-check pending"></span>
+                  <span class="task-item-text">Check blocks against original site and iterate on styles</span>
+                </div>
+                <div class="task-item">
+                  <span class="task-item-check pending"></span>
+                  <span class="task-item-text">Update import parsers for the new blocks</span>
+                </div>
+                <div class="task-item">
+                  <span class="task-item-check pending"></span>
+                  <span class="task-item-text">Re-import leadership list and governance pages</span>
                 </div>
               </div>
                 </div>
@@ -1347,25 +1666,63 @@
               <!-- Chat Messages -->
               <div class="chat-messages">
                 <div class="chat-msg ai">
-                  <strong>Figma Repository Labels</strong> — I&rsquo;ll now listing every page with: source URL, and description. I — this was a duplicate of what <code>/sitemap_1.json</code> already made.
+                  <strong>Figma Repository Labels</strong> — I&rsquo;ll now listing every page with: <code>source URL</code>, and <code>description</code>. I — this was a duplicate of what <code>/sitemap_1.json</code> already made.
                 </div>
                 <div class="chat-msg ai">
-                  A short section closing: <code>/sitemap_1.json</code> is the single source of truth for all pages/segment tracking, with a...
-                  <br>- Read the URL mapping convention rules referencing sitemap paths
+                  A short section closing: <code>/sitemap_1.json</code> is the <strong>single source of truth</strong> for all pages/segment tracking, with a...
+                  <br>- Read the <code>URL mapping convention</code> rules referencing sitemap paths
                 </div>
                 <div class="chat-msg ai">
                   <strong>Updated Bulk Publish URL List</strong>
                   <br>Format: <code>Path</code>, <code>.html</code>, <code>Title</code> to <code>Read /sitemap_1.json and pages[1].webpath</code> — The sitemap is now the authoritative source for generating publish URL lists.
                 </div>
-                <div class="chat-msg system">
-                  <strong>Click to submit this prompt!</strong> Mark the request as separate form and all article pages as generated accurately and verify the...
+                <div class="chat-msg ai">
+                  <strong>Click to submit this prompt!</strong> Mark the request as <code>separate form</code> and all <code>article pages</code> as generated accurately and verify the...
                 </div>
                 <div class="chat-msg user">
-                  For the following pages, I&rsquo;d need you to figure out what blocks to create for them. Make custom versions of blocks where you see gaps, or adjusting the content structure if needed, and eventually create import infrastructure for them.
+                  For the following pages, I&rsquo;d need you to figure out what <strong>blocks</strong> to create for them. Make custom versions of blocks where you see gaps, or adjusting the content structure if needed, and eventually create <code>import infrastructure</code> for them.
                 </div>
                 <div class="chat-msg ai">
-                  Let me first handle the sitemap approach, while simultaneously analyzing the source pages.
-                  <br><br>I need ~241 pages approved if separate form + 234 article-header pages. How let me analyze the...
+                  Let me first handle the <code>sitemap</code> approach, while simultaneously analyzing the source pages.
+                  <br><br>I need ~<strong>241</strong> pages approved if separate form + <strong>234</strong> article-header pages. How let me analyze the...
+                </div>
+                <div class="chat-msg user">
+                  what files still need to be approved?
+                </div>
+                <div class="chat-msg ai">
+                  Let me check the migration status.
+                </div>
+                <div class="chat-msg ai">
+                  <strong>Here&rsquo;s the migration status breakdown:</strong>
+                  <br><br><strong>Total pages:</strong> 302 | <strong>Approved:</strong> 245 | <strong>Not yet approved:</strong> 57
+                  <br><br>Of the 57 unapproved: <code>47</code> imported but not validated, <code>10</code> validated but ready for approval (<code>home</code>, <code>our-company</code>, <code>our-culture</code>, <code>our-strategy</code>, <code>our-impact</code>, <code>our-stories</code>, <code>customer-first</code>, <code>innovation-driven</code>, <code>people-led</code>, <code>political-engagement-policy</code>, <code>political-engagement-policy/archive</code>).
+                  <br><br>All fragments (<code>nav</code>, <code>footer</code>) are approved. All <strong>302</strong> pages have been imported.
+                  <br><br>Biggest groups needing work: <strong>20</strong> leadership bios, <strong>6</strong> governance pages, several <code>our-impact</code> sub-pages, newsroom pages (<code>awards</code>, <code>press-releases</code>, <code>statements</code>), misc pages.
+                  <br><br>Would you like me to start <strong>validating</strong> or <strong>critiquing</strong> any specific group?
+                </div>
+                <div class="chat-msg user">
+                  start critiquing and validating all of them
+                </div>
+                <div class="chat-msg ai">
+                  I&rsquo;ll start working through all <strong>57</strong> pages. Let me organize them and begin the <code>critique</code> process.
+                </div>
+                <div class="chat-msg ai">
+                  Let me start by critiquing the pages that are already <strong>validated</strong>. I&rsquo;ll begin with the <code>home</code> page.
+                </div>
+                <div class="chat-msg ai">
+                  I&rsquo;ll start the <code>critique workflow</code> for the home page. Let me work through all the steps systematically.
+                </div>
+                <div class="chat-msg ai">
+                  <strong>Step 1: Initialize Session</strong> — Home Page
+                </div>
+                <div class="chat-thinking">
+                  <span class="chat-thinking-spinner" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+                      <circle class="chat-spinner-track" cx="12" cy="12" r="9" stroke-width="2"/>
+                      <circle class="chat-spinner-arc" cx="12" cy="12" r="9" stroke-width="2" stroke-dasharray="28 56" stroke-linecap="round"/>
+                    </svg>
+                  </span>
+                  <span class="chat-thinking-text">thinking… (1min)</span>
                 </div>
               </div>
 
@@ -1399,6 +1756,10 @@
             </div>
           </div>
 
+          <div class="chat-resize-handle" id="chat-resize-handle" role="separator" aria-orientation="vertical" aria-label="Resize chat panel">
+            <div class="chat-resize-handle-grip" id="chat-resize-handle-grip"></div>
+          </div>
+
           <!-- ====== PREVIEW PANEL (Right) ====== -->
           <div class="exmod-preview">
 
@@ -1415,34 +1776,21 @@
                   <button class="toolbar-icon-btn" type="button" data-tooltip="Picker" aria-label="Picker">
                     <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M18.074 1.6c-.528-.44-1.192-.654-1.883-.587-.685.061-1.306.386-1.745.912-.036.043-5.03 6.019-6.693 8.012-.344.016-.693.067-1.042.164-1.973.546-2.687 2.232-3.315 3.718-.501 1.184-.975 2.302-2.003 2.859-.287.154-.44.476-.38.797.06.319.318.564.641.606.936.12 1.977.208 3.024.208 2.16 0 4.351-.372 5.72-1.594.925-.825 1.385-1.937 1.366-3.306-.001-.063-.02-.122-.024-.184l1.206-1.443c2.103-2.517 5.381-6.443 5.455-6.53.912-1.09.765-2.72-.327-3.631M9.4 15.576c-1.052.94-3.109 1.345-5.865 1.18.554-.725.91-1.57 1.241-2.35.57-1.345 1.06-2.506 2.335-2.86.875-.24 1.732-.112 2.354.353.5.375.79.926.799 1.512.012.927-.27 1.636-.864 2.165m7.853-11.308c-.043.05-3.345 4.002-5.458 6.533l-.634.76c-.218-.32-.472-.619-.797-.862-.273-.204-.574-.36-.89-.484 2.01-2.407 6.059-7.251 6.122-7.325.183-.221.443-.357.73-.383.292-.023.566.062.787.247.456.38.518 1.061.14 1.514"/></svg>
                   </button>
-                  <div class="responsive-dropdown" id="responsive-dropdown">
-                  <button class="responsive-dropdown-trigger" type="button" data-tooltip="Viewport" aria-label="Viewport" aria-haspopup="true" aria-expanded="false">
-                    <svg class="responsive-icon-desktop" viewBox="0 0 20 20" focusable="false"><path fill="currentColor" d="M14 18.5H6c-.414 0-.75-.336-.75-.75S5.586 17 6 17h8c.414 0 .75.336.75.75s-.336.75-.75.75M16.75 16H3.25C2.01 16 1 14.99 1 13.75v-8.5C1 4.01 2.01 3 3.25 3h13.5C17.99 3 19 4.01 19 5.25v8.5c0 1.24-1.01 2.25-2.25 2.25M3.25 4.5c-.413 0-.75.337-.75.75v8.5c0 .413.337.75.75.75h13.5c.413 0 .75-.337.75-.75v-8.5c0-.413-.337-.75-.75-.75z"/></svg>
-                    <svg class="responsive-icon-tablet" viewBox="0 0 20 20" focusable="false" style="display:none"><circle cx="5" cy="9.998" r="1" fill="currentColor"/><path fill="currentColor" d="M3.25 2.998h13.5c1.24 0 2.25 1.01 2.25 2.25v9.5c0 1.24-1.01 2.25-2.25 2.25H3.25c-1.24 0-2.25-1.01-2.25-2.25v-9.5c0-1.24 1.01-2.25 2.25-2.25m13.5 12.5c.413 0 .75-.337.75-.75v-9.5c0-.413-.337-.75-.75-.75H3.25c-.413 0-.75.337-.75.75v9.5c0 .413.337.75.75.75z"/></svg>
-                    <svg class="responsive-icon-phone" viewBox="0 0 20 20" focusable="false" style="display:none"><circle cx="10" cy="15" r="1" fill="currentColor"/><path fill="currentColor" d="M13.75 19h-7.5C5.01 19 4 17.99 4 16.75V3.25C4 2.01 5.01 1 6.25 1h7.5C14.99 1 16 2.01 16 3.25v13.5c0 1.24-1.01 2.25-2.25 2.25M6.25 2.5c-.413 0-.75.337-.75.75v13.5c0 .413.337.75.75.75h7.5c.413 0 .75-.337.75-.75V3.25c0-.413-.337-.75-.75-.75z"/></svg>
-                  </button>
-                  <div class="responsive-dropdown-overlay">
-                    <button class="responsive-dropdown-option" data-viewport="desktop">
-                      <svg viewBox="0 0 20 20"><path fill="currentColor" d="M14 18.5H6c-.414 0-.75-.336-.75-.75S5.586 17 6 17h8c.414 0 .75.336.75.75s-.336.75-.75.75M16.75 16H3.25C2.01 16 1 14.99 1 13.75v-8.5C1 4.01 2.01 3 3.25 3h13.5C17.99 3 19 4.01 19 5.25v8.5c0 1.24-1.01 2.25-2.25 2.25M3.25 4.5c-.413 0-.75.337-.75.75v8.5c0 .413.337.75.75.75h13.5c.413 0 .75-.337.75-.75v-8.5c0-.413-.337-.75-.75-.75z"/></svg>
-                      Desktop
-                    </button>
-                    <button class="responsive-dropdown-option" data-viewport="tablet">
-                      <svg viewBox="0 0 20 20"><circle cx="5" cy="9.998" r="1" fill="currentColor"/><path fill="currentColor" d="M3.25 2.998h13.5c1.24 0 2.25 1.01 2.25 2.25v9.5c0 1.24-1.01 2.25-2.25 2.25H3.25c-1.24 0-2.25-1.01-2.25-2.25v-9.5c0-1.24 1.01-2.25 2.25-2.25m13.5 12.5c.413 0 .75-.337.75-.75v-9.5c0-.413-.337-.75-.75-.75H3.25c-.413 0-.75.337-.75.75v9.5c0 .413.337.75.75.75z"/></svg>
-                      Tablet
-                    </button>
-                    <button class="responsive-dropdown-option" data-viewport="phone">
-                      <svg viewBox="0 0 20 20"><circle cx="10" cy="15" r="1" fill="currentColor"/><path fill="currentColor" d="M13.75 19h-7.5C5.01 19 4 17.99 4 16.75V3.25C4 2.01 5.01 1 6.25 1h7.5C14.99 1 16 2.01 16 3.25v13.5c0 1.24-1.01 2.25-2.25 2.25M6.25 2.5c-.413 0-.75.337-.75.75v13.5c0 .413.337.75.75.75h7.5c.413 0 .75-.337.75-.75V3.25c0-.413-.337-.75-.75-.75z"/></svg>
-                      Phone
-                    </button>
-                  </div>
-                  </div>
                   <button class="toolbar-icon-btn" type="button" data-tooltip="Refresh" aria-label="Refresh">
-                  <svg viewBox="0 0 20 20" focusable="false"><path fill="currentColor" d="M18.207 3.897c-.406-.094-.809.15-.906.554l-.38 1.575C15.523 3.594 12.919 2.02 10 2.02c-3.685 0-6.875 2.5-7.76 6.08-.099.403.147.81.55.909.4.1.808-.147.907-.55.718-2.907 3.31-4.939 6.303-4.939 2.517 0 4.735 1.447 5.809 3.633l-2.102-.508c-.404-.094-.808.15-.906.553s.15.808.553.905l3.245.785c.125.088.274.142.432.142q.09 0 .18-.021c.048-.012.086-.041.13-.061.069-.019.142-.02.205-.058.17-.104.29-.27.338-.464l.875-3.624c.097-.403-.15-.808-.552-.906M17.21 11.032c-.396-.096-.807.147-.907.55-.718 2.908-3.31 4.94-6.303 4.94-2.517 0-4.735-1.447-5.81-3.634l2.103.508c.403.092.809-.15.906-.553s-.15-.808-.553-.905l-3.255-.787c-.171-.118-.385-.171-.602-.119-.015.004-.026.015-.04.02-.104.013-.205.044-.295.1-.17.103-.29.27-.338.463l-.875 3.624c-.097.403.15.808.552.906q.09.02.177.02c.339 0 .646-.23.729-.574l.38-1.575c1.398 2.432 4.002 4.005 6.921 4.005 3.685 0 6.876-2.5 7.76-6.08.099-.403-.147-.81-.549-.909"/></svg>
+                    <svg viewBox="0 0 20 20" focusable="false"><path fill="currentColor" d="M18.207 3.897c-.406-.094-.809.15-.906.554l-.38 1.575C15.523 3.594 12.919 2.02 10 2.02c-3.685 0-6.875 2.5-7.76 6.08-.099.403.147.81.55.909.4.1.808-.147.907-.55.718-2.907 3.31-4.939 6.303-4.939 2.517 0 4.735 1.447 5.809 3.633l-2.102-.508c-.404-.094-.808.15-.906.553s.15.808.553.905l3.245.785c.125.088.274.142.432.142q.09 0 .18-.021c.048-.012.086-.041.13-.061.069-.019.142-.02.205-.058.17-.104.29-.27.338-.464l.875-3.624c.097-.403-.15-.808-.552-.906M17.21 11.032c-.396-.096-.807.147-.907.55-.718 2.908-3.31 4.94-6.303 4.94-2.517 0-4.735-1.447-5.81-3.634l2.103.508c.403.092.809-.15.906-.553s-.15-.808-.553-.905l-3.255-.787c-.171-.118-.385-.171-.602-.119-.015.004-.026.015-.04.02-.104.013-.205.044-.295.1-.17.103-.29.27-.338.463l-.875 3.624c-.097.403.15.808.552.906q.09.02.177.02c.339 0 .646-.23.729-.574l.38-1.575c1.398 2.432 4.002 4.005 6.921 4.005 3.685 0 6.876-2.5 7.76-6.08.099-.403-.147-.81-.549-.909"/></svg>
                   </button>
+                  <div class="viewport-switcher" id="viewport-switcher">
+                    <button class="viewport-btn active" type="button" data-viewport="desktop" data-tooltip="Desktop" aria-label="Desktop">
+                      <svg viewBox="0 0 20 20" focusable="false"><path fill="currentColor" d="M14 18.5H6c-.414 0-.75-.336-.75-.75S5.586 17 6 17h8c.414 0 .75.336.75.75s-.336.75-.75.75M16.75 16H3.25C2.01 16 1 14.99 1 13.75v-8.5C1 4.01 2.01 3 3.25 3h13.5C17.99 3 19 4.01 19 5.25v8.5c0 1.24-1.01 2.25-2.25 2.25M3.25 4.5c-.413 0-.75.337-.75.75v8.5c0 .413.337.75.75.75h13.5c.413 0 .75-.337.75-.75v-8.5c0-.413-.337-.75-.75-.75z"/></svg>
+                    </button>
+                    <button class="viewport-btn" type="button" data-viewport="tablet" data-tooltip="Tablet" aria-label="Tablet">
+                      <svg viewBox="0 0 20 20" focusable="false"><circle cx="5" cy="9.998" r="1" fill="currentColor"/><path fill="currentColor" d="M3.25 2.998h13.5c1.24 0 2.25 1.01 2.25 2.25v9.5c0 1.24-1.01 2.25-2.25 2.25H3.25c-1.24 0-2.25-1.01-2.25-2.25v-9.5c0-1.24 1.01-2.25 2.25-2.25m13.5 12.5c.413 0 .75-.337.75-.75v-9.5c0-.413-.337-.75-.75-.75H3.25c-.413 0-.75.337-.75.75v9.5c0 .413.337.75.75.75z"/></svg>
+                    </button>
+                    <button class="viewport-btn" type="button" data-viewport="phone" data-tooltip="Phone" aria-label="Phone">
+                      <svg viewBox="0 0 20 20" focusable="false"><circle cx="10" cy="15" r="1" fill="currentColor"/><path fill="currentColor" d="M13.75 19h-7.5C5.01 19 4 17.99 4 16.75V3.25C4 2.01 5.01 1 6.25 1h7.5C14.99 1 16 2.01 16 3.25v13.5c0 1.24-1.01 2.25-2.25 2.25M6.25 2.5c-.413 0-.75.337-.75.75v13.5c0 .413.337.75.75.75h7.5c.413 0 .75-.337.75-.75V3.25c0-.413-.337-.75-.75-.75z"/></svg>
+                    </button>
+                  </div>
                 </div>
-                <button class="toolbar-icon-btn" type="button" data-tooltip="Delete" aria-label="Delete">
-                  <svg viewBox="0 0 20 20" focusable="false"><path fill="currentColor" d="M8.249 15.021c-.4 0-.733-.317-.748-.72l-.25-6.5c-.017-.414.307-.763.72-.779H8c.4 0 .733.317.748.72l.25 6.5c.017.414-.307.763-.72.778zM11.751 15.021h-.03c-.413-.016-.737-.365-.72-.779l.25-6.5c.015-.403.348-.72.748-.72h.03c.413.016.737.365.72.779l-.25 6.5c-.015.403-.348.72-.748.72"/><path fill="currentColor" d="M17 4h-3.5v-.75C13.5 2.01 12.49 1 11.25 1h-2.5C7.51 1 6.5 2.01 6.5 3.25V4H3c-.414 0-.75.336-.75.75s.336.75.75.75h.52l.422 10.342C3.99 17.052 4.98 18 6.19 18h7.62c1.211 0 2.2-.948 2.248-2.158L16.48 5.5H17c.414 0 .75-.336.75-.75S17.414 4 17 4m-9-.75c0-.413.337-.75.75-.75h2.5c.413 0 .75.337.75.75V4H8zm6.56 12.531c-.017.404-.346.719-.75.719H6.19c-.404 0-.733-.315-.75-.719L5.02 5.5h9.96z"/></svg>
-                </button>
                 <div class="view-mode-switcher">
                   <button class="view-mode-btn active" type="button" data-view-mode="preview" data-tooltip="Preview" aria-label="Preview">
                     <svg viewBox="0 0 20 20" focusable="false"><path fill="currentColor" d="m19.28 18.222-1.973-1.974c.436-.64.693-1.414.693-2.246 0-2.206-1.794-4-4-4s-4 1.794-4 4 1.794 4 4 4c.833 0 1.605-.257 2.246-.693l1.974 1.973c.146.147.338.22.53.22s.384-.073.53-.22c.293-.293.293-.767 0-1.06m-7.78-4.22c0-1.379 1.121-2.5 2.5-2.5s2.5 1.121 2.5 2.5-1.121 2.5-2.5 2.5-2.5-1.121-2.5-2.5"/><path fill="currentColor" d="m16.34 5.28-3.62-3.62c-.418-.42-.998-.66-1.591-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18H9c.414 0 .75-.336.75-.75s-.336-.75-.75-.75H5.25c-.413 0-.75-.337-.75-.75V3.25c0-.413.337-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v.5c0 .414.336.75.75.75s.75-.336.75-.75V6.871c0-.592-.24-1.172-.66-1.59m-4.84.47V2.614c.055.032.113.06.158.106l3.622 3.62c.046.046.074.105.106.16H12.25c-.413 0-.75-.337-.75-.75"/></svg>
@@ -1451,7 +1799,10 @@
                     <svg viewBox="0 0 20 20" focusable="false"><path fill="currentColor" d="m16.34 5.296-3.62-3.622c-.42-.42-1-.66-1.591-.66H5.25C4.01 1.015 3 2.025 3 3.265v12.484c0 1.24 1.01 2.25 2.25 2.25h9.5c1.24 0 2.25-1.01 2.25-2.25V6.887c0-.6-.234-1.166-.66-1.591m-1.06 1.06c.046.047.074.104.106.159H12.25c-.413 0-.75-.337-.75-.75V2.628c.055.033.114.06.16.106zm-.53 10.142h-9.5c-.413 0-.75-.337-.75-.75V3.265c0-.413.337-.75.75-.75H10v3.25c0 1.24 1.01 2.25 2.25 2.25h3.25v7.733c0 .413-.337.75-.75.75"/><path fill="currentColor" d="M13 11.498H7c-.414 0-.75-.336-.75-.75s.336-.75.75-.75h6c.414 0 .75.336.75.75s-.336.75-.75.75M13 14.498H7c-.414 0-.75-.336-.75-.75s.336-.75.75-.75h6c.414 0 .75.336.75.75s-.336.75-.75.75"/></svg>
                   </button>
                 </div>
-                <button class="btn-upload" type="button" data-tooltip="Upload content" aria-label="Upload content">Upload content</button>
+                <button class="toolbar-icon-btn" type="button" data-tooltip="Delete" aria-label="Delete">
+                  <svg viewBox="0 0 20 20" focusable="false"><path fill="currentColor" d="M8.249 15.021c-.4 0-.733-.317-.748-.72l-.25-6.5c-.017-.414.307-.763.72-.779H8c.4 0 .733.317.748.72l.25 6.5c.017.414-.307.763-.72.778zM11.751 15.021h-.03c-.413-.016-.737-.365-.72-.779l.25-6.5c.015-.403.348-.72.748-.72h.03c.413.016.737.365.72.779l-.25 6.5c-.015.403-.348.72-.748.72"/><path fill="currentColor" d="M17 4h-3.5v-.75C13.5 2.01 12.49 1 11.25 1h-2.5C7.51 1 6.5 2.01 6.5 3.25V4H3c-.414 0-.75.336-.75.75s.336.75.75.75h.52l.422 10.342C3.99 17.052 4.98 18 6.19 18h7.62c1.211 0 2.2-.948 2.248-2.158L16.48 5.5H17c.414 0 .75-.336.75-.75S17.414 4 17 4m-9-.75c0-.413.337-.75.75-.75h2.5c.413 0 .75.337.75.75V4H8zm6.56 12.531c-.017.404-.346.719-.75.719H6.19c-.404 0-.733-.315-.75-.719L5.02 5.5h9.96z"/></svg>
+                </button>
+                <button class="btn-upload" type="button" aria-label="Upload content">Upload content</button>
               </div>
             </div>
             <div class="toolbar-sep"></div>
@@ -1461,44 +1812,158 @@
 
               <!-- Document Tree -->
               <div class="document-tree">
+                <div class="document-tree-inner">
                 <div class="tree-breadcrumbs">
                   <span class="crumb">Workspace</span>
                   <span class="breadcrumb-sep">&rsaquo;</span>
-                  <span class="crumb">us</span>
-                  <span class="breadcrumb-sep">&rsaquo;</span>
-                  <span class="crumb">en</span>
+                  <div class="breadcrumb-path-dropdown" id="breadcrumb-path-dropdown">
+                    <button type="button" class="breadcrumb-path-trigger" aria-label="Path" aria-haspopup="true" aria-expanded="false">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M16.75 5h-5.964c-.218 0-.424-.094-.566-.259L8.516 2.777C8.089 2.283 7.47 2 6.816 2H3.25C2.01 2 1 3.01 1 4.25v10.5C1 15.99 2.01 17 3.25 17h13.5c1.24 0 2.25-1.01 2.25-2.25v-7.5C19 6.01 17.99 5 16.75 5M3.25 3.5h3.565c.218 0 .424.094.567.259L8.459 5H2.5v-.75c0-.413.337-.75.75-.75M17.5 14.75c0 .413-.337.75-.75.75H3.25c-.413 0-.75-.337-.75-.75V6.5h14.25c.413 0 .75.337.75.75z"></path><path fill="currentColor" d="M10 13.65c-.192 0-.384-.073-.53-.22l-3-3c-.293-.292-.293-.767 0-1.06s.767-.293 1.06 0L10 11.84l2.47-2.47c.293-.293.767-.293 1.06 0s.293.768 0 1.06l-3 3c-.146.147-.338.22-.53.22"></path></svg>
+                    </button>
+                    <div class="breadcrumb-path-overlay">
+                      <button type="button" class="breadcrumb-path-option">press-releases</button>
+                      <button type="button" class="breadcrumb-path-option">newsroom</button>
+                      <button type="button" class="breadcrumb-path-option">us</button>
+                      <button type="button" class="breadcrumb-path-option">en</button>
+                    </div>
+                  </div>
                   <span class="breadcrumb-sep">&rsaquo;</span>
                   <span class="crumb crumb-current" style="font-weight:600;">our-company</span>
                 </div>
                 <div class="file-list">
                   <div class="file-item">
                     <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="Folder" role="img"><path fill="currentColor" d="M16.75 5h-5.964c-.218 0-.424-.095-.567-.259L8.516 2.776C8.088 2.283 7.468 2 6.816 2H3.25C2.01 2 1 3.01 1 4.25v10.5C1 15.99 2.01 17 3.25 17h13.5c1.24 0 2.25-1.01 2.25-2.25v-7.5C19 6.01 17.99 5 16.75 5M3.25 3.5h3.565c.218 0 .424.095.567.259L8.458 5H2.5v-.75c0-.413.336-.75.75-.75M17.5 14.75c0 .413-.336.75-.75.75H3.25c-.414 0-.75-.337-.75-.75V6.5h14.25c.414 0 .75.337.75.75z"/></svg>
-                    global-presence
+                    <span class="file-name" data-full-title="global-presence">global-presence</span>
                   </div>
                   <div class="file-item">
                     <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="Folder" role="img"><path fill="currentColor" d="M16.75 5h-5.964c-.218 0-.424-.095-.567-.259L8.516 2.776C8.088 2.283 7.468 2 6.816 2H3.25C2.01 2 1 3.01 1 4.25v10.5C1 15.99 2.01 17 3.25 17h13.5c1.24 0 2.25-1.01 2.25-2.25v-7.5C19 6.01 17.99 5 16.75 5M3.25 3.5h3.565c.218 0 .424.095.567.259L8.458 5H2.5v-.75c0-.413.336-.75.75-.75M17.5 14.75c0 .413-.336.75-.75.75H3.25c-.414 0-.75-.337-.75-.75V6.5h14.25c.414 0 .75.337.75.75z"/></svg>
-                    governance
+                    <span class="file-name" data-full-title="governance">governance</span>
                   </div>
                   <div class="file-item selected">
                     <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
-                    ups-accelerates-intra-asia-trade
+                    <span class="file-name" data-full-title="ups-accelerates-intra-asia-trade-with-capacity-and-speed-enhance">ups-accelerates-intra-asia-trade-with-capacity-and-speed-enhance</span>
                   </div>
                   <div class="file-item">
                     <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
-                    leadership-list
+                    <span class="file-name" data-full-title="leadership-list">leadership-list</span>
                   </div>
                   <div class="file-item">
                     <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
-                    supply-chain-solutions
+                    <span class="file-name" data-full-title="supply-chain-solutions">supply-chain-solutions</span>
                   </div>
                   <div class="file-item">
                     <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="Folder" role="img"><path fill="currentColor" d="M16.75 5h-5.964c-.218 0-.424-.095-.567-.259L8.516 2.776C8.088 2.283 7.468 2 6.816 2H3.25C2.01 2 1 3.01 1 4.25v10.5C1 15.99 2.01 17 3.25 17h13.5c1.24 0 2.25-1.01 2.25-2.25v-7.5C19 6.01 17.99 5 16.75 5M3.25 3.5h3.565c.218 0 .424.095.567.259L8.458 5H2.5v-.75c0-.413.336-.75.75-.75M17.5 14.75c0 .413-.336.75-.75.75H3.25c-.414 0-.75-.337-.75-.75V6.5h14.25c.414 0 .75.337.75.75z"/></svg>
-                    sustainability
+                    <span class="file-name" data-full-title="sustainability">sustainability</span>
                   </div>
                   <div class="file-item">
                     <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
-                    about-us
+                    <span class="file-name" data-full-title="about-us">about-us</span>
                   </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="Folder" role="img"><path fill="currentColor" d="M16.75 5h-5.964c-.218 0-.424-.095-.567-.259L8.516 2.776C8.088 2.283 7.468 2 6.816 2H3.25C2.01 2 1 3.01 1 4.25v10.5C1 15.99 2.01 17 3.25 17h13.5c1.24 0 2.25-1.01 2.25-2.25v-7.5C19 6.01 17.99 5 16.75 5M3.25 3.5h3.565c.218 0 .424.095.567.259L8.458 5H2.5v-.75c0-.413.336-.75.75-.75M17.5 14.75c0 .413-.336.75-.75.75H3.25c-.414 0-.75-.337-.75-.75V6.5h14.25c.414 0 .75.337.75.75z"/></svg>
+                    <span class="file-name" data-full-title="newsroom">newsroom</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="Folder" role="img"><path fill="currentColor" d="M16.75 5h-5.964c-.218 0-.424-.095-.567-.259L8.516 2.776C8.088 2.283 7.468 2 6.816 2H3.25C2.01 2 1 3.01 1 4.25v10.5C1 15.99 2.01 17 3.25 17h13.5c1.24 0 2.25-1.01 2.25-2.25v-7.5C19 6.01 17.99 5 16.75 5M3.25 3.5h3.565c.218 0 .424.095.567.259L8.458 5H2.5v-.75c0-.413.336-.75.75-.75M17.5 14.75c0 .413-.336.75-.75.75H3.25c-.414 0-.75-.337-.75-.75V6.5h14.25c.414 0 .75.337.75.75z"/></svg>
+                    <span class="file-name" data-full-title="press-releases">press-releases</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="Folder" role="img"><path fill="currentColor" d="M16.75 5h-5.964c-.218 0-.424-.095-.567-.259L8.516 2.776C8.088 2.283 7.468 2 6.816 2H3.25C2.01 2 1 3.01 1 4.25v10.5C1 15.99 2.01 17 3.25 17h13.5c1.24 0 2.25-1.01 2.25-2.25v-7.5C19 6.01 17.99 5 16.75 5M3.25 3.5h3.565c.218 0 .424.095.567.259L8.458 5H2.5v-.75c0-.413.336-.75.75-.75M17.5 14.75c0 .413-.336.75-.75.75H3.25c-.414 0-.75-.337-.75-.75V6.5h14.25c.414 0 .75.337.75.75z"/></svg>
+                    <span class="file-name" data-full-title="financials">financials</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
+                    <span class="file-name" data-full-title="ups-announces-quarterly-dividend-q3-2024">ups-announces-quarterly-dividend-q3-2024</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
+                    <span class="file-name" data-full-title="ups-announces-quarterly-dividend-q4-2024">ups-announces-quarterly-dividend-q4-2024</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
+                    <span class="file-name" data-full-title="ups-announces-strategic-initiatives-and-three-year-financial-tar">ups-announces-strategic-initiatives-and-three-year-financial-tar</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
+                    <span class="file-name" data-full-title="ups-releases-1q-2025-earnings">ups-releases-1q-2025-earnings</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
+                    <span class="file-name" data-full-title="ups-releases-4q-2024-earnings-and-provides-2025-guidance">ups-releases-4q-2024-earnings-and-provides-2025-guidance</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
+                    <span class="file-name" data-full-title="ups-to-release-first-quarter-2025-results-on-tuesday-april-29">ups-to-release-first-quarter-2025-results-on-tuesday-april-29</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="Folder" role="img"><path fill="currentColor" d="M16.75 5h-5.964c-.218 0-.424-.095-.567-.259L8.516 2.776C8.088 2.283 7.468 2 6.816 2H3.25C2.01 2 1 3.01 1 4.25v10.5C1 15.99 2.01 17 3.25 17h13.5c1.24 0 2.25-1.01 2.25-2.25v-7.5C19 6.01 17.99 5 16.75 5M3.25 3.5h3.565c.218 0 .424.095.567.259L8.458 5H2.5v-.75c0-.413.336-.75.75-.75M17.5 14.75c0 .413-.336.75-.75.75H3.25c-.414 0-.75-.337-.75-.75V6.5h14.25c.414 0 .75.337.75.75z"/></svg>
+                    <span class="file-name" data-full-title="innovation-driven">innovation-driven</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
+                    <span class="file-name" data-full-title="new-chief-digital-and-technology-officer">new-chief-digital-and-technology-officer</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="Folder" role="img"><path fill="currentColor" d="M16.75 5h-5.964c-.218 0-.424-.095-.567-.259L8.516 2.776C8.088 2.283 7.468 2 6.816 2H3.25C2.01 2 1 3.01 1 4.25v10.5C1 15.99 2.01 17 3.25 17h13.5c1.24 0 2.25-1.01 2.25-2.25v-7.5C19 6.01 17.99 5 16.75 5M3.25 3.5h3.565c.218 0 .424.095.567.259L8.458 5H2.5v-.75c0-.413.336-.75.75-.75M17.5 14.75c0 .413-.336.75-.75.75H3.25c-.414 0-.75-.337-.75-.75V6.5h14.25c.414 0 .75.337.75.75z"/></svg>
+                    <span class="file-name" data-full-title="our-strategy">our-strategy</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
+                    <span class="file-name" data-full-title="2023-ups-impact-summit">2023-ups-impact-summit</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
+                    <span class="file-name" data-full-title="ups-acquires-andlauer-healthcare-group-for-1-6-billion-acceler">ups-acquires-andlauer-healthcare-group-for-1-6-billion-acceler</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
+                    <span class="file-name" data-full-title="ups-completes-acquisitions-of-healthcare-cold-chain-logistics-pr">ups-completes-acquisitions-of-healthcare-cold-chain-logistics-pr</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="Folder" role="img"><path fill="currentColor" d="M16.75 5h-5.964c-.218 0-.424-.095-.567-.259L8.516 2.776C8.088 2.283 7.468 2 6.816 2H3.25C2.01 2 1 3.01 1 4.25v10.5C1 15.99 2.01 17 3.25 17h13.5c1.24 0 2.25-1.01 2.25-2.25v-7.5C19 6.01 17.99 5 16.75 5M3.25 3.5h3.565c.218 0 .424.095.567.259L8.458 5H2.5v-.75c0-.413.336-.75.75-.75M17.5 14.75c0 .413-.336.75-.75.75H3.25c-.414 0-.75-.337-.75-.75V6.5h14.25c.414 0 .75.337.75.75z"/></svg>
+                    <span class="file-name" data-full-title="people-led">people-led</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
+                    <span class="file-name" data-full-title="ups-appoints-brian-dykes-as-chief-financial-officer">ups-appoints-brian-dykes-as-chief-financial-officer</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
+                    <span class="file-name" data-full-title="ups-invests-in-arrival-accelerates-fleet-electrification-with-order-of-10-000-electric-delivery-vehicles">ups-invests-in-arrival-accelerates-fleet-electrification-with-order-of-10-000-electric-delivery-vehicles</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
+                    <span class="file-name" data-full-title="aircraft-maintenance-contract-agreement">aircraft-maintenance-contract-agreement</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="Folder" role="img"><path fill="currentColor" d="M16.75 5h-5.964c-.218 0-.424-.095-.567-.259L8.516 2.776C8.088 2.283 7.468 2 6.816 2H3.25C2.01 2 1 3.01 1 4.25v10.5C1 15.99 2.01 17 3.25 17h13.5c1.24 0 2.25-1.01 2.25-2.25v-7.5C19 6.01 17.99 5 16.75 5M3.25 3.5h3.565c.218 0 .424.095.567.259L8.458 5H2.5v-.75c0-.413.336-.75.75-.75M17.5 14.75c0 .413-.336.75-.75.75H3.25c-.414 0-.75-.337-.75-.75V6.5h14.25c.414 0 .75.337.75.75z"/></svg>
+                    <span class="file-name" data-full-title="customer-solutions">customer-solutions</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
+                    <span class="file-name" data-full-title="e-commerce-fulfillment">e-commerce-fulfillment</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
+                    <span class="file-name" data-full-title="healthcare-logistics">healthcare-logistics</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="Folder" role="img"><path fill="currentColor" d="M16.75 5h-5.964c-.218 0-.424-.095-.567-.259L8.516 2.776C8.088 2.283 7.468 2 6.816 2H3.25C2.01 2 1 3.01 1 4.25v10.5C1 15.99 2.01 17 3.25 17h13.5c1.24 0 2.25-1.01 2.25-2.25v-7.5C19 6.01 17.99 5 16.75 5M3.25 3.5h3.565c.218 0 .424.095.567.259L8.458 5H2.5v-.75c0-.413.336-.75.75-.75M17.5 14.75c0 .413-.336.75-.75.75H3.25c-.414 0-.75-.337-.75-.75V6.5h14.25c.414 0 .75.337.75.75z"/></svg>
+                    <span class="file-name" data-full-title="careers">careers</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
+                    <span class="file-name" data-full-title="open-positions">open-positions</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
+                    <span class="file-name" data-full-title="contact-us">contact-us</span>
+                  </div>
+                  <div class="file-item">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>
+                    <span class="file-name" data-full-title="investor-relations-overview">investor-relations-overview</span>
+                  </div>
+                </div>
                 </div>
               </div>
 
@@ -1523,41 +1988,221 @@
     document.querySelectorAll('[data-tooltip]').forEach(function(el) {
       el.addEventListener('mouseenter', function(e) {
         var r = this.getBoundingClientRect();
-        this.style.setProperty('--tt-x', (r.left + r.width / 2) + 'px');
-        this.style.setProperty('--tt-y', r.top + 'px');
+        if (el.closest('.exmod-nav') || el.getAttribute('data-tooltip-position') === 'right') {
+          this.style.setProperty('--tt-x', (r.right + 8) + 'px');
+          this.style.setProperty('--tt-y', (r.top + r.height / 2) + 'px');
+        } else {
+          this.style.setProperty('--tt-x', (r.left + r.width / 2) + 'px');
+          this.style.setProperty('--tt-y', r.top + 'px');
+        }
       });
     });
-    // Responsive dropdown (viewport selector)
-    var responsiveDropdown = document.getElementById('responsive-dropdown');
-    if (responsiveDropdown) {
-      var trigger = responsiveDropdown.querySelector('.responsive-dropdown-trigger');
-      var overlay = responsiveDropdown.querySelector('.responsive-dropdown-overlay');
-      var iconDesktop = responsiveDropdown.querySelector('.responsive-icon-desktop');
-      var iconTablet = responsiveDropdown.querySelector('.responsive-icon-tablet');
-      var iconPhone = responsiveDropdown.querySelector('.responsive-icon-phone');
-      var viewport = 'desktop';
-      trigger.addEventListener('click', function(e) {
-        e.stopPropagation();
-        responsiveDropdown.classList.toggle('open');
+    // Chat panel resize (drag handle between chat and preview)
+    (function() {
+      var grid = document.querySelector('.exmod-grid');
+      var handle = document.getElementById('chat-resize-handle');
+      var grip = document.getElementById('chat-resize-handle-grip');
+      var chatPanel = document.querySelector('.exmod-chat');
+      if (!grid || !handle || !grip || !chatPanel) return;
+      var minWidth = 400;
+      var startX, startWidth;
+      function getMaxWidth() {
+        return Math.max(minWidth, (grid.offsetWidth || 0) - 605);
+      }
+      function onMouseDown(e) {
+        if (e.button !== 0) return;
+        e.preventDefault();
+        startX = e.clientX;
+        startWidth = chatPanel.offsetWidth;
+        handle.classList.add('dragging');
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+      }
+      function onMouseMove(e) {
+        var delta = e.clientX - startX;
+        var newWidth = Math.round(Math.max(minWidth, Math.min(getMaxWidth(), startWidth + delta)));
+        grid.style.setProperty('--chat-width', newWidth + 'px');
+      }
+      function onMouseUp() {
+        handle.classList.remove('dragging');
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      }
+      grip.addEventListener('mousedown', onMouseDown);
+    })();
+
+    // Viewport switcher (Desktop / Tablet / Phone)
+    document.querySelectorAll('.viewport-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var switcher = this.closest('.viewport-switcher');
+        if (switcher) {
+          switcher.querySelectorAll('.viewport-btn').forEach(function(b) { b.classList.remove('active'); });
+          this.classList.add('active');
+        }
       });
-      responsiveDropdown.querySelectorAll('.responsive-dropdown-option').forEach(function(opt) {
+    });
+    // Breadcrumb path dropdown
+    var breadcrumbPathDropdown = document.getElementById('breadcrumb-path-dropdown');
+    if (breadcrumbPathDropdown) {
+      var pathTrigger = breadcrumbPathDropdown.querySelector('.breadcrumb-path-trigger');
+      if (pathTrigger) pathTrigger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        breadcrumbPathDropdown.classList.toggle('open');
+        pathTrigger.setAttribute('aria-expanded', breadcrumbPathDropdown.classList.contains('open'));
+      });
+      breadcrumbPathDropdown.querySelectorAll('.breadcrumb-path-option').forEach(function(opt) {
         opt.addEventListener('click', function() {
-          viewport = this.getAttribute('data-viewport');
-          iconDesktop.style.display = viewport === 'desktop' ? '' : 'none';
-          iconTablet.style.display = viewport === 'tablet' ? '' : 'none';
-          iconPhone.style.display = viewport === 'phone' ? '' : 'none';
-          trigger.setAttribute('data-tooltip', viewport.charAt(0).toUpperCase() + viewport.slice(1));
-          responsiveDropdown.classList.remove('open');
+          breadcrumbPathDropdown.classList.remove('open');
+          pathTrigger.setAttribute('aria-expanded', 'false');
         });
       });
-      document.addEventListener('click', function() { responsiveDropdown.classList.remove('open'); });
+      document.addEventListener('click', function() {
+        breadcrumbPathDropdown.classList.remove('open');
+        if (pathTrigger) pathTrigger.setAttribute('aria-expanded', 'false');
+      });
     }
+    // Middle-truncate long file names (macOS style: start...end, ellipsis at word boundaries)
+    function truncateMiddle(el) {
+      var full = el.getAttribute('data-full-title') || el.textContent;
+      if (!full) return;
+      var item = el.closest('.file-item');
+      if (!item) return;
+      var svg = item.querySelector('svg');
+      var gap = 8;
+      var padH = 16;
+      var avail = el.offsetWidth;
+      if (!avail) avail = item.offsetWidth - (svg ? svg.offsetWidth : 0) - gap - padH;
+      if (avail <= 0) return;
+      var cs = getComputedStyle(el);
+      var measure = document.createElement('span');
+      measure.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;pointer-events:none;' +
+        'font:' + (cs.font || (cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily));
+      document.body.appendChild(measure);
+      measure.textContent = full;
+      if (measure.offsetWidth <= avail) {
+        document.body.removeChild(measure);
+        el.textContent = full;
+        el.setAttribute('title', '');
+        return;
+      }
+      var ellipsis = '...';
+      // Word boundaries: split at - _ . space so ellipsis replaces whole words (macOS style)
+      // startBoundaries = end of each segment (where prefix can end)
+      // endBoundaries = start of each segment (where suffix can start)
+      var startBoundaries = [0];
+      var endBoundaries = [0];
+      for (var i = 0; i < full.length; i++) {
+        var c = full.charAt(i);
+        if (c === '-' || c === '_' || c === '.' || c === ' ') {
+          startBoundaries.push(i);
+          endBoundaries.push(i + 1);
+        }
+      }
+      startBoundaries.push(full.length);
+      endBoundaries.push(full.length);
+      var bestStart = 0, bestEnd = 0;
+      var bestScore = -1;
+      var midTarget = full.length / 2;
+      var minEndLen = 4;
+      var maxEndLen = Math.min(15, Math.floor(full.length / 2));
+      // Try each valid suffix (from endBoundaries)
+      for (var b = 0; b < endBoundaries.length; b++) {
+        var endStart = endBoundaries[b];
+        var endLen = full.length - endStart;
+        if (endLen < minEndLen || endLen > maxEndLen) continue;
+        // Try all prefix boundaries that fit, pick best score (centered ellipsis)
+        for (var s = 0; s < startBoundaries.length; s++) {
+          var startLen = startBoundaries[s];
+          if (startLen >= full.length - endLen) continue;
+          var txt = full.slice(0, startLen) + ellipsis + full.slice(-endLen);
+          measure.textContent = txt;
+          if (measure.offsetWidth <= avail) {
+            var totalChars = startLen + endLen;
+            var balance = Math.abs(startLen - midTarget);
+            var score = 10000 - balance * 100 + totalChars;
+            if (score > bestScore) {
+              bestScore = score;
+              bestStart = startLen;
+              bestEnd = endLen;
+            }
+          }
+        }
+      }
+      document.body.removeChild(measure);
+      el.setAttribute('title', full);
+      if (bestStart > 0 || bestEnd > 0) {
+        el.textContent = full.slice(0, bestStart) + ellipsis + full.slice(-bestEnd);
+      } else {
+        // Fallback: no word-boundary split fits (e.g. no delimiters), use character-based
+        measure = document.createElement('span');
+        measure.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;pointer-events:none;' +
+          'font:' + (cs.font || (cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily));
+        document.body.appendChild(measure);
+        bestScore = -1;
+        for (var endLen = 4; endLen <= maxEndLen; endLen++) {
+          var low = 3, high = full.length - endLen;
+          while (low <= high) {
+            var startLen = Math.floor((low + high) / 2);
+            var txt = full.slice(0, startLen) + ellipsis + full.slice(-endLen);
+            measure.textContent = txt;
+            if (measure.offsetWidth <= avail) {
+              var totalChars = startLen + endLen;
+              var balance = Math.abs(startLen - midTarget);
+              var score = 10000 - balance * 100 + totalChars;
+              if (score > bestScore) {
+                bestScore = score;
+                bestStart = startLen;
+                bestEnd = endLen;
+              }
+              low = startLen + 1;
+            } else {
+              high = startLen - 1;
+            }
+          }
+        }
+        document.body.removeChild(measure);
+        el.textContent = (bestStart > 0 || bestEnd > 0)
+          ? full.slice(0, bestStart) + ellipsis + full.slice(-bestEnd)
+          : full.slice(0, 8) + ellipsis + full.slice(-4);
+      }
+    }
+    function initFileNames() {
+      var pageTitle = document.querySelector('.page-title');
+      var selectedFile = document.querySelector('.file-item.selected .file-name');
+      if (pageTitle && selectedFile) {
+        var title = pageTitle.textContent.trim();
+        selectedFile.setAttribute('data-full-title', title);
+        selectedFile.textContent = title;
+      }
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          document.querySelectorAll('.file-item .file-name').forEach(truncateMiddle);
+        });
+      });
+    }
+    initFileNames();
+    var fileList = document.querySelector('.file-list');
+    var documentTree = document.querySelector('.document-tree');
+    if (fileList && typeof ResizeObserver !== 'undefined') {
+      new ResizeObserver(initFileNames).observe(fileList);
+    }
+    if (documentTree && typeof ResizeObserver !== 'undefined') {
+      new ResizeObserver(initFileNames).observe(documentTree);
+    }
+    window.addEventListener('resize', initFileNames);
+
     // Document tree toggle (toolbar back button)
     var documentTreeToggle = document.getElementById('document-tree-toggle');
     var previewContent = document.getElementById('preview-content');
     if (documentTreeToggle && previewContent) {
       documentTreeToggle.addEventListener('click', function() {
-        previewContent.classList.toggle('tree-collapsed');
+        var collapsed = previewContent.classList.toggle('tree-collapsed');
+        documentTreeToggle.classList.toggle('collapsed', collapsed);
+        requestAnimationFrame(function() { requestAnimationFrame(initFileNames); });
       });
     }
     // View mode switcher (Preview / Document view)
@@ -1594,6 +2239,26 @@
           e.preventDefault();
           taskProgressToggle.click();
         }
+      });
+    }
+    var taskCompletedSection = document.getElementById('task-completed-section');
+    var taskCompletedToggle = document.getElementById('task-completed-toggle');
+    if (taskCompletedSection && taskCompletedToggle) {
+      taskCompletedToggle.addEventListener('click', function() {
+        taskCompletedSection.classList.toggle('collapsed');
+        taskCompletedToggle.setAttribute('aria-expanded', !taskCompletedSection.classList.contains('collapsed'));
+      });
+      taskCompletedToggle.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          taskCompletedToggle.click();
+        }
+      });
+    }
+    var chatMessages = document.querySelector('.chat-messages');
+    if (chatMessages) {
+      requestAnimationFrame(function() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
       });
     }
   </script>
