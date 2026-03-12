@@ -31,7 +31,7 @@ After implementing or refining the prototype, update this section:
 
 | Aspect | Source | Notes |
 |--------|--------|-------|
-| **Derived from HTML** | | DOM structure, labels, region order, class names |
-| **Inferred from screenshots** | | Spacing, typography, colours, hierarchy |
-| **Approximate** | | Regions that are placeholder or best-guess |
-| **Replace with real app code** | | What should be swapped for production implementation |
+| **Derived from HTML** | Exported CSS (`styles.css`, `header.css`, `article-header.css`, `breadcrumb.css`, `social-share.css`, `footer.css`, `lazy-styles.css`) and article HTML (`ups-accelerates-...html`) | CSS custom properties, design tokens, spacing scale, color palette, font sizes, heading weights, breadcrumb separator technique (slanted border), article body 2-column grid layout, social share icon SVG data URIs, footer 4-column structure with dark theme, legal section markup, full article body text and section headings |
+| **Inferred from screenshots** | `content-view.png`, `page-view.png` | Header height and alignment, nav gold-bar hover indicator on "Newsroom", eyebrow gold dash sizing, article title at 56px/72px line-height, byline uppercase styling, subtitle italic muted, hero image full-width, bullet items italic, 2/3–1/3 body/social-share split, footer visual hierarchy |
+| **Approximate** | Header logo, nav interactions, icon font glyphs | UPS shield logo uses remote SVG with text fallback (may not load). Search icon uses inline SVG instead of `upspricons` font. Footer social icons use Feather-style SVGs instead of `upspricons` font glyphs. Nav dropdown/mega-menu interactions not implemented (static prototype). |
+| **Replace with real app code** | Logo asset, icon font, JS interactivity | Replace fallback logo with local SVG asset. Replace SVG icon approximations with actual `upspricons` web font. Add JavaScript for nav dropdown/accordion, search overlay, language selector. Wire up social share links with real share URLs. Connect footer subscribe form to backend. |
