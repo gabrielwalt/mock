@@ -78,6 +78,7 @@
 
       /* Font */
       --spectrum-sans-serif-font-family: "adobe-clean", "Adobe Clean", "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --spectrum-mono-font-family: "Source Code Pro", "Monaco", "Consolas", monospace;
       --spectrum-font-size-75: 12px;
       --spectrum-font-size-100: 14px;
       --spectrum-font-size-200: 16px;
@@ -86,7 +87,7 @@
       --spectrum-bold-font-weight: 700;
 
       /* Layout */
-      --header-height: 72px;
+      --header-height: 50px;
       --nav-width: 70px;
       --spectrum-document-tree-width: 260px;
       --spectrum-document-tree-min-width: 150px;
@@ -121,14 +122,14 @@
       width: var(--spectrum-component-height-100);
       height: var(--spectrum-component-height-100);
       border: none;
-      background: var(--spectrum-gray-100);
+      background: transparent;
       cursor: pointer;
       color: var(--spectrum-neutral-content-color-default);
       border-radius: var(--spectrum-corner-radius-100);
       padding: 0;
       transition: background-color 0.13s ease-out, color 0.13s ease-out;
     }
-    .icon-btn:hover { background: var(--spectrum-gray-200); }
+    .icon-btn:hover { background: rgba(0,0,0,0.04); }
     .icon-btn:focus-visible {
       outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
       outline-offset: var(--spectrum-focus-indicator-gap);
@@ -154,14 +155,14 @@
       width: var(--spectrum-component-height-150);
       height: var(--spectrum-component-height-150);
       border: none;
-      background: var(--spectrum-gray-100);
+      background: transparent;
       cursor: pointer;
       color: var(--spectrum-neutral-content-color-default);
       border-radius: var(--spectrum-corner-radius-100);
       padding: 0;
       transition: background-color 0.13s ease-out, color 0.13s ease-out;
     }
-    .icon-btn-sm:hover { background: var(--spectrum-gray-200); }
+    .icon-btn-sm:hover { background: rgba(0,0,0,0.04); }
     .icon-btn-sm:focus-visible {
       outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
       outline-offset: var(--spectrum-focus-indicator-gap);
@@ -179,25 +180,6 @@
       stroke-linecap: round;
       stroke-linejoin: round;
     }
-    .preview-toolbar .toolbar-back-btn {
-      width: var(--spectrum-component-height-100);
-      height: var(--spectrum-component-height-100);
-      background: transparent;
-    }
-    .preview-toolbar .toolbar-back-btn:hover {
-      background: var(--spectrum-gray-100);
-    }
-    .preview-toolbar .toolbar-back-btn svg {
-      transition: transform 0.2s ease-out;
-    }
-    .preview-toolbar .toolbar-back-btn.collapsed svg {
-      transform: rotate(180deg);
-    }
-    .toolbar-back-btn svg {
-      width: var(--spectrum-icon-size-100);
-      height: var(--spectrum-icon-size-100);
-    }
-
     /* --- Layout Shell --- */
     .exmod-root {
       display: flex;
@@ -379,6 +361,7 @@
       min-width: 0;
       background: var(--spectrum-gray-25);
       overflow: hidden;
+      margin-left: 16px;
       margin-right: 16px;
       border-radius: 16px 16px 0 0;
       box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
@@ -486,6 +469,31 @@
       flex: 1;
       min-width: 0;
     }
+    .chat-toolbar-nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: var(--spectrum-component-height-100);
+      height: var(--spectrum-component-height-100);
+      border-radius: var(--spectrum-corner-radius-100);
+      background: transparent;
+      color: var(--spectrum-neutral-subdued-content-color-default);
+      text-decoration: none;
+      flex-shrink: 0;
+      transition: background-color 0.13s ease-out, color 0.13s ease-out;
+    }
+    .chat-toolbar-nav-item:hover {
+      background: rgba(0,0,0,0.04);
+      color: var(--spectrum-neutral-content-color-default);
+    }
+    .chat-toolbar-nav-item:focus-visible {
+      outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
+      outline-offset: var(--spectrum-focus-indicator-gap);
+    }
+    .chat-toolbar-nav-item svg {
+      width: var(--spectrum-icon-size-100);
+      height: var(--spectrum-icon-size-100);
+    }
     .chat-toolbar h3 {
       font-size: var(--spectrum-font-size-200);
       font-weight: var(--spectrum-bold-font-weight);
@@ -495,14 +503,14 @@
     .chat-toolbar-right {
       display: flex;
       align-items: center;
-      gap: var(--spectrum-spacing-200);
+      gap: var(--spectrum-spacing-100);
     }
     .chat-toolbar-btn {
       width: var(--spectrum-component-height-100);
       height: var(--spectrum-component-height-100);
       border: none;
       border-radius: var(--spectrum-corner-radius-100);
-      background: var(--spectrum-gray-100);
+      background: transparent;
       color: var(--spectrum-neutral-subdued-content-color-default);
       cursor: pointer;
       display: flex;
@@ -511,7 +519,7 @@
       transition: background-color 0.13s ease-out, color 0.13s ease-out;
     }
     .chat-toolbar-btn:hover {
-      background: var(--spectrum-gray-200);
+      background: rgba(0,0,0,0.04);
       color: var(--spectrum-neutral-content-color-default);
     }
     .chat-toolbar-btn:focus-visible {
@@ -522,40 +530,30 @@
       width: var(--spectrum-static-size-200);
       height: var(--spectrum-static-size-200);
     }
-    .task-progress-toggle {
-      display: inline-flex;
+    .task-progress-header {
+      display: flex;
       align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      color: var(--spectrum-gray-800);
-      transition: transform 0.2s ease;
-    }
-    .task-progress-toggle svg {
-      width: 20px;
-      height: 20px;
-    }
-    .task-progress-sticky.collapsed .task-progress-toggle {
-      transform: rotate(180deg);
-    }
-    .task-progress-toggle-btn {
-      border: none;
-      background: transparent;
-      padding: 0;
+      gap: var(--spectrum-spacing-100);
       cursor: pointer;
+      padding: var(--spectrum-spacing-75) var(--spectrum-spacing-100);
+      margin: calc(-1 * var(--spectrum-spacing-75)) calc(-1 * var(--spectrum-spacing-100));
       border-radius: var(--spectrum-corner-radius-100);
+      transition: background-color 0.13s ease-out;
     }
-    .task-progress-toggle-btn:hover {
-      background: var(--spectrum-gray-100);
+    .task-progress-header:hover {
+      background: rgba(0,0,0,0.04);
     }
-    .task-progress-toggle-btn:focus-visible {
+    .task-progress-header:focus-visible {
       outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
+      outline-offset: var(--spectrum-focus-indicator-gap);
+    }
+    .task-progress-header h3 {
+      margin: 0;
     }
     .completed-count {
       font-size: var(--spectrum-font-size-100);
       color: var(--spectrum-neutral-subdued-content-color-default);
       font-weight: var(--spectrum-medium-font-weight);
-      margin-left: var(--spectrum-spacing-100);
     }
 
     /* Task Progress collapsible content - unfolds below header when expanded */
@@ -772,6 +770,11 @@
       padding: 2px 6px;
       border-radius: var(--spectrum-corner-radius-75);
     }
+    .chat-thinking-separator {
+      margin: var(--spectrum-spacing-200) 0;
+      border: none;
+      border-top: var(--spectrum-border-width-100) solid var(--spectrum-gray-200);
+    }
     .chat-thinking {
       display: flex;
       align-items: center;
@@ -865,7 +868,7 @@
       height: var(--spectrum-component-height-100);
       border: none;
       border-radius: var(--spectrum-corner-radius-100);
-      background: var(--spectrum-gray-100);
+      background: transparent;
       color: var(--spectrum-gray-800);
       cursor: pointer;
       display: flex;
@@ -875,7 +878,7 @@
       transition: background-color 0.13s ease-out, color 0.13s ease-out;
     }
     .chat-attach-btn:hover {
-      background: var(--spectrum-gray-200);
+      background: rgba(0,0,0,0.04);
       color: var(--spectrum-neutral-content-color-default);
     }
     .chat-mode-btn {
@@ -940,8 +943,8 @@
       overflow: hidden;
     }
 
-    /* Preview Toolbar - height minus border so total matches chat toolbar */
-    .preview-toolbar {
+    /* Content Toolbar - height minus border so total matches chat toolbar */
+    .content-toolbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -960,11 +963,14 @@
       gap: var(--spectrum-spacing-200);
       min-width: 0;
       flex: 1;
+      padding-right: var(--spectrum-spacing-200);
     }
-    .preview-toolbar .page-title {
+    .content-toolbar .page-title {
       font-size: var(--spectrum-font-size-300);
       font-weight: var(--spectrum-bold-font-weight);
       color: var(--spectrum-gray-900);
+      padding: 0 var(--spectrum-spacing-100) 0 var(--spectrum-spacing-100);
+      margin: 0 calc(-1 * var(--spectrum-spacing-100)) 0 0;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -972,23 +978,33 @@
       min-width: 0;
       height: var(--spectrum-component-height-100);
       line-height: var(--spectrum-component-height-100);
+      cursor: pointer;
+      border-radius: var(--spectrum-corner-radius-100);
+      transition: background-color 0.13s ease-out;
+    }
+    .content-toolbar .page-title:hover {
+      background: rgba(0,0,0,0.04);
+    }
+    .content-toolbar .page-title:focus-visible {
+      outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
+      outline-offset: var(--spectrum-focus-indicator-gap);
     }
     .toolbar-right {
       display: flex;
       align-items: center;
-      gap: var(--spectrum-spacing-200);
+      gap: var(--spectrum-spacing-100);
       flex-shrink: 0;
     }
     .toolbar-preview-only {
       display: flex;
       align-items: center;
-      gap: var(--spectrum-spacing-300);
+      gap: var(--spectrum-spacing-100);
     }
-    .preview-toolbar.view-mode-document .toolbar-preview-only {
+    .content-toolbar.view-mode-document .toolbar-preview-only {
       display: none;
     }
     /* Spectrum Button - fill (primary) */
-    .preview-toolbar .btn-accent {
+    .content-toolbar .btn-accent {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -1012,7 +1028,7 @@
       outline-offset: var(--spectrum-focus-indicator-gap);
     }
     /* Spectrum Button - outline (secondary) */
-    .preview-toolbar .btn-ghost {
+    .content-toolbar .btn-ghost {
       display: inline-flex;
       align-items: center;
       gap: var(--spectrum-spacing-200);
@@ -1047,13 +1063,198 @@
     }
 
     .breadcrumb-sep {
+      display: inline-flex;
+      align-items: center;
       color: var(--spectrum-gray-700);
-      font-size: 1.4em;
+      font-size: 2.2em;
+      line-height: 1;
       margin: 0 var(--spectrum-focus-indicator-gap);
+      transform: translateY(-0.15em);
       flex-shrink: 0;
       cursor: default !important;
     }
     .breadcrumb-sep:hover { text-decoration: none !important; color: var(--spectrum-gray-700) !important; }
+
+    /* Content / Code mode switcher (like view-mode-switcher) */
+    .content-mode-switcher {
+      display: flex;
+      gap: 2px;
+      border-radius: var(--spectrum-corner-radius-100);
+      background: var(--spectrum-gray-100);
+    }
+    .content-mode-btn {
+      width: var(--spectrum-component-height-100);
+      height: var(--spectrum-component-height-100);
+      border: none;
+      border-radius: calc(var(--spectrum-corner-radius-100) - 2px);
+      background: transparent;
+      color: var(--spectrum-gray-800);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.13s ease-out, border-color 0.13s ease-out;
+    }
+    .content-mode-btn:hover {
+      background: var(--spectrum-gray-200);
+    }
+    .content-mode-btn:focus-visible {
+      outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
+      outline-offset: var(--spectrum-focus-indicator-gap);
+    }
+    .content-mode-btn.active {
+      background: var(--spectrum-gray-25);
+      border: 2px solid var(--spectrum-gray-800);
+    }
+    .content-mode-btn svg {
+      display: block;
+      width: var(--spectrum-static-size-200);
+      height: var(--spectrum-static-size-200);
+      fill: currentColor;
+    }
+    .content-mode-btn svg.spectrum-icon-outline {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .preview-code {
+      display: none;
+      flex: 1;
+      min-height: 0;
+      flex-direction: column;
+      background: var(--spectrum-gray-25);
+      padding: var(--spectrum-spacing-300);
+      overflow: auto;
+      font-family: var(--spectrum-mono-font-family);
+      font-size: var(--spectrum-font-size-100);
+      color: var(--spectrum-gray-800);
+    }
+    .exmod-preview.content-mode-code .preview-content {
+      display: none !important;
+    }
+    .exmod-preview.content-mode-code .preview-code {
+      display: flex;
+    }
+
+    /* Code view: tree + editor layout */
+    .preview-code {
+      flex-direction: row;
+      gap: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .code-tree {
+      width: var(--spectrum-document-tree-width);
+      min-width: var(--spectrum-document-tree-min-width);
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-right: var(--spectrum-border-width-100) solid var(--spectrum-gray-200);
+      background: var(--spectrum-background-layer-1-color);
+    }
+    .code-tree-inner {
+      min-width: var(--spectrum-document-tree-width);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .code-tree-header {
+      padding: var(--spectrum-spacing-200) var(--spectrum-spacing-300);
+      font-size: var(--spectrum-font-size-100);
+      font-weight: var(--spectrum-medium-font-weight);
+      color: var(--spectrum-neutral-subdued-content-color-default);
+      border-bottom: var(--spectrum-border-width-100) solid var(--spectrum-gray-200);
+      flex-shrink: 0;
+    }
+    .code-tree-list {
+      padding: var(--spectrum-spacing-200);
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .code-tree-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spectrum-spacing-100);
+      padding: var(--spectrum-spacing-75) var(--spectrum-spacing-100);
+      border-radius: var(--spectrum-corner-radius-100);
+      cursor: pointer;
+      font-size: var(--spectrum-font-size-100);
+      font-weight: var(--spectrum-medium-font-weight);
+      color: var(--spectrum-neutral-content-color-default);
+      transition: background-color 0.13s ease-out;
+      min-height: var(--spectrum-component-height-100);
+    }
+    .code-tree-item:hover { background: rgba(0,0,0,0.04); }
+    .code-tree-item.selected {
+      background: var(--spectrum-gray-800);
+      color: var(--spectrum-gray-50);
+      font-weight: var(--spectrum-bold-font-weight);
+    }
+    .code-tree-item svg {
+      width: var(--spectrum-icon-size-200);
+      height: var(--spectrum-icon-size-200);
+      min-width: var(--spectrum-icon-size-200);
+      flex-shrink: 0;
+      fill: currentColor;
+    }
+    .code-tree-item .code-tree-name {
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .code-tree-item[data-level="2"] { padding-left: calc(var(--spectrum-spacing-100) + var(--spectrum-spacing-200)); }
+    .code-tree-item[data-level="3"] { padding-left: calc(var(--spectrum-spacing-100) + 2 * var(--spectrum-spacing-200)); }
+    .code-tree-item[data-level="4"] { padding-left: calc(var(--spectrum-spacing-100) + 3 * var(--spectrum-spacing-200)); }
+    .code-tree-item[data-level="5"] { padding-left: calc(var(--spectrum-spacing-100) + 4 * var(--spectrum-spacing-200)); }
+    .code-tree-chevron {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease-out;
+    }
+    .code-tree-item.folder.collapsed .code-tree-chevron {
+      transform: rotate(-90deg);
+    }
+    .code-tree-item.file .code-tree-chevron {
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .code-tree-children {
+      display: flex;
+      flex-direction: column;
+    }
+    .code-tree-folder.collapsed .code-tree-children {
+      display: none;
+    }
+    .code-tree-editor {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--spectrum-gray-25);
+    }
+    .code-tree-editor pre {
+      flex: 1;
+      margin: 0;
+      padding: var(--spectrum-spacing-300);
+      overflow: auto;
+      font-family: var(--spectrum-mono-font-family);
+      font-size: var(--spectrum-font-size-100);
+      color: var(--spectrum-gray-800);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
 
     /* Preview Content Area */
     .preview-content {
@@ -1221,7 +1422,6 @@
       white-space: nowrap;
       text-overflow: ellipsis;
     }
-
     /* Iframe Container */
     .iframe-container {
       flex: 1;
@@ -1258,7 +1458,7 @@
       width: var(--spectrum-component-height-100);
       height: var(--spectrum-component-height-100);
       border: none;
-      background: var(--spectrum-gray-100);
+      background: transparent;
       border-radius: var(--spectrum-corner-radius-100);
       cursor: pointer;
       display: flex;
@@ -1268,7 +1468,7 @@
       transition: background-color 0.13s ease-out, color 0.13s ease-out;
     }
     .viewport-dropdown-trigger:hover {
-      background: var(--spectrum-gray-200);
+      background: rgba(0,0,0,0.04);
       color: var(--spectrum-neutral-content-color-default);
     }
     .viewport-dropdown-trigger:focus-visible {
@@ -1284,9 +1484,10 @@
       display: none;
       position: absolute;
       top: 100%;
-      left: 0;
+      /* Shift left so option padding matches actions menu while icons align with trigger */
+      left: calc(-1 * (var(--spectrum-spacing-200) - (var(--spectrum-component-height-100) - var(--spectrum-static-size-200)) / 2));
       margin-top: var(--spectrum-spacing-75);
-      min-width: 120px;
+      min-width: 160px;
       background: var(--spectrum-gray-25);
       border: var(--spectrum-border-width-100) solid var(--spectrum-gray-300);
       border-radius: var(--spectrum-corner-radius-100);
@@ -1303,7 +1504,6 @@
       gap: var(--spectrum-spacing-100);
       width: 100%;
       padding: var(--spectrum-spacing-100) var(--spectrum-spacing-200);
-      padding-left: calc((var(--spectrum-component-height-100) - var(--spectrum-static-size-200)) / 2);
       border: none;
       background: transparent;
       font-size: var(--spectrum-font-size-100);
@@ -1329,7 +1529,7 @@
       width: var(--spectrum-component-height-100);
       height: var(--spectrum-component-height-100);
       border: none;
-      background: var(--spectrum-gray-100);
+      background: transparent;
       border-radius: var(--spectrum-corner-radius-100);
       cursor: pointer;
       display: flex;
@@ -1338,7 +1538,7 @@
       color: var(--spectrum-neutral-subdued-content-color-default);
       transition: background-color 0.13s ease-out, color 0.13s ease-out;
     }
-    .toolbar-icon-btn:hover { background: var(--spectrum-gray-200); color: var(--spectrum-neutral-content-color-default); }
+    .toolbar-icon-btn:hover { background: rgba(0,0,0,0.04); color: var(--spectrum-neutral-content-color-default); }
     .toolbar-icon-btn:focus-visible {
       outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
       outline-offset: var(--spectrum-focus-indicator-gap);
@@ -1421,7 +1621,7 @@
       width: var(--spectrum-component-height-100);
       height: var(--spectrum-component-height-100);
       border: none;
-      background: var(--spectrum-gray-100);
+      background: transparent;
       border-radius: var(--spectrum-corner-radius-100);
       cursor: pointer;
       display: flex;
@@ -1430,7 +1630,7 @@
       color: var(--spectrum-neutral-subdued-content-color-default);
       transition: background-color 0.13s ease-out, color 0.13s ease-out;
     }
-    .responsive-dropdown-trigger:hover { background: var(--spectrum-gray-200); color: var(--spectrum-neutral-content-color-default); }
+    .responsive-dropdown-trigger:hover { background: rgba(0,0,0,0.04); color: var(--spectrum-neutral-content-color-default); }
     .responsive-dropdown-trigger:focus-visible {
       outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
       outline-offset: var(--spectrum-focus-indicator-gap);
@@ -1516,11 +1716,16 @@
       fill: currentColor;
     }
 
-    /* Upload content button */
-    .btn-upload {
+    /* Actions button (replaces Upload content) */
+    .actions-dropdown {
+      position: relative;
+      margin-left: var(--spectrum-spacing-100);
+    }
+    .btn-actions {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: var(--spectrum-spacing-100);
       height: var(--spectrum-component-height-100);
       padding: 0 var(--spectrum-spacing-300);
       background: var(--spectrum-accent-background-color-default);
@@ -1534,13 +1739,60 @@
       font-family: var(--spectrum-sans-serif-font-family);
       transition: background-color 0.13s ease-out;
     }
-    .btn-upload:hover {
+    .btn-actions:hover {
       background: var(--spectrum-accent-background-color-hover);
       border-color: var(--spectrum-accent-background-color-hover);
     }
-    .btn-upload:focus-visible {
+    .btn-actions:focus-visible {
       outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
       outline-offset: var(--spectrum-focus-indicator-gap);
+    }
+    .btn-actions svg {
+      width: var(--spectrum-icon-size-100);
+      height: var(--spectrum-icon-size-100);
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+    .actions-dropdown-overlay {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: var(--spectrum-spacing-75);
+      min-width: 160px;
+      background: var(--spectrum-gray-25);
+      border: var(--spectrum-border-width-100) solid var(--spectrum-gray-300);
+      border-radius: var(--spectrum-corner-radius-100);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 100;
+      overflow: hidden;
+    }
+    .actions-dropdown.open .actions-dropdown-overlay {
+      display: block;
+    }
+    .actions-dropdown-option {
+      display: flex;
+      align-items: center;
+      gap: var(--spectrum-spacing-100);
+      width: 100%;
+      padding: var(--spectrum-spacing-100) var(--spectrum-spacing-200);
+      border: none;
+      background: transparent;
+      font-size: var(--spectrum-font-size-100);
+      color: var(--spectrum-neutral-content-color-default);
+      cursor: pointer;
+      text-align: left;
+      font-family: var(--spectrum-sans-serif-font-family);
+      transition: background-color 0.13s ease-out;
+    }
+    .actions-dropdown-option:hover {
+      background: var(--spectrum-gray-75);
+    }
+    .actions-dropdown-option svg {
+      width: var(--spectrum-icon-size-100);
+      height: var(--spectrum-icon-size-100);
+      fill: currentColor;
+      flex-shrink: 0;
     }
   </style>
 </head>
@@ -1550,9 +1802,6 @@
     <!-- ====== GLOBAL HEADER ====== -->
     <header class="exmod-header">
       <div class="header-left">
-        <button class="icon-btn header-hamburger" data-tooltip="Open menu" data-tooltip-position="right" aria-label="Show navigation menu">
-          <svg class="spectrum-icon-outline" viewBox="0 0 24 24"><path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
-        </button>
         <div class="header-brand">
           <svg class="adobe-logo" viewBox="0 0 250 245" width="40" height="40" aria-hidden="true" role="img"><path fill="#fa0f00" d="M192 179h-29a6 6 0 0 1-6-4l-31-72a1 1 0 0 0-2 0l-20 46a2 2 0 0 0 2 2h21a3 3 0 0 1 3 2l9 21a4 4 0 0 1-3 5H59a4 4 0 0 1-3-5l49-117a7 7 0 0 1 6-4h28a7 7 0 0 1 6 4l50 117a4 4 0 0 1-3 5Z"/></svg>
           <h3 class="header-title">Adobe Experience Manager</h3>
@@ -1572,27 +1821,6 @@
     <!-- ====== SHELL: NAV + MAIN ====== -->
     <div class="exmod-shell">
 
-      <!-- ====== LEFT NAV SIDEBAR ====== -->
-      <nav class="exmod-nav" aria-label="Navigation">
-        <!-- Home -->
-        <a class="nav-item" data-tooltip="Home" aria-label="Home" title="Home">
-          <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path d="m17.13086,5.73438L11.38086,1.26172c-.8125-.63086-1.94922-.63184-2.76172.00098L2.86914,5.73438h-.00098c-.54395.42285-.86816,1.08691-.86816,1.77637v8.23926c0,1.24023,1.00977,2.25,2.25,2.25h11.5c1.24023,0,2.25-1.00977,2.25-2.25V7.51074c0-.68945-.32422-1.35352-.86914-1.77637Zm-5.63086,10.76562h-3v-4.75c0-.41309.33691-.75.75-.75h1.5c.41309,0,.75.33691.75.75v4.75Zm5-.75c0,.41309-.33691.75-.75.75h-2.75v-4.75c0-1.24023-1.00977-2.25-2.25-2.25h-1.5c-1.24023,0-2.25,1.00977-2.25,2.25v4.75h-2.75c-.41309,0-.75-.33691-.75-.75V7.51074c0-.22949.1084-.45117.28906-.59277l5.75-4.4707c.27246-.21191.65137-.20898.92188-.00098l5.74902,4.47168c.18164.1416.29004.36328.29004.59277v8.23926Z" fill="currentColor"/></svg>
-        </a>
-        <div class="nav-separator"></div>
-        <!-- Content (selected) -->
-        <a class="nav-item nav-selected" data-tooltip="Content" aria-label="Content" title="Content">
-          <svg class="spectrum-icon-outline" viewBox="0 0 24 24"><path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
-        </a>
-        <!-- Code -->
-        <a class="nav-item" data-tooltip="Code" aria-label="Code" title="Code">
-          <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M17.7465,9.5305l-4.0965,4.16a.5.5,0,0,1-.70709.00541l-.00541-.00541-.4465-.4535a.503.503,0,0,1,0-.7L15.9715,9,12.492,5.4645a.503.503,0,0,1,0-.7l.4465-.4535a.5.5,0,0,1,.70709-.00541L13.651,4.311l4.0955,4.16A.76151.76151,0,0,1,17.7465,9.5305Z"/><path fill="currentColor" d="M.2535,8.4695,4.35,4.3095a.5.5,0,0,1,.70709-.00541l.00541.00541.4465.4535a.503.503,0,0,1,0,.7L2.0285,9,5.508,12.5355a.503.503,0,0,1,0,.7l-.4465.4535a.5.5,0,0,1-.70709.00541L4.349,13.689.2535,9.5305A.76151.76151,0,0,1,.2535,8.4695Z"/><path fill="currentColor" d="M7.7445,14.8435h-.572a.5.5,0,0,1-.483-.6295L9.7855,2.6935a.5.5,0,0,1,.483-.3705h.5525a.5.5,0,0,1,.483.627L8.2275,14.473A.5.5,0,0,1,7.7445,14.8435Z"/></svg>
-        </a>
-        <!-- Settings -->
-        <a class="nav-item" data-tooltip="Settings" aria-label="Settings" title="Settings">
-          <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M10.004 12.589c-.888 0-1.753-.46-2.228-1.283-.708-1.228-.286-2.801.94-3.51.593-.343 1.285-.433 1.949-.256.663.178 1.216.604 1.56 1.197.342.594.433 1.286.256 1.949-.178.663-.603 1.216-1.197 1.56-.403.233-.845.343-1.28.343m-.93-2.033c.295.508.949.683 1.46.39.247-.142.424-.373.498-.648s.036-.564-.107-.81c-.143-.248-.373-.425-.649-.499-.275-.073-.563-.035-.81.107-.51.295-.686.949-.391 1.46"/><path fill="currentColor" d="M6.907 18.318c-.34 0-.682-.085-.992-.264l-.82-.473c-.893-.514-1.25-1.65-.811-2.583l.58-1.233q-.398-.546-.672-1.161l-1.357-.113C1.806 12.406 1 11.531 1 10.5v-.946c0-1.033.805-1.91 1.833-1.994l1.354-.115q.138-.313.302-.6.165-.285.37-.564l-.581-1.23c-.441-.932-.087-2.068.807-2.584l.82-.474c.893-.516 2.054-.259 2.643.59l.777 1.118q.667-.074 1.341 0l.775-1.119c.59-.85 1.751-1.11 2.644-.594l.82.473c.894.516 1.25 1.651.81 2.584l-.58 1.232q.399.548.672 1.161l1.357.113c1.028.085 1.834.96 1.835 1.991v.947c.001 1.031-.803 1.907-1.832 1.994l-1.355.115q-.136.313-.303.6-.164.284-.368.563l.58 1.23c.441.93.087 2.067-.806 2.584l-.82.475c-.894.518-2.054.258-2.643-.591l-.778-1.118q-.67.073-1.34 0l-.777 1.12c-.384.555-1.012.857-1.65.857M6.904 3.225q-.13 0-.248.066l-.82.475c-.223.129-.312.412-.202.645l.78 1.65c.125.267.083.583-.108.807-.204.24-.373.477-.517.726q-.212.37-.368.81c-.098.278-.35.472-.644.496l-1.819.154c-.262.022-.458.236-.458.499v.946c0 .258.202.477.459.498l1.82.15c.293.025.546.22.644.498.2.56.497 1.076.887 1.532.192.223.234.54.109.806l-.778 1.653c-.11.233-.02.517.203.645l.82.474c.224.13.514.063.66-.148l1.041-1.502c.168-.242.46-.369.753-.31.588.108 1.184.11 1.77 0 .29-.055.585.066.753.31l1.042 1.499c.147.21.439.276.66.147l.821-.474c.226-.13.314-.409.201-.646l-.779-1.65c-.126-.267-.084-.583.108-.807.204-.24.373-.477.515-.725h.001c.143-.248.263-.512.369-.81.098-.279.35-.473.644-.497l1.819-.153c.256-.022.458-.24.458-.499l-.001-.947c0-.262-.197-.476-.459-.498l-1.819-.15c-.294-.025-.546-.22-.645-.498-.198-.56-.496-1.075-.887-1.532-.191-.224-.234-.54-.108-.806l.777-1.653c.11-.233.02-.517-.203-.646l-.82-.473c-.224-.127-.514-.061-.66.15l-1.04 1.5c-.168.243-.46.368-.753.31-.591-.11-1.188-.11-1.77 0-.292.052-.586-.067-.754-.31L7.316 3.439c-.096-.137-.253-.213-.412-.213"/></svg>
-        </a>
-      </nav>
-
       <!-- ====== MAIN CONTENT AREA ====== -->
       <main class="exmod-main">
         <div class="exmod-grid">
@@ -1605,18 +1833,23 @@
               <div class="task-progress-sticky collapsed" id="task-progress">
                 <div class="chat-toolbar">
                   <div class="chat-toolbar-left">
-                    <button type="button" class="task-progress-toggle task-progress-toggle-btn" id="task-progress-toggle" aria-expanded="false" aria-controls="task-progress-content" aria-label="Toggle task progress">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M3.545 12.237c0-.196.077-.393.23-.54L9.48 6.21c.29-.28.749-.28 1.039 0l5.716 5.5c.3.287.308.763.02 1.06-.286.298-.76.308-1.059.02L9.998 7.791l-5.184 4.986c-.297.288-.772.279-1.06-.02-.14-.145-.21-.332-.21-.52"></path></svg>
-                    </button>
-                    <h3>Task Progress</h3>
-                    <span class="completed-count">2/6 completed</span>
+                    <a class="chat-toolbar-nav-item" href="#" data-tooltip="Home" aria-label="Home" title="Home">
+                      <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path d="m17.13086,5.73438L11.38086,1.26172c-.8125-.63086-1.94922-.63184-2.76172.00098L2.86914,5.73438h-.00098c-.54395.42285-.86816,1.08691-.86816,1.77637v8.23926c0,1.24023,1.00977,2.25,2.25,2.25h11.5c1.24023,0,2.25-1.00977,2.25-2.25V7.51074c0-.68945-.32422-1.35352-.86914-1.77637Zm-5.63086,10.76562h-3v-4.75c0-.41309.33691-.75.75-.75h1.5c.41309,0,.75.33691.75.75v4.75Zm5-.75c0,.41309-.33691.75-.75.75h-2.75v-4.75c0-1.24023-1.00977-2.25-2.25-2.25h-1.5c-1.24023,0-2.25,1.00977-2.25,2.25v4.75h-2.75c-.41309,0-.75-.33691-.75-.75V7.51074c0-.22949.1084-.45117.28906-.59277l5.75-4.4707c.27246-.21191.65137-.20898.92188-.00098l5.74902,4.47168c.18164.1416.29004.36328.29004.59277v8.23926Z" fill="currentColor"/></svg>
+                    </a>
+                    <div class="task-progress-header" id="task-progress-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="task-progress-content" aria-label="Toggle task progress">
+                      <h3>Task Progress</h3>
+                      <span class="completed-count">2/6 completed</span>
+                    </div>
                   </div>
                   <div class="chat-toolbar-right">
-                    <button type="button" class="chat-toolbar-btn" data-tooltip="Clear chat" aria-label="Clear chat">
-                      <svg viewBox="0 0 20 20" focusable="false"><path fill="currentColor" d="M8.249 15.021c-.4 0-.733-.317-.748-.72l-.25-6.5c-.017-.414.307-.763.72-.779H8c.4 0 .733.317.748.72l.25 6.5c.017.414-.307.763-.72.778zM11.751 15.021h-.03c-.413-.016-.737-.365-.72-.779l.25-6.5c.015-.403.348-.72.748-.72h.03c.413.016.737.365.72.779l-.25 6.5c-.015.403-.348.72-.748.72"/><path fill="currentColor" d="M17 4h-3.5v-.75C13.5 2.01 12.49 1 11.25 1h-2.5C7.51 1 6.5 2.01 6.5 3.25V4H3c-.414 0-.75.336-.75.75s.336.75.75.75h.52l.422 10.342C3.99 17.052 4.98 18 6.19 18h7.62c1.211 0 2.2-.948 2.248-2.158L16.48 5.5H17c.414 0 .75-.336.75-.75S17.414 4 17 4m-9-.75c0-.413.337-.75.75-.75h2.5c.413 0 .75.337.75.75V4H8zm6.56 12.531c-.017.404-.346.719-.75.719H6.19c-.404 0-.733-.315-.75-.719L5.02 5.5h9.96z"/></svg>
+                    <button type="button" class="chat-toolbar-btn" data-tooltip="Settings" aria-label="Settings">
+                      <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M10.004 12.589c-.888 0-1.753-.46-2.228-1.283-.708-1.228-.286-2.801.94-3.51.593-.343 1.285-.433 1.949-.256.663.178 1.216.604 1.56 1.197.342.594.433 1.286.256 1.949-.178.663-.603 1.216-1.197 1.56-.403.233-.845.343-1.28.343m-.93-2.033c.295.508.949.683 1.46.39.247-.142.424-.373.498-.648s.036-.564-.107-.81c-.143-.248-.373-.425-.649-.499-.275-.073-.563-.035-.81.107-.51.295-.686.949-.391 1.46"/><path fill="currentColor" d="M6.907 18.318c-.34 0-.682-.085-.992-.264l-.82-.473c-.893-.514-1.25-1.65-.811-2.583l.58-1.233q-.398-.546-.672-1.161l-1.357-.113C1.806 12.406 1 11.531 1 10.5v-.946c0-1.033.805-1.91 1.833-1.994l1.354-.115q.138-.313.302-.6.165-.285.37-.564l-.581-1.23c-.441-.932-.087-2.068.807-2.584l.82-.474c.893-.516 2.054-.259 2.643.59l.777 1.118q.667-.074 1.341 0l.775-1.119c.59-.85 1.751-1.11 2.644-.594l.82.473c.894.516 1.25 1.651.81 2.584l-.58 1.232q.399.548.672 1.161l1.357.113c1.028.085 1.834.96 1.835 1.991v.947c.001 1.031-.803 1.907-1.832 1.994l-1.355.115q-.136.313-.303.6-.164.284-.368.563l.58 1.23c.441.93.087 2.067-.806 2.584l-.82.475c-.894.518-2.054.258-2.643-.591l-.778-1.118q-.67.073-1.34 0l-.777 1.12c-.384.555-1.012.857-1.65.857M6.904 3.225q-.13 0-.248.066l-.82.475c-.223.129-.312.412-.202.645l.78 1.65c.125.267.083.583-.108.807-.204.24-.373.477-.517.726q-.212.37-.368.81c-.098.278-.35.472-.644.496l-1.819.154c-.262.022-.458.236-.458.499v.946c0 .258.202.477.459.498l1.82.15c.293.025.546.22.644.498.2.56.497 1.076.887 1.532.192.223.234.54.109.806l-.778 1.653c-.11.233-.02.517.203.645l.82.474c.224.13.514.063.66-.148l1.041-1.502c.168-.242.46-.369.753-.31.588.108 1.184.11 1.77 0 .29-.055.585.066.753.31l1.042 1.499c.147.21.439.276.66.147l.821-.474c.226-.13.314-.409.201-.646l-.779-1.65c-.126-.267-.084-.583.108-.807.204-.24.373-.477.515-.725h.001c.143-.248.263-.512.369-.81.098-.279.35-.473.644-.497l1.819-.153c.256-.022.458-.24.458-.499l-.001-.947c0-.262-.197-.476-.459-.498l-1.819-.15c-.294-.025-.546-.22-.645-.498-.198-.56-.496-1.075-.887-1.532-.191-.224-.234-.54-.108-.806l.777-1.653c.11-.233.02-.517-.203-.646l-.82-.473c-.224-.127-.514-.061-.66.15l-1.04 1.5c-.168.243-.46.368-.753.31-.591-.11-1.188-.11-1.77 0-.292.052-.586-.067-.754-.31L7.316 3.439c-.096-.137-.253-.213-.412-.213"/></svg>
                     </button>
                     <button type="button" class="chat-toolbar-btn" data-tooltip="Download chat" aria-label="Download chat">
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M13.53 9.427c-.292-.292-.766-.294-1.06 0l-1.717 1.714V2.75c0-.414-.336-.75-.75-.75s-.75.336-.75.75v8.4L7.53 9.426c-.293-.293-.767-.293-1.06 0s-.293.767 0 1.06l2.998 2.998c.146.147.338.22.53.22.191 0 .384-.073.53-.22l3.002-2.998c.293-.292.293-.767 0-1.06"></path><path fill="currentColor" d="M15.75 18H4.25C3.01 18 2 16.99 2 15.75v-2.021c0-.415.336-.75.75-.75s.75.335.75.75v2.021c0 .413.337.75.75.75h11.5c.413 0 .75-.337.75-.75v-2.021c0-.415.336-.75.75-.75s.75.335.75.75v2.021c0 1.24-1.01 2.25-2.25 2.25"></path></svg>
+                    </button>
+                    <button type="button" class="chat-toolbar-btn" data-tooltip="Clear chat" aria-label="Clear chat">
+                      <svg viewBox="0 0 20 20" focusable="false"><path fill="currentColor" d="M8.249 15.021c-.4 0-.733-.317-.748-.72l-.25-6.5c-.017-.414.307-.763.72-.779H8c.4 0 .733.317.748.72l.25 6.5c.017.414-.307.763-.72.778zM11.751 15.021h-.03c-.413-.016-.737-.365-.72-.779l.25-6.5c.015-.403.348-.72.748-.72h.03c.413.016.737.365.72.779l-.25 6.5c-.015.403-.348.72-.748.72"/><path fill="currentColor" d="M17 4h-3.5v-.75C13.5 2.01 12.49 1 11.25 1h-2.5C7.51 1 6.5 2.01 6.5 3.25V4H3c-.414 0-.75.336-.75.75s.336.75.75.75h.52l.422 10.342C3.99 17.052 4.98 18 6.19 18h7.62c1.211 0 2.2-.948 2.248-2.158L16.48 5.5H17c.414 0 .75-.336.75-.75S17.414 4 17 4m-9-.75c0-.413.337-.75.75-.75h2.5c.413 0 .75.337.75.75V4H8zm6.56 12.531c-.017.404-.346.719-.75.719H6.19c-.404 0-.733-.315-.75-.719L5.02 5.5h9.96z"/></svg>
                     </button>
                   </div>
                 </div>
@@ -1731,6 +1964,7 @@
                 <div class="chat-msg ai">
                   <strong>Step 1: Initialize Session</strong> — Home Page
                 </div>
+                <hr class="chat-thinking-separator" aria-hidden="true">
                 <div class="chat-thinking">
                   <span class="chat-thinking-spinner" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
@@ -1777,15 +2011,20 @@
           </div>
 
           <!-- ====== PREVIEW PANEL (Right) ====== -->
-          <div class="exmod-preview">
+          <div class="exmod-preview" id="exmod-preview">
 
             <!-- Toolbar -->
-            <div class="preview-toolbar">
+            <div class="content-toolbar">
               <div class="toolbar-left">
-                <button class="icon-btn-sm toolbar-back-btn" id="document-tree-toggle" type="button" data-tooltip="Toggle document tree" aria-label="Toggle document tree">
-                  <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M9.862 16.455c-.196 0-.393-.077-.54-.23L3.835 10.52c-.28-.29-.28-.749 0-1.039l5.5-5.716c.287-.3.763-.308 1.06-.02.298.286.308.76.02 1.059l-4.999 5.197 4.986 5.184c.289.297.279.772-.02 1.06-.145.14-.332.21-.52.21"/><path fill="currentColor" d="M15.612 16.455c-.196 0-.393-.077-.54-.23L9.585 10.52c-.28-.29-.28-.749 0-1.039l5.5-5.716c.287-.3.763-.308 1.06-.02.298.286.308.76.02 1.059l-4.999 5.197 4.986 5.184c.289.297.279.772-.02 1.06-.145.14-.332.21-.52.21"/></svg>
-                </button>
-                <h3 class="page-title">ups-accelerates-intra-asia-trade-with-capacity-and-speed-enhance</h3>
+                <div class="content-mode-switcher">
+                  <button type="button" class="content-mode-btn active" data-mode="content" data-tooltip="Content" aria-label="View content">
+                    <svg class="spectrum-icon-outline" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+                  </button>
+                  <button type="button" class="content-mode-btn" data-mode="code" data-tooltip="Code" aria-label="View code">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M17.7465,9.5305l-4.0965,4.16a.5.5,0,0,1-.70709.00541l-.00541-.00541-.4465-.4535a.503.503,0,0,1,0-.7L15.9715,9,12.492,5.4645a.503.503,0,0,1,0-.7l.4465-.4535a.5.5,0,0,1,.70709-.00541L13.651,4.311l4.0955,4.16A.76151.76151,0,0,1,17.7465,9.5305Z"/><path fill="currentColor" d="M.2535,8.4695,4.35,4.3095a.5.5,0,0,1,.70709-.00541l.00541.00541.4465.4535a.503.503,0,0,1,0,.7L2.0285,9,5.508,12.5355a.503.503,0,0,1,0,.7l-.4465.4535a.5.5,0,0,1-.70709.00541L4.349,13.689.2535,9.5305A.76151.76151,0,0,1,.2535,8.4695Z"/><path fill="currentColor" d="M7.7445,14.8435h-.572a.5.5,0,0,1-.483-.6295L9.7855,2.6935a.5.5,0,0,1,.483-.3705h.5525a.5.5,0,0,1,.483.627L8.2275,14.473A.5.5,0,0,1,7.7445,14.8435Z"/></svg>
+                  </button>
+                </div>
+                <h3 class="page-title" id="document-tree-toggle" role="button" tabindex="0" aria-label="Toggle document tree" aria-expanded="true">ups-accelerates-intra-asia-trade-with-capacity-and-speed-enhance</h3>
               </div>
               <div class="toolbar-right">
                 <div class="toolbar-preview-only">
@@ -1823,10 +2062,26 @@
                     <svg viewBox="0 0 20 20" focusable="false"><path fill="currentColor" d="m16.34 5.296-3.62-3.622c-.42-.42-1-.66-1.591-.66H5.25C4.01 1.015 3 2.025 3 3.265v12.484c0 1.24 1.01 2.25 2.25 2.25h9.5c1.24 0 2.25-1.01 2.25-2.25V6.887c0-.6-.234-1.166-.66-1.591m-1.06 1.06c.046.047.074.104.106.159H12.25c-.413 0-.75-.337-.75-.75V2.628c.055.033.114.06.16.106zm-.53 10.142h-9.5c-.413 0-.75-.337-.75-.75V3.265c0-.413.337-.75.75-.75H10v3.25c0 1.24 1.01 2.25 2.25 2.25h3.25v7.733c0 .413-.337.75-.75.75"/><path fill="currentColor" d="M13 11.498H7c-.414 0-.75-.336-.75-.75s.336-.75.75-.75h6c.414 0 .75.336.75.75s-.336.75-.75.75M13 14.498H7c-.414 0-.75-.336-.75-.75s.336-.75.75-.75h6c.414 0 .75.336.75.75s-.336.75-.75.75"/></svg>
                   </button>
                 </div>
-                <button class="toolbar-icon-btn" type="button" data-tooltip="Delete" aria-label="Delete">
-                  <svg viewBox="0 0 20 20" focusable="false"><path fill="currentColor" d="M8.249 15.021c-.4 0-.733-.317-.748-.72l-.25-6.5c-.017-.414.307-.763.72-.779H8c.4 0 .733.317.748.72l.25 6.5c.017.414-.307.763-.72.778zM11.751 15.021h-.03c-.413-.016-.737-.365-.72-.779l.25-6.5c.015-.403.348-.72.748-.72h.03c.413.016.737.365.72.779l-.25 6.5c-.015.403-.348.72-.748.72"/><path fill="currentColor" d="M17 4h-3.5v-.75C13.5 2.01 12.49 1 11.25 1h-2.5C7.51 1 6.5 2.01 6.5 3.25V4H3c-.414 0-.75.336-.75.75s.336.75.75.75h.52l.422 10.342C3.99 17.052 4.98 18 6.19 18h7.62c1.211 0 2.2-.948 2.248-2.158L16.48 5.5H17c.414 0 .75-.336.75-.75S17.414 4 17 4m-9-.75c0-.413.337-.75.75-.75h2.5c.413 0 .75.337.75.75V4H8zm6.56 12.531c-.017.404-.346.719-.75.719H6.19c-.404 0-.733-.315-.75-.719L5.02 5.5h9.96z"/></svg>
-                </button>
-                <button class="btn-upload" type="button" aria-label="Upload content">Upload content</button>
+                <div class="actions-dropdown" id="actions-dropdown">
+                  <button class="btn-actions" type="button" aria-label="Actions" aria-haspopup="true" aria-expanded="false">
+                    <svg viewBox="0 0 18 18" focusable="false" aria-hidden="true"><path fill="currentColor" d="M10.25,3.357A3.394,3.394,0,0,1,13.519,7.66a2.74688,2.74688,0,0,1,.3025-.017,2.6785,2.6785,0,0,1,0,5.357H3.107a1.6075,1.6075,0,0,1,0-3.2145h.1795v-.714a2.859,2.859,0,0,1,3.6-2.7595A3.394,3.394,0,0,1,10.25,3.357Zm0-1A4.4055,4.4055,0,0,0,6.1335,5.2145a3.862,3.862,0,0,0-3.845,3.703A2.607,2.607,0,0,0,3.107,14H13.8215a3.6785,3.6785,0,0,0,.8215-7.2645A4.4,4.4,0,0,0,10.25,2.357Z"/></svg>
+                    Actions
+                  </button>
+                  <div class="actions-dropdown-overlay">
+                    <button type="button" class="actions-dropdown-option" data-action="upload">
+                      <svg viewBox="0 0 18 18" focusable="false"><path fill="currentColor" d="M14.643,4.7355a4.3935,4.3935,0,0,0-8.5095-1.521,3.861,3.861,0,0,0-3.8445,3.7A2.612,2.612,0,0,0,.5165,9.6865,2.673,2.673,0,0,0,3.205,12H5.75A.25.25,0,0,0,6,11.75v-.5A.25.25,0,0,0,5.75,11H3.2A1.668,1.668,0,0,1,1.5045,9.4795,1.607,1.607,0,0,1,3.02214,7.78786q.0434-.00235.08686-.00236h.1795v-.714a2.85951,2.85951,0,0,1,3.6-2.7595,3.3935,3.3935,0,1,1,6.634,1.35,2.6785,2.6785,0,1,1,.3,5.34H12.25a.25.25,0,0,0-.25.25v.5a.25.25,0,0,0,.25.25H13.7A3.7585,3.7585,0,0,0,17.4735,8.76,3.684,3.684,0,0,0,14.643,4.7355Z"/><path fill="currentColor" d="M6.75,9H8v7.5a.5.5,0,0,0,.5.5h1a.5.5,0,0,0,.5-.5V9h1.25a.25.25,0,0,0,.25-.25.24453.24453,0,0,0-.0585-.1585L9.182,6.08a.25.25,0,0,0-.3534-.01061L8.818,6.08,6.5585,8.59A.24453.24453,0,0,0,6.5,8.75.25.25,0,0,0,6.75,9Z"/></svg>
+                      Upload content
+                    </button>
+                    <button type="button" class="actions-dropdown-option" data-action="sync">
+                      <svg viewBox="0 0 18 18" focusable="false"><path fill="currentColor" d="M14.643,4.7355a4.3935,4.3935,0,0,0-8.5095-1.521,3.861,3.861,0,0,0-3.8445,3.7A2.612,2.612,0,0,0,.5165,9.6865,2.673,2.673,0,0,0,3.205,12H5.75A.25.25,0,0,0,6,11.75v-.5A.25.25,0,0,0,5.75,11H3.2A1.668,1.668,0,0,1,1.5045,9.4795,1.607,1.607,0,0,1,3.02214,7.78786q.0434-.00235.08686-.00236h.1795v-.714a2.85951,2.85951,0,0,1,3.6-2.7595,3.3935,3.3935,0,1,1,6.634,1.35,2.6785,2.6785,0,1,1,.3,5.34H12.25a.25.25,0,0,0-.25.25v.5a.25.25,0,0,0,.25.25H13.7A3.7585,3.7585,0,0,0,17.4735,8.76,3.684,3.684,0,0,0,14.643,4.7355Z"/><path fill="currentColor" d="M11.25,14.5H10v-7A.5.5,0,0,0,9.5,7h-1a.5.5,0,0,0-.5.5v7H6.75a.25.25,0,0,0-.25.25.24453.24453,0,0,0,.0585.1585L8.818,17.42a.25.25,0,0,0,.35339.01061L9.182,17.42l2.2595-2.5115A.24453.24453,0,0,0,11.5,14.75.25.25,0,0,0,11.25,14.5Z"/></svg>
+                      Sync content
+                    </button>
+                    <button type="button" class="actions-dropdown-option" data-action="delete">
+                      <svg viewBox="0 0 20 20" focusable="false"><path fill="currentColor" d="M8.249 15.021c-.4 0-.733-.317-.748-.72l-.25-6.5c-.017-.414.307-.763.72-.779H8c.4 0 .733.317.748.72l.25 6.5c.017.414-.307.763-.72.778zM11.751 15.021h-.03c-.413-.016-.737-.365-.72-.779l.25-6.5c.015-.403.348-.72.748-.72h.03c.413.016.737.365.72.779l-.25 6.5c-.015.403-.348.72-.748.72"/><path fill="currentColor" d="M17 4h-3.5v-.75C13.5 2.01 12.49 1 11.25 1h-2.5C7.51 1 6.5 2.01 6.5 3.25V4H3c-.414 0-.75.336-.75.75s.336.75.75.75h.52l.422 10.342C3.99 17.052 4.98 18 6.19 18h7.62c1.211 0 2.2-.948 2.248-2.158L16.48 5.5H17c.414 0 .75-.336.75-.75S17.414 4 17 4m-9-.75c0-.413.337-.75.75-.75h2.5c.413 0 .75.337.75.75V4H8zm6.56 12.531c-.017.404-.346.719-.75.719H6.19c-.404 0-.733-.315-.75-.719L5.02 5.5h9.96z"/></svg>
+                      Delete page
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -1837,7 +2092,7 @@
               <div class="document-tree">
                 <div class="document-tree-inner">
                 <div class="tree-breadcrumbs">
-                  <span class="crumb">Workspace</span>
+                  <span class="crumb">Content</span>
                   <span class="breadcrumb-sep">&rsaquo;</span>
                   <div class="breadcrumb-path-dropdown" id="breadcrumb-path-dropdown">
                     <button type="button" class="breadcrumb-path-trigger" aria-label="Path" aria-haspopup="true" aria-expanded="false">
@@ -1999,6 +2254,30 @@
               </div>
 
             </div>
+
+            <!-- Code view: workspace tree + editor -->
+            <div class="preview-code" id="preview-code">
+              <aside class="code-tree" aria-label="Workspace files tree" role="tree">
+                <div class="code-tree-header">Workspace files</div>
+                <div class="code-tree-inner">
+                  <div class="code-tree-list" id="code-tree-list"></div>
+                </div>
+              </aside>
+              <div class="code-tree-editor">
+                <pre><code id="code-editor-content">/* article-header.css */
+.article-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spectrum-spacing-200);
+}
+
+.article-header__title {
+  font-size: var(--spectrum-font-size-500);
+  font-weight: var(--spectrum-bold-font-weight);
+  color: var(--spectrum-gray-900);
+}</code></pre>
+              </div>
+            </div>
           </div>
 
         </div>
@@ -2111,6 +2390,29 @@
       document.addEventListener('click', function() {
         breadcrumbPathDropdown.classList.remove('open');
         if (pathTrigger) pathTrigger.setAttribute('aria-expanded', 'false');
+      });
+    }
+    // Actions dropdown (Upload content, Sync content, Delete page)
+    var actionsDropdown = document.getElementById('actions-dropdown');
+    if (actionsDropdown) {
+      var actionsTrigger = actionsDropdown.querySelector('.btn-actions');
+      if (actionsTrigger) {
+        actionsTrigger.addEventListener('click', function(e) {
+          e.stopPropagation();
+          actionsDropdown.classList.toggle('open');
+          actionsTrigger.setAttribute('aria-expanded', actionsDropdown.classList.contains('open'));
+        });
+      }
+      actionsDropdown.querySelectorAll('.actions-dropdown-option').forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          actionsDropdown.classList.remove('open');
+          if (actionsTrigger) actionsTrigger.setAttribute('aria-expanded', 'false');
+          /* action handlers: upload, sync, delete */
+        });
+      });
+      document.addEventListener('click', function() {
+        actionsDropdown.classList.remove('open');
+        if (actionsTrigger) actionsTrigger.setAttribute('aria-expanded', 'false');
       });
     }
     // Middle-truncate long file names (macOS style: start...end, ellipsis at word boundaries)
@@ -2242,33 +2544,205 @@
       new ResizeObserver(initFileNames).observe(documentTree);
     }
     window.addEventListener('resize', initFileNames);
+    // File list: selection and page title sync
+    if (fileList) {
+      fileList.addEventListener('click', function(e) {
+        var item = e.target.closest('.file-item');
+        if (!item) return;
+        fileList.querySelectorAll('.file-item').forEach(function(i) { i.classList.remove('selected'); });
+        item.classList.add('selected');
+        var nameEl = item.querySelector('.file-name');
+        var pageTitle = document.querySelector('.page-title');
+        if (nameEl && pageTitle) {
+          var name = nameEl.getAttribute('data-full-title') || nameEl.textContent;
+          pageTitle.textContent = name;
+        }
+        initFileNames();
+      });
+    }
 
-    // Document tree toggle (toolbar back button)
+    // Document tree toggle (page title)
     var documentTreeToggle = document.getElementById('document-tree-toggle');
     var previewContent = document.getElementById('preview-content');
     if (documentTreeToggle && previewContent) {
       documentTreeToggle.addEventListener('click', function() {
         var collapsed = previewContent.classList.toggle('tree-collapsed');
-        documentTreeToggle.classList.toggle('collapsed', collapsed);
+        documentTreeToggle.setAttribute('aria-expanded', !collapsed);
         requestAnimationFrame(function() { requestAnimationFrame(initFileNames); });
+      });
+      documentTreeToggle.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          documentTreeToggle.click();
+        }
       });
     }
     // View mode switcher (Preview / Document view)
-    var previewToolbar = document.querySelector('.preview-toolbar');
+    var contentToolbar = document.querySelector('.content-toolbar');
     document.querySelectorAll('.view-mode-btn').forEach(btn => {
       btn.addEventListener('click', function() {
         var switcher = this.closest('.view-mode-switcher');
         switcher.querySelectorAll('.view-mode-btn').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
-        if (previewToolbar) {
+        if (contentToolbar) {
           if (this.getAttribute('data-view-mode') === 'document') {
-            previewToolbar.classList.add('view-mode-document');
+            contentToolbar.classList.add('view-mode-document');
           } else {
-            previewToolbar.classList.remove('view-mode-document');
+            contentToolbar.classList.remove('view-mode-document');
           }
         }
       });
     });
+    // Content / Code mode switcher
+    var exmodPreview = document.getElementById('exmod-preview');
+    document.querySelectorAll('.content-mode-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        var switcher = this.closest('.content-mode-switcher');
+        switcher.querySelectorAll('.content-mode-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        if (exmodPreview) {
+          if (this.getAttribute('data-mode') === 'code') {
+            exmodPreview.classList.add('content-mode-code');
+          } else {
+            exmodPreview.classList.remove('content-mode-code');
+          }
+        }
+      });
+    });
+
+    // Code tree: build from file list, expand/collapse and selection
+    (function() {
+      var CODE_TREE_PATHS = [
+        'blocks/article-header/article-header.css','blocks/article-header/article-header.js',
+        'blocks/cards-stories/cards-stories.js','blocks/cards-stories/metadata.json','blocks/cards-stories/cards-stories.css',
+        'blocks/hero-featured/hero-featured.css','blocks/hero-featured/metadata.json','blocks/hero-featured/hero-featured.js',
+        'blocks/footer/footer.css','blocks/footer/footer.js',
+        'blocks/social-share/social-share.js','blocks/social-share/social-share.css',
+        'blocks/form/form.css','blocks/form/form.js',
+        'blocks/embed/embed.js','blocks/embed/embed.css',
+        'blocks/cards/cards.js','blocks/cards/cards.css',
+        'blocks/cards-awards/cards-awards.css','blocks/cards-awards/metadata.json','blocks/cards-awards/cards-awards.js',
+        'blocks/columns-quote/metadata.json','blocks/columns-quote/columns-quote.js','blocks/columns-quote/columns-quote.css',
+        'blocks/contact-card/contact-card.js','blocks/contact-card/contact-card.css',
+        'blocks/cards-reports/cards-reports.css','blocks/cards-reports/cards-reports.js',
+        'blocks/navigation-tabs/navigation-tabs.js','blocks/navigation-tabs/navigation-tabs.css',
+        'blocks/fact-sheets/fact-sheets.css','blocks/fact-sheets/fact-sheets.js',
+        'blocks/fragment/fragment.js','blocks/fragment/fragment.css',
+        'blocks/awards-list/awards-list.css','blocks/awards-list/awards-list.js',
+        'blocks/cards-leadership/cards-leadership.js','blocks/cards-leadership/cards-leadership.css',
+        'blocks/columns/columns.css','blocks/columns/columns.js',
+        'blocks/breadcrumb/breadcrumb.js','blocks/breadcrumb/breadcrumb.css',
+        'blocks/columns-stats/metadata.json','blocks/columns-stats/columns-stats.js','blocks/columns-stats/columns-stats.css',
+        'blocks/hero/hero.css',
+        'blocks/columns-media/columns-media.css','blocks/columns-media/columns-media.js',
+        'blocks/timeline/timeline.js','blocks/timeline/timeline.css',
+        'blocks/header/header.js','blocks/header/header.css',
+        'blocks/columns-feature/metadata.json','blocks/columns-feature/columns-feature.js','blocks/columns-feature/columns-feature.css',
+        'blocks/data-table/data-table.js','blocks/data-table/data-table.css',
+        'favicon.ico',
+        'tools/importer/parsers/contact-card.js','tools/importer/parsers/cards-stories.js','tools/importer/parsers/navigation-tabs.js',
+        'tools/importer/parsers/embed.js','tools/importer/parsers/columns-stats.js','tools/importer/parsers/cards-leadership.js',
+        'tools/importer/parsers/timeline.js','tools/importer/parsers/columns-feature.js','tools/importer/parsers/columns-quote.js',
+        'tools/importer/parsers/article-header.js','tools/importer/parsers/cards-reports.js','tools/importer/parsers/hero-featured.js',
+        'tools/importer/parsers/awards-list.js','tools/importer/parsers/social-share.js','tools/importer/parsers/form.js',
+        'tools/importer/parsers/fact-sheets.js','tools/importer/parsers/columns-media.js','tools/importer/parsers/cards-awards.js',
+        'tools/importer/page-templates.json','tools/importer/utils/image-utils.js','tools/importer/utils/text-utils.js',
+        'tools/importer/transformers/ups-cleanup.js','tools/importer/import-universal.js',
+        'PROJECT.md','README.md','styles/styles.css','styles/lazy-styles.css','styles/fonts.css',
+        'package-lock.json','package.json','icons/search.svg','icons/ups-logo.svg',
+        'scripts/scripts.js','scripts/delayed.js','scripts/aem.js','AGENTS.md',
+        'fonts/roboto-regular.woff2','fonts/upspricons-x.woff','fonts/roboto-medium.woff2','fonts/roboto-bold.woff2',
+        'fonts/roboto-condensed-bold.woff2','fonts/upspricons.woff','CLAUDE.md'
+      ];
+      var CHEVRON_SVG = '<svg viewBox="0 0 20 20" width="10" height="10" focusable="false" aria-hidden="true"><path fill="currentColor" d="M3.545 12.237c0-.196.077-.393.23-.54L9.48 6.21c.29-.28.749-.28 1.039 0l5.716 5.5c.3.287.308.763.02 1.06-.286.298-.76.308-1.059.02L9.998 7.791l-5.184 4.986c-.297.288-.772.279-1.06-.02-.14-.145-.21-.332-.21-.52"/></svg>';
+      var FOLDER_SVG = '<svg viewBox="0 0 20 20" focusable="false" aria-label="Folder" role="img"><path fill="currentColor" d="M16.75 5h-5.964c-.218 0-.424-.095-.567-.259L8.516 2.776C8.088 2.283 7.468 2 6.816 2H3.25C2.01 2 1 3.01 1 4.25v10.5C1 15.99 2.01 17 3.25 17h13.5c1.24 0 2.25-1.01 2.25-2.25v-7.5C19 6.01 17.99 5 16.75 5M3.25 3.5h3.565c.218 0 .424.095.567.259L8.458 5H2.5v-.75c0-.413.336-.75.75-.75M17.5 14.75c0 .413-.336.75-.75.75H3.25c-.414 0-.75-.337-.75-.75V6.5h14.25c.414 0 .75.337.75.75z"/></svg>';
+      var FILE_SVG = '<svg viewBox="0 0 20 20" focusable="false" aria-label="File" role="img"><path fill="currentColor" d="M16.341 5.28 12.72 1.66c-.425-.426-.99-.66-1.59-.66H5.25C4.01 1 3 2.01 3 3.25v12.5C3 16.99 4.01 18 5.25 18h9.5c1.24 0 2.25-1.01 2.25-2.25V6.871c0-.592-.24-1.172-.659-1.59m-1.06 1.06c.045.046.073.105.105.16H12.25c-.414 0-.75-.337-.75-.75V2.614c.055.032.113.06.159.106zM14.75 16.5h-9.5c-.414 0-.75-.337-.75-.75V3.25c0-.413.336-.75.75-.75H10v3.25C10 6.99 11.01 8 12.25 8h3.25v7.75c0 .413-.336.75-.75.75"/></svg>';
+      function buildTree(paths) {
+        var root = {};
+        paths.forEach(function(p) {
+          var parts = p.split('/');
+          var cur = root;
+          for (var i = 0; i < parts.length; i++) {
+            var name = parts[i];
+            if (i === parts.length - 1) {
+              if (!cur.files) cur.files = [];
+              cur.files.push(name);
+            } else {
+              if (!cur.dirs) cur.dirs = {};
+              if (!cur.dirs[name]) cur.dirs[name] = {};
+              cur = cur.dirs[name];
+            }
+          }
+        });
+        return root;
+      }
+      function renderNode(name, node, path, level, expanded) {
+        var html = '';
+        if (node.dirs) {
+          var keys = Object.keys(node.dirs).sort();
+          keys.forEach(function(k) {
+            var subPath = path ? path + '/' + k : k;
+            var sub = node.dirs[k];
+            var hasChildren = (sub.dirs && Object.keys(sub.dirs).length) || (sub.files && sub.files.length);
+            var isExpanded = expanded && (k === 'blocks' || k === 'article-header');
+            var collapsedClass = isExpanded ? '' : ' collapsed';
+            html += '<div class="code-tree-folder' + collapsedClass + '" data-key="' + subPath + '">';
+            html += '<div class="code-tree-item folder' + collapsedClass + '" data-level="' + level + '" role="treeitem" aria-expanded="' + isExpanded + '" aria-label="' + k + '">';
+            html += '<span class="code-tree-chevron" aria-hidden="true">' + CHEVRON_SVG + '</span>' + FOLDER_SVG + '<span class="code-tree-name">' + k + '</span></div>';
+            html += '<div class="code-tree-children">' + renderNode('', sub, subPath, level + 1, isExpanded) + '</div></div>';
+          });
+        }
+        if (node.files) {
+          node.files.sort().forEach(function(f) {
+            var filePath = path ? path + '/' + f : f;
+            var selected = filePath === 'blocks/article-header/article-header.css' ? ' selected' : '';
+            html += '<div class="code-tree-item file' + selected + '" data-level="' + level + '" role="treeitem" aria-label="' + f + '" data-path="' + filePath + '">';
+            html += '<span class="code-tree-chevron" aria-hidden="true">' + CHEVRON_SVG + '</span>' + FILE_SVG + '<span class="code-tree-name">' + f + '</span></div>';
+          });
+        }
+        return html;
+      }
+      var codeTreeList = document.getElementById('code-tree-list');
+      var codeEditorContent = document.getElementById('code-editor-content');
+      if (!codeTreeList || !codeEditorContent) return;
+      var tree = buildTree(CODE_TREE_PATHS);
+      codeTreeList.innerHTML = renderNode('', tree, '', 1, true);
+      function getMockContent(path, name) {
+        var ext = (name.match(/\.([^.]+)$/) || [])[1] || '';
+        if (ext === 'css') return '/* ' + name + ' */\n.' + name.replace('.css','') + ' {\n  /* styles */\n}';
+        if (ext === 'js') return '// ' + name + '\nimport { decorateBlock } from \'../../scripts/lib-franklin.js\';\n\nexport default function decorate(block) {\n  // Block logic\n}';
+        if (ext === 'json') return '{\n  "metadata": {}\n}';
+        if (ext === 'svg') return '<!-- ' + name + ' -->\n<svg>...</svg>';
+        if (ext === 'md') return '# ' + name + '\n\nDocumentation content.';
+        if (ext === 'woff2' || ext === 'woff') return '/* Binary font file */';
+        return '// ' + name + '\n// Source code';
+      }
+      function selectFile(item) {
+        codeTreeList.querySelectorAll('.code-tree-item.file').forEach(function(i) { i.classList.remove('selected'); });
+        item.classList.add('selected');
+        var path = item.getAttribute('data-path');
+        var name = item.querySelector('.code-tree-name').textContent;
+        codeEditorContent.textContent = getMockContent(path, name);
+      }
+      codeTreeList.addEventListener('click', function(e) {
+        var folder = e.target.closest('.code-tree-item.folder');
+        var file = e.target.closest('.code-tree-item.file');
+        if (folder) {
+          e.stopPropagation();
+          var folderEl = folder.closest('.code-tree-folder');
+          if (folderEl) {
+            folderEl.classList.toggle('collapsed');
+            folder.classList.toggle('collapsed');
+            folder.setAttribute('aria-expanded', !folderEl.classList.contains('collapsed'));
+          }
+        } else if (file) {
+          e.stopPropagation();
+          selectFile(file);
+        }
+      });
+      var initialSelected = codeTreeList.querySelector('.code-tree-item.file.selected');
+      if (initialSelected) selectFile(initialSelected);
+    })();
     document.querySelectorAll('.chat-mode-btn').forEach(btn => {
       btn.addEventListener('click', function() {
         this.closest('.chat-mode-switcher').querySelectorAll('.chat-mode-btn').forEach(b => b.classList.remove('active'));
@@ -2278,14 +2752,15 @@
     var taskProgress = document.getElementById('task-progress');
     var taskProgressToggle = document.getElementById('task-progress-toggle');
     if (taskProgress && taskProgressToggle) {
-      taskProgressToggle.addEventListener('click', function() {
+      function toggleTaskProgress() {
         taskProgress.classList.toggle('collapsed');
         taskProgressToggle.setAttribute('aria-expanded', !taskProgress.classList.contains('collapsed'));
-      });
+      }
+      taskProgressToggle.addEventListener('click', toggleTaskProgress);
       taskProgressToggle.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          taskProgressToggle.click();
+          toggleTaskProgress();
         }
       });
     }
