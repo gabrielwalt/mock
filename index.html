@@ -492,12 +492,13 @@
       display: flex;
       flex-direction: column;
       background: var(--spectrum-gray-25);
-      border-bottom: 1px solid var(--spectrum-gray-200);
-      overflow: hidden;
+      overflow: visible;
       transition: border-color 0.25s ease;
+      position: relative;
+      z-index: 2;
     }
     .task-progress-sticky.collapsed {
-      border-bottom: none;
+      overflow: visible;
     }
     .chat-toolbar {
       display: flex;
@@ -552,6 +553,13 @@
       display: flex;
       align-items: center;
       gap: var(--spectrum-spacing-100);
+    }
+    .chat-toolbar-divider {
+      width: var(--spectrum-border-width-100);
+      height: var(--spectrum-static-size-300);
+      background: var(--spectrum-gray-300);
+      border-radius: 1px;
+      flex-shrink: 0;
     }
     .chat-toolbar-btn {
       width: var(--spectrum-component-height-100);
@@ -611,11 +619,19 @@
       gap: var(--spectrum-spacing-200);
       flex: 1;
       min-width: 0;
+      margin-left: 8px;
     }
     .chat-status-bar-right {
       display: flex;
       align-items: center;
       gap: var(--spectrum-spacing-100);
+    }
+    .chat-status-bar-divider {
+      width: var(--spectrum-border-width-100);
+      height: var(--spectrum-static-size-300);
+      background: var(--spectrum-gray-300);
+      border-radius: 1px;
+      flex-shrink: 0;
     }
     .chat-status-thinking {
       display: flex;
@@ -626,17 +642,6 @@
     }
     .chat-status-thinking.hidden {
       display: none;
-    }
-    .chat-status-thinking .chat-status-stop-btn {
-      display: none;
-    }
-    .chat-status-thinking:hover .chat-thinking-spinner {
-      display: none;
-    }
-    .chat-status-thinking:hover .chat-status-stop-btn {
-      display: flex;
-      width: 20px;
-      height: 20px;
     }
     .chat-status-queue-btn {
       display: inline-flex;
@@ -664,6 +669,9 @@
       outline-offset: var(--spectrum-focus-indicator-gap);
     }
     .chat-status-queue-btn.hidden {
+      display: none;
+    }
+    .chat-status-tasks-btn.hidden {
       display: none;
     }
     .chat-status-queue-label {
@@ -716,23 +724,22 @@
       transition: max-height 0.25s ease-out;
       background: var(--spectrum-background-layer-1-color);
     }
+    .task-progress-sticky:not(.collapsed) .task-progress-content {
+      border-top: 2px solid var(--spectrum-gray-200);
+      transition: max-height 0.25s ease-out, border-top-color 0.01s 0s, border-top-width 0.01s 0s;
+    }
     .task-progress-sticky.collapsed .task-progress-content {
       max-height: 0 !important;
       overflow: hidden;
+      border-top: 0 solid transparent;
+      transition: max-height 0.25s ease-out, border-top-color 0.01s 0.25s, border-top-width 0.01s 0.25s;
     }
-    /* Progress Bar - edge to edge, acts as separator below header */
-    .progress-bar-wrap {
-      padding: 0;
-      flex-shrink: 0;
-      margin-top: 2px;
-      margin-bottom: -1px;
-      height: 0;
-      position: relative;
-    }
+    /* Progress Bar - direct child of task-progress-sticky */
     .progress-fill {
       position: absolute;
-      bottom: 0;
+      bottom: -4px;
       left: 0;
+      z-index: 1;
       height: 6px;
       background:
         repeating-linear-gradient(
@@ -745,7 +752,7 @@
         var(--spectrum-green-600);
       background-size: 10px 10px, auto;
       background-position: 0 0, 0 0;
-      border-radius: var(--spectrum-corner-radius-75);
+      border-radius: 0 var(--spectrum-corner-radius-75) var(--spectrum-corner-radius-75) 0;
       transition: width 0.3s ease;
       animation: progress-hatches 0.7s linear infinite;
     }
@@ -763,7 +770,6 @@
       max-height: 200px;
       overflow-y: auto;
       flex-shrink: 0;
-      border-bottom: var(--spectrum-border-width-100) solid var(--spectrum-gray-200);
     }
     .task-completed-section {
       display: flex;
@@ -874,6 +880,8 @@
       flex: 1;
       min-height: 0;
       overflow-y: auto;
+      position: relative;
+      z-index: 0;
       padding: var(--spectrum-spacing-200);
       display: flex;
       flex-direction: column;
@@ -902,14 +910,137 @@
       min-height: 0;
     }
     .chat-msg {
+      position: relative;
       padding: var(--spectrum-spacing-200) 0;
       font-size: var(--spectrum-font-size-100);
       line-height: 1.5;
       align-self: stretch;
       max-width: 100%;
     }
+    .chat-msg-copy-wrap {
+      position: absolute;
+      top: calc(var(--spectrum-spacing-100) + 4px);
+      right: var(--spectrum-spacing-100);
+      width: var(--spectrum-component-height-100);
+      height: var(--spectrum-component-height-100);
+      padding: 4px;
+      margin: -4px;
+      background: var(--spectrum-gray-25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.13s ease-out;
+    }
+    .chat-msg:hover .chat-msg-copy-wrap {
+      opacity: 1;
+    }
+    .chat-msg-copy-btn {
+      position: static;
+      width: var(--spectrum-component-height-100);
+      height: var(--spectrum-component-height-100);
+      min-width: var(--spectrum-component-height-100);
+      min-height: var(--spectrum-component-height-100);
+      flex-shrink: 0;
+      padding: 0;
+      border: none;
+      background: transparent;
+      color: var(--spectrum-neutral-subdued-content-color-default);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.13s ease-out, background-color 0.13s ease-out, color 0.13s ease-out;
+      border-radius: var(--spectrum-corner-radius-100);
+    }
+    .chat-msg-copy-btn:hover {
+      background: var(--spectrum-button-hover-overlay);
+      color: var(--spectrum-neutral-content-color-default);
+    }
+    .chat-msg:focus-within .chat-msg-copy-wrap {
+      opacity: 1;
+    }
+    .chat-msg-copy-btn:focus-visible {
+      opacity: 1;
+      outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
+      outline-offset: var(--spectrum-focus-indicator-gap);
+    }
+    .chat-msg-copy-btn svg {
+      width: var(--spectrum-icon-size-100);
+      height: var(--spectrum-icon-size-100);
+    }
+    .chat-msg-single-line .chat-msg-copy-wrap {
+      top: 50%;
+      transform: translateY(calc(-50% + 4px));
+    }
+    /* Last agent message: timer + spinner by default, copy on hover */
+    .chat-msg-agent-streaming .chat-msg-agent-actions {
+      position: absolute;
+      top: var(--spectrum-spacing-100);
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: var(--spectrum-spacing-100);
+      min-width: calc(var(--spectrum-component-height-100) + 3em);
+    }
+    .chat-msg-agent-streaming.chat-msg-single-line .chat-msg-agent-actions {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .chat-msg-agent-streaming .chat-msg-timer {
+      font-size: var(--spectrum-font-size-75);
+      color: var(--spectrum-neutral-subdued-content-color-default);
+      transition: opacity 0.13s ease-out;
+    }
+    .chat-msg-agent-streaming .chat-msg-spinner {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--spectrum-neutral-subdued-content-color-default);
+    }
+    .chat-msg-agent-streaming .chat-msg-spinner svg {
+      width: var(--spectrum-icon-size-100);
+      height: var(--spectrum-icon-size-100);
+    }
+    .chat-msg-agent-streaming .chat-msg-spinner .chat-spinner-arc {
+      stroke: currentColor;
+      transform-origin: center;
+      animation: chat-spinner-rotate 0.8s linear infinite;
+    }
+    @keyframes chat-spinner-rotate {
+      to { transform: rotate(360deg); }
+    }
+    .chat-msg-agent-streaming .chat-msg-agent-actions .chat-msg-copy-wrap {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(calc(-50% + 4px));
+      flex-shrink: 0;
+    }
+    .chat-msg-agent-streaming .chat-msg-copy-btn {
+      position: static;
+      opacity: 0;
+    }
+    .chat-msg-agent-streaming:hover .chat-msg-timer,
+    .chat-msg-agent-streaming:hover .chat-msg-spinner {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .chat-msg-agent-streaming:hover .chat-msg-copy-wrap {
+      opacity: 1;
+    }
+    .chat-messages .chat-msg:last-child .chat-msg-body {
+      padding-right: 80px;
+    }
     .chat-msg + .chat-msg {
       margin-top: var(--spectrum-spacing-100);
+    }
+    .chat-msg.ai .chat-msg-copy-wrap {
+      right: 0;
+    }
+    .chat-msg.user .chat-msg-copy-wrap {
+      background: var(--spectrum-blue-200);
     }
     .chat-msg.ai {
       background: transparent;
@@ -967,26 +1098,11 @@
       align-items: center;
       gap: var(--spectrum-spacing-100);
     }
-    .chat-thinking-spinner {
-      display: inline-flex;
-      flex-shrink: 0;
-    }
-    .chat-thinking-spinner .chat-spinner-track {
-      stroke: var(--spectrum-gray-400);
-    }
-    .chat-thinking-spinner .chat-spinner-arc {
-      stroke: var(--spectrum-blue-1000);
-      transform-origin: center;
-      animation: chat-spinner-rotate 0.8s linear infinite;
-    }
-    @keyframes chat-spinner-rotate {
-      to { transform: rotate(360deg); }
-    }
 
     /* Chat Input */
     .chat-input {
       padding: var(--spectrum-spacing-200);
-      border-top: 2px solid var(--spectrum-gray-200);
+      border-top: 1px solid var(--spectrum-gray-200);
       flex-shrink: 0;
       background: var(--spectrum-gray-25);
     }
@@ -998,16 +1114,51 @@
       background: var(--spectrum-gray-25);
       border-top: 2px solid var(--spectrum-gray-200);
       overflow: hidden;
-      transition: border-color 0.25s ease;
+      transition: border-color 0.25s ease, border-top-color 0.01s 0s;
     }
     .queue-panel-sticky.empty {
       display: none;
     }
     .queue-panel-sticky.collapsed {
-      border-top: none;
+      border-top-color: transparent;
+      transition: border-color 0.25s ease, border-top-color 0.01s 0.25s;
     }
     .queue-panel-sticky:not(.collapsed) ~ .chat-status-bar .chat-status-queue-chevron {
       transform: rotate(180deg); /* points up when expanded */
+    }
+    .chat-status-tasks-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spectrum-spacing-75);
+      height: var(--spectrum-component-height-100);
+      padding: 0 var(--spectrum-spacing-100);
+      background: transparent;
+      border: none;
+      border-radius: var(--spectrum-corner-radius-100);
+      color: var(--spectrum-neutral-subdued-content-color-default);
+      font-size: var(--spectrum-font-size-100);
+      font-weight: var(--spectrum-medium-font-weight);
+      font-family: var(--spectrum-sans-serif-font-family);
+      cursor: pointer;
+      transition: background-color 0.13s ease-out, color 0.13s ease-out;
+    }
+    .chat-status-tasks-btn:hover {
+      background: var(--spectrum-button-hover-overlay);
+      color: var(--spectrum-neutral-content-color-default);
+    }
+    .chat-status-tasks-btn:focus-visible {
+      outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
+      outline-offset: var(--spectrum-focus-indicator-gap);
+    }
+    .chat-status-tasks-chevron {
+      flex-shrink: 0;
+      width: var(--spectrum-icon-size-100);
+      height: var(--spectrum-icon-size-100);
+      transition: transform 0.2s ease;
+    }
+    .task-progress-sticky:not(.collapsed) ~ .chat-status-bar .chat-status-tasks-chevron {
+      transform: rotate(180deg);
     }
     .queue-panel-content {
       max-height: var(--spectrum-task-list-max-height);
@@ -1067,13 +1218,13 @@
       display: none;
     }
     .prompt-queue-item-send,
-    .prompt-queue-item-edit,
+    .prompt-queue-item-copy,
     .prompt-queue-item-remove {
       opacity: 0;
       transition: opacity 0.13s ease-out;
     }
     .prompt-queue-item:hover .prompt-queue-item-send,
-    .prompt-queue-item:hover .prompt-queue-item-edit,
+    .prompt-queue-item:hover .prompt-queue-item-copy,
     .prompt-queue-item:hover .prompt-queue-item-remove {
       opacity: 1;
     }
@@ -1095,7 +1246,7 @@
     }
     .prompt-queue-item-unfold,
     .prompt-queue-item-send,
-    .prompt-queue-item-edit,
+    .prompt-queue-item-copy,
     .prompt-queue-item-remove {
       width: var(--spectrum-component-height-100);
       height: var(--spectrum-component-height-100);
@@ -1112,14 +1263,14 @@
     }
     .prompt-queue-item-unfold:hover,
     .prompt-queue-item-send:hover,
-    .prompt-queue-item-edit:hover,
+    .prompt-queue-item-copy:hover,
     .prompt-queue-item-remove:hover {
       background: var(--spectrum-button-hover-overlay);
       color: var(--spectrum-neutral-content-color-default);
     }
     .prompt-queue-item-unfold svg,
     .prompt-queue-item-send svg,
-    .prompt-queue-item-edit svg,
+    .prompt-queue-item-copy svg,
     .prompt-queue-item-remove svg {
       width: var(--spectrum-icon-size-100);
       height: var(--spectrum-icon-size-100);
@@ -1275,75 +1426,6 @@
     .exmod-chat[data-mode="plan"] .chat-input-wrap:focus-within {
       border-color: var(--spectrum-plan-accent-default);
       box-shadow: 0 0 0 1px var(--spectrum-plan-accent-default);
-    }
-
-    /* Queue edit mode: Cancel + Save, hide other prompt-area buttons */
-    .chat-queue-edit-actions {
-      display: none;
-      align-items: center;
-      gap: var(--spectrum-spacing-200);
-      flex-shrink: 0;
-      flex: 1;
-      min-width: 0;
-    }
-    .chat-queue-edit-spacer {
-      flex: 1;
-      min-width: 0;
-    }
-    .chat-input-wrap.editing-queue .chat-disclaimer,
-    .chat-input-wrap.editing-queue .chat-actions-spacer,
-    .chat-input-wrap.editing-queue .chat-attach-btn,
-    .chat-input-wrap.editing-queue .chat-mode-switcher,
-    .chat-input-wrap.editing-queue .chat-send-btn {
-      display: none !important;
-    }
-    .chat-input-wrap.editing-queue .chat-queue-edit-actions {
-      display: flex;
-    }
-    .chat-queue-cancel-btn {
-      padding: 0 var(--spectrum-spacing-200);
-      height: var(--spectrum-component-height-100);
-      border: 2px solid #000;
-      border-radius: 9999px;
-      background: #fff;
-      color: #000;
-      font-size: var(--spectrum-font-size-100);
-      font-weight: var(--spectrum-medium-font-weight);
-      font-family: var(--spectrum-sans-serif-font-family);
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: background-color 0.13s ease-out, color 0.13s ease-out;
-    }
-    .chat-queue-cancel-btn:hover {
-      background: #f5f5f5;
-    }
-    .chat-queue-cancel-btn:focus-visible {
-      outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
-      outline-offset: var(--spectrum-focus-indicator-gap);
-    }
-    .chat-queue-save-btn {
-      padding: 0 var(--spectrum-spacing-200);
-      height: var(--spectrum-component-height-100);
-      border: none;
-      border-radius: 9999px;
-      background: var(--spectrum-accent-background-color-default);
-      color: var(--spectrum-gray-25);
-      font-size: var(--spectrum-font-size-100);
-      font-weight: var(--spectrum-medium-font-weight);
-      font-family: var(--spectrum-sans-serif-font-family);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: background-color 0.13s ease-out;
-    }
-    .chat-queue-save-btn:hover {
-      background: var(--spectrum-accent-background-color-hover);
-    }
-    .chat-queue-save-btn:focus-visible {
-      outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
-      outline-offset: var(--spectrum-focus-indicator-gap);
     }
 
     /* === PREVIEW PANEL (Right) === */
@@ -2508,152 +2590,87 @@
 
           <!-- ====== CHAT PANEL (Left): toolbar, chat, prompt ====== -->
           <div class="exmod-chat" data-mode="execute">
-            <!-- Toolbar (task progress header + optional task list) -->
-            <div class="task-progress-sticky collapsed" id="task-progress">
-                <div class="chat-toolbar">
-                  <div class="chat-toolbar-left">
-                    <a class="chat-toolbar-nav-item" href="#" data-tooltip="Home" aria-label="Home" title="Home">
-                      <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path d="m17.13086,5.73438L11.38086,1.26172c-.8125-.63086-1.94922-.63184-2.76172.00098L2.86914,5.73438h-.00098c-.54395.42285-.86816,1.08691-.86816,1.77637v8.23926c0,1.24023,1.00977,2.25,2.25,2.25h11.5c1.24023,0,2.25-1.00977,2.25-2.25V7.51074c0-.68945-.32422-1.35352-.86914-1.77637Zm-5.63086,10.76562h-3v-4.75c0-.41309.33691-.75.75-.75h1.5c.41309,0,.75.33691.75.75v4.75Zm5-.75c0,.41309-.33691.75-.75.75h-2.75v-4.75c0-1.24023-1.00977-2.25-2.25-2.25h-1.5c-1.24023,0-2.25,1.00977-2.25,2.25v4.75h-2.75c-.41309,0-.75-.33691-.75-.75V7.51074c0-.22949.1084-.45117.28906-.59277l5.75-4.4707c.27246-.21191.65137-.20898.92188-.00098l5.74902,4.47168c.18164.1416.29004.36328.29004.59277v8.23926Z" fill="currentColor"/></svg>
-                    </a>
-                    <div class="task-progress-header" id="task-progress-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="task-progress-content" aria-label="Toggle task progress" data-tooltip="Toggle task list">
-                      <h3>Task Progress</h3>
-                      <span class="completed-count">2/9 completed</span>
-                    </div>
-                  </div>
-                  <div class="chat-toolbar-right">
-                    <button type="button" class="chat-toolbar-btn" data-tooltip="Settings" aria-label="Settings">
-                      <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M10.004 12.589c-.888 0-1.753-.46-2.228-1.283-.708-1.228-.286-2.801.94-3.51.593-.343 1.285-.433 1.949-.256.663.178 1.216.604 1.56 1.197.342.594.433 1.286.256 1.949-.178.663-.603 1.216-1.197 1.56-.403.233-.845.343-1.28.343m-.93-2.033c.295.508.949.683 1.46.39.247-.142.424-.373.498-.648s.036-.564-.107-.81c-.143-.248-.373-.425-.649-.499-.275-.073-.563-.035-.81.107-.51.295-.686.949-.391 1.46"/><path fill="currentColor" d="M6.907 18.318c-.34 0-.682-.085-.992-.264l-.82-.473c-.893-.514-1.25-1.65-.811-2.583l.58-1.233q-.398-.546-.672-1.161l-1.357-.113C1.806 12.406 1 11.531 1 10.5v-.946c0-1.033.805-1.91 1.833-1.994l1.354-.115q.138-.313.302-.6.165-.285.37-.564l-.581-1.23c-.441-.932-.087-2.068.807-2.584l.82-.474c.893-.516 2.054-.259 2.643.59l.777 1.118q.667-.074 1.341 0l.775-1.119c.59-.85 1.751-1.11 2.644-.594l.82.473c.894.516 1.25 1.651.81 2.584l-.58 1.232q.399.548.672 1.161l1.357.113c1.028.085 1.834.96 1.835 1.991v.947c.001 1.031-.803 1.907-1.832 1.994l-1.355.115q-.136.313-.303.6-.164.284-.368.563l.58 1.23c.441.93.087 2.067-.806 2.584l-.82.475c-.894.518-2.054.258-2.643-.591l-.778-1.118q-.67.073-1.34 0l-.777 1.12c-.384.555-1.012.857-1.65.857M6.904 3.225q-.13 0-.248.066l-.82.475c-.223.129-.312.412-.202.645l.78 1.65c.125.267.083.583-.108.807-.204.24-.373.477-.517.726q-.212.37-.368.81c-.098.278-.35.472-.644.496l-1.819.154c-.262.022-.458.236-.458.499v.946c0 .258.202.477.459.498l1.82.15c.293.025.546.22.644.498.2.56.497 1.076.887 1.532.192.223.234.54.109.806l-.778 1.653c-.11.233-.02.517.203.645l.82.474c.224.13.514.063.66-.148l1.041-1.502c.168-.242.46-.369.753-.31.588.108 1.184.11 1.77 0 .29-.055.585.066.753.31l1.042 1.499c.147.21.439.276.66.147l.821-.474c.226-.13.314-.409.201-.646l-.779-1.65c-.126-.267-.084-.583.108-.807.204-.24.373-.477.515-.725h.001c.143-.248.263-.512.369-.81.098-.279.35-.473.644-.497l1.819-.153c.256-.022.458-.24.458-.499l-.001-.947c0-.262-.197-.476-.459-.498l-1.819-.15c-.294-.025-.546-.22-.645-.498-.198-.56-.496-1.075-.887-1.532-.191-.224-.234-.54-.108-.806l.777-1.653c.11-.233.02-.517-.203-.646l-.82-.473c-.224-.127-.514-.061-.66.15l-1.04 1.5c-.168.243-.46.368-.753.31-.591-.11-1.188-.11-1.77 0-.292.052-.586-.067-.754-.31L7.316 3.439c-.096-.137-.253-.213-.412-.213"/></svg>
-                    </button>
-                    <button type="button" class="chat-toolbar-btn" data-tooltip="Download chat" aria-label="Download chat">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M13.53 9.427c-.292-.292-.766-.294-1.06 0l-1.717 1.714V2.75c0-.414-.336-.75-.75-.75s-.75.336-.75.75v8.4L7.53 9.426c-.293-.293-.767-.293-1.06 0s-.293.767 0 1.06l2.998 2.998c.146.147.338.22.53.22.191 0 .384-.073.53-.22l3.002-2.998c.293-.292.293-.767 0-1.06"></path><path fill="currentColor" d="M15.75 18H4.25C3.01 18 2 16.99 2 15.75v-2.021c0-.415.336-.75.75-.75s.75.335.75.75v2.021c0 .413.337.75.75.75h11.5c.413 0 .75-.337.75-.75v-2.021c0-.415.336-.75.75-.75s.75.335.75.75v2.021c0 1.24-1.01 2.25-2.25 2.25"></path></svg>
-                    </button>
-                    <button type="button" class="chat-toolbar-btn chat-toolbar-btn--disabled" id="clear-chat-btn" data-tooltip="Clear chat" aria-label="Clear chat" disabled>
-                      <svg viewBox="0 0 20 20" focusable="false"><path fill="currentColor" d="M8.249 15.021c-.4 0-.733-.317-.748-.72l-.25-6.5c-.017-.414.307-.763.72-.779H8c.4 0 .733.317.748.72l.25 6.5c.017.414-.307.763-.72.778zM11.751 15.021h-.03c-.413-.016-.737-.365-.72-.779l.25-6.5c.015-.403.348-.72.748-.72h.03c.413.016.737.365.72.779l-.25 6.5c-.015.403-.348.72-.748.72"/><path fill="currentColor" d="M17 4h-3.5v-.75C13.5 2.01 12.49 1 11.25 1h-2.5C7.51 1 6.5 2.01 6.5 3.25V4H3c-.414 0-.75.336-.75.75s.336.75.75.75h.52l.422 10.342C3.99 17.052 4.98 18 6.19 18h7.62c1.211 0 2.2-.948 2.248-2.158L16.48 5.5H17c.414 0 .75-.336.75-.75S17.414 4 17 4m-9-.75c0-.413.337-.75.75-.75h2.5c.413 0 .75.337.75.75V4H8zm6.56 12.531c-.017.404-.346.719-.75.719H6.19c-.404 0-.733-.315-.75-.719L5.02 5.5h9.96z"/></svg>
-                    </button>
-                  </div>
-                </div>
-                <!-- Progress Bar - always visible, edge to edge -->
-                <div class="progress-bar-wrap">
-                  <div class="progress-fill" style="width: 33.33%"></div>
-                </div>
-                <div class="task-progress-content" id="task-progress-content">
-              <!-- Task List -->
-              <div class="task-list">
-                <!-- Completed toggle -->
-                <div class="task-completed-section collapsed" id="task-completed-section">
-                  <div class="task-completed-toggle" id="task-completed-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="task-completed-items">
-                    <span class="task-completed-chevron" aria-hidden="true">
-                      <svg viewBox="0 0 20 20" width="16" height="16"><path fill="currentColor" d="M3.545 12.237c0-.196.077-.393.23-.54L9.48 6.21c.29-.28.749-.28 1.039 0l5.716 5.5c.3.287.308.763.02 1.06-.286.298-.76.308-1.059.02L9.998 7.791l-5.184 4.986c-.297.288-.772.279-1.06-.02-.14-.145-.21-.332-.21-.52"></path></svg>
-                    </span>
-                    2 completed
-                  </div>
-                  <div class="task-completed-items" id="task-completed-items">
-                    <div class="task-item task-item-completed">
-                      <span class="task-item-check completed">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M10 18.75c-4.825 0-8.75-3.925-8.75-8.75S5.175 1.25 10 1.25s8.75 3.925 8.75 8.75-3.925 8.75-8.75 8.75m0-16c-3.998 0-7.25 3.252-7.25 7.25s3.252 7.25 7.25 7.25 7.25-3.252 7.25-7.25S13.998 2.75 10 2.75"></path><path fill="currentColor" d="M9.223 13.5c-.212 0-.415-.09-.558-.248l-2.51-2.792c-.278-.309-.253-.782.055-1.06s.781-.252 1.06.056l1.893 2.107 3.487-4.756c.244-.334.711-.41 1.048-.161.334.244.406.713.161 1.047l-4.032 5.5c-.133.183-.342.295-.567.306z"></path></svg>
-                      </span>
-                      <span class="task-item-text">Create session directory structure and session.json</span>
-                    </div>
-                    <div class="task-item task-item-completed">
-                      <span class="task-item-check completed">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M10 18.75c-4.825 0-8.75-3.925-8.75-8.75S5.175 1.25 10 1.25s8.75 3.925 8.75 8.75-3.925 8.75-8.75 8.75m0-16c-3.998 0-7.25 3.252-7.25 7.25s3.252 7.25 7.25 7.25 7.25-3.252 7.25-7.25S13.998 2.75 10 2.75"></path><path fill="currentColor" d="M9.223 13.5c-.212 0-.415-.09-.558-.248l-2.51-2.792c-.278-.309-.253-.782.055-1.06s.781-.252 1.06.056l1.893 2.107 3.487-4.756c.244-.334.711-.41 1.048-.161.334.244.406.713.161 1.047l-4.032 5.5c-.133.183-.342.295-.567.306z"></path></svg>
-                      </span>
-                      <span class="task-item-text">Inspect original page - full screenshot and element collection</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- In-progress task (with rotating chevron) -->
-                <div class="task-item task-item-in-progress">
-                  <span class="task-item-spinner" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
-                      <circle class="task-spinner-track" cx="12" cy="12" r="9" stroke-width="2"/>
-                      <circle class="task-spinner-arc" cx="12" cy="12" r="9" stroke-width="2" stroke-dasharray="28 56" stroke-linecap="round"/>
-                    </svg>
-                  </span>
-                  <span class="task-item-text">Create new block implementations (LISTEN) for leadership lists and governance</span>
-                </div>
-
-                <!-- Remaining tasks -->
-                <div class="task-item">
-                  <span class="task-item-check pending"></span>
-                  <span class="task-item-text">Check blocks against original site and iterate on styles</span>
-                </div>
-                <div class="task-item">
-                  <span class="task-item-check pending"></span>
-                  <span class="task-item-text">Update import parsers for the new blocks</span>
-                </div>
-                <div class="task-item">
-                  <span class="task-item-check pending"></span>
-                  <span class="task-item-text">Re-import leadership list and governance pages</span>
-                </div>
-                <div class="task-item">
-                  <span class="task-item-check pending"></span>
-                  <span class="task-item-text">Add metadata to leadership pages</span>
-                </div>
-                <div class="task-item">
-                  <span class="task-item-check pending"></span>
-                  <span class="task-item-text">Validate all governance pages</span>
-                </div>
-                <div class="task-item">
-                  <span class="task-item-check pending"></span>
-                  <span class="task-item-text">Final QA and documentation</span>
-                </div>
+            <!-- Top toolbar: Home, Settings, Change view -->
+            <div class="chat-toolbar chat-toolbar-top">
+              <div class="chat-toolbar-left">
+                <a class="chat-toolbar-nav-item" href="#" data-tooltip="Home" aria-label="Home" title="Home">
+                  <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path d="m17.13086,5.73438L11.38086,1.26172c-.8125-.63086-1.94922-.63184-2.76172.00098L2.86914,5.73438h-.00098c-.54395.42285-.86816,1.08691-.86816,1.77637v8.23926c0,1.24023,1.00977,2.25,2.25,2.25h11.5c1.24023,0,2.25-1.00977,2.25-2.25V7.51074c0-.68945-.32422-1.35352-.86914-1.77637Zm-5.63086,10.76562h-3v-4.75c0-.41309.33691-.75.75-.75h1.5c.41309,0,.75.33691.75.75v4.75Zm5-.75c0,.41309-.33691.75-.75.75h-2.75v-4.75c0-1.24023-1.00977-2.25-2.25-2.25h-1.5c-1.24023,0-2.25,1.00977-2.25,2.25v4.75h-2.75c-.41309,0-.75-.33691-.75-.75V7.51074c0-.22949.1084-.45117.28906-.59277l5.75-4.4707c.27246-.21191.65137-.20898.92188-.00098l5.74902,4.47168c.18164.1416.29004.36328.29004.59277v8.23926Z" fill="currentColor"/></svg>
+                </a>
+                <div class="chat-toolbar-divider" aria-hidden="true"></div>
+                <button type="button" class="chat-toolbar-btn" data-tooltip="Settings" aria-label="Settings">
+                  <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M10.004 12.589c-.888 0-1.753-.46-2.228-1.283-.708-1.228-.286-2.801.94-3.51.593-.343 1.285-.433 1.949-.256.663.178 1.216.604 1.56 1.197.342.594.433 1.286.256 1.949-.178.663-.603 1.216-1.197 1.56-.403.233-.845.343-1.28.343m-.93-2.033c.295.508.949.683 1.46.39.247-.142.424-.373.498-.648s.036-.564-.107-.81c-.143-.248-.373-.425-.649-.499-.275-.073-.563-.035-.81.107-.51.295-.686.949-.391 1.46"/><path fill="currentColor" d="M6.907 18.318c-.34 0-.682-.085-.992-.264l-.82-.473c-.893-.514-1.25-1.65-.811-2.583l.58-1.233q-.398-.546-.672-1.161l-1.357-.113C1.806 12.406 1 11.531 1 10.5v-.946c0-1.033.805-1.91 1.833-1.994l1.354-.115q.138-.313.302-.6.165-.285.37-.564l-.581-1.23c-.441-.932-.087-2.068.807-2.584l.82-.474c.893-.516 2.054-.259 2.643.59l.777 1.118q.667-.074 1.341 0l.775-1.119c.59-.85 1.751-1.11 2.644-.594l.82.473c.894.516 1.25 1.651.81 2.584l-.58 1.232q.399.548.672 1.161l1.357.113c1.028.085 1.834.96 1.835 1.991v.947c.001 1.031-.803 1.907-1.832 1.994l-1.355.115q-.136.313-.303.6-.164.284-.368.563l.58 1.23c.441.93.087 2.067-.806 2.584l-.82.475c-.894.518-2.054.258-2.643-.591l-.778-1.118q-.67.073-1.34 0l-.777 1.12c-.384.555-1.012.857-1.65.857M6.904 3.225q-.13 0-.248.066l-.82.475c-.223.129-.312.412-.202.645l.78 1.65c.125.267.083.583-.108.807-.204.24-.373.477-.517.726q-.212.37-.368.81c-.098.278-.35.472-.644.496l-1.819.154c-.262.022-.458.236-.458.499v.946c0 .258.202.477.459.498l1.82.15c.293.025.546.22.644.498.2.56.497 1.076.887 1.532.192.223.234.54.109.806l-.778 1.653c-.11.233-.02.517.203.645l.82.474c.224.13.514.063.66-.148l1.041-1.502c.168-.242.46-.369.753-.31.588.108 1.184.11 1.77 0 .29-.055.585.066.753.31l1.042 1.499c.147.21.439.276.66.147l.821-.474c.226-.13.314-.409.201-.646l-.779-1.65c-.126-.267-.084-.583.108-.807.204-.24.373-.477.515-.725h.001c.143-.248.263-.512.369-.81.098-.279.35-.473.644-.497l1.819-.153c.256-.022.458-.24.458-.499l-.001-.947c0-.262-.197-.476-.459-.498l-1.819-.15c-.294-.025-.546-.22-.645-.498-.198-.56-.496-1.075-.887-1.532-.191-.224-.234-.54-.108-.806l.777-1.653c.11-.233.02-.517-.203-.646l-.82-.473c-.224-.127-.514-.061-.66.15l-1.04 1.5c-.168.243-.46.368-.753.31-.591-.11-1.188-.11-1.77 0-.292.052-.586-.067-.754-.31L7.316 3.439c-.096-.137-.253-.213-.412-.213"/></svg>
+                </button>
               </div>
-                </div>
+              <div class="chat-toolbar-right">
               </div>
+            </div>
 
-              <!-- Chat Messages -->
+            <!-- Chat Messages -->
               <div class="chat-messages">
                 <div class="chat-msg ai">
-                  <strong>Figma Repository Labels</strong> — I&rsquo;ll now listing every page with: <code>source URL</code>, and <code>description</code>. I — this was a duplicate of what <code>/sitemap_1.json</code> already made.
+                  <div class="chat-msg-body"><strong>Figma Repository Labels</strong> — I&rsquo;ll now listing every page with: <code>source URL</code>, and <code>description</code>. I — this was a duplicate of what <code>/sitemap_1.json</code> already made.</div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg ai">
-                  A short section closing: <code>/sitemap_1.json</code> is the <strong>single source of truth</strong> for all pages/segment tracking, with a...
-                  <br>- Read the <code>URL mapping convention</code> rules referencing sitemap paths
+                  <div class="chat-msg-body">A short section closing: <code>/sitemap_1.json</code> is the <strong>single source of truth</strong> for all pages/segment tracking, with a...<br>- Read the <code>URL mapping convention</code> rules referencing sitemap paths</div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg ai">
-                  <strong>Updated Bulk Publish URL List</strong>
-                  <br>Format: <code>Path</code>, <code>.html</code>, <code>Title</code> to <code>Read /sitemap_1.json and pages[1].webpath</code> — The sitemap is now the authoritative source for generating publish URL lists.
+                  <div class="chat-msg-body"><strong>Updated Bulk Publish URL List</strong><br>Format: <code>Path</code>, <code>.html</code>, <code>Title</code> to <code>Read /sitemap_1.json and pages[1].webpath</code> — The sitemap is now the authoritative source for generating publish URL lists.</div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg ai">
-                  <strong>Click to submit this prompt!</strong> Mark the request as <code>separate form</code> and all <code>article pages</code> as generated accurately and verify the...
+                  <div class="chat-msg-body"><strong>Click to submit this prompt!</strong> Mark the request as <code>separate form</code> and all <code>article pages</code> as generated accurately and verify the...</div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg user">
-                  For the following pages, I&rsquo;d need you to figure out what <strong>blocks</strong> to create for them. Make custom versions of blocks where you see gaps, or adjusting the content structure if needed, and eventually create <code>import infrastructure</code> for them.
+                  <div class="chat-msg-body">For the following pages, I&rsquo;d need you to figure out what <strong>blocks</strong> to create for them. Make custom versions of blocks where you see gaps, or adjusting the content structure if needed, and eventually create <code>import infrastructure</code> for them.</div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg ai">
-                  Let me first handle the <code>sitemap</code> approach, while simultaneously analyzing the source pages.
-                  <br><br>I need ~<strong>241</strong> pages approved if separate form + <strong>234</strong> article-header pages. How let me analyze the...
+                  <div class="chat-msg-body">Let me first handle the <code>sitemap</code> approach, while simultaneously analyzing the source pages.<br><br>I need ~<strong>241</strong> pages approved if separate form + <strong>234</strong> article-header pages. How let me analyze the...</div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg user">
-                  what files still need to be approved?
+                  <div class="chat-msg-body">what files still need to be approved?</div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg ai">
-                  Let me check the migration status.
+                  <div class="chat-msg-body">Let me check the migration status.</div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg ai">
-                  <strong>Here&rsquo;s the migration status breakdown:</strong>
-                  <br><br><strong>Total pages:</strong> 302 | <strong>Approved:</strong> 245 | <strong>Not yet approved:</strong> 57
-                  <br><br>Of the 57 unapproved: <code>47</code> imported but not validated, <code>10</code> validated but ready for approval (<code>home</code>, <code>our-company</code>, <code>our-culture</code>, <code>our-strategy</code>, <code>our-impact</code>, <code>our-stories</code>, <code>customer-first</code>, <code>innovation-driven</code>, <code>people-led</code>, <code>political-engagement-policy</code>, <code>political-engagement-policy/archive</code>).
-                  <br><br>All fragments (<code>nav</code>, <code>footer</code>) are approved. All <strong>302</strong> pages have been imported.
-                  <br><br>Biggest groups needing work: <strong>20</strong> leadership bios, <strong>6</strong> governance pages, several <code>our-impact</code> sub-pages, newsroom pages (<code>awards</code>, <code>press-releases</code>, <code>statements</code>), misc pages.
-                  <br><br>Would you like me to start <strong>validating</strong> or <strong>critiquing</strong> any specific group?
+                  <div class="chat-msg-body"><strong>Here&rsquo;s the migration status breakdown:</strong><br><br><strong>Total pages:</strong> 302 | <strong>Approved:</strong> 245 | <strong>Not yet approved:</strong> 57<br><br>Of the 57 unapproved: <code>47</code> imported but not validated, <code>10</code> validated but ready for approval (<code>home</code>, <code>our-company</code>, <code>our-culture</code>, <code>our-strategy</code>, <code>our-impact</code>, <code>our-stories</code>, <code>customer-first</code>, <code>innovation-driven</code>, <code>people-led</code>, <code>political-engagement-policy</code>, <code>political-engagement-policy/archive</code>).<br><br>All fragments (<code>nav</code>, <code>footer</code>) are approved. All <strong>302</strong> pages have been imported.<br><br>Biggest groups needing work: <strong>20</strong> leadership bios, <strong>6</strong> governance pages, several <code>our-impact</code> sub-pages, newsroom pages (<code>awards</code>, <code>press-releases</code>, <code>statements</code>), misc pages.<br><br>Would you like me to start <strong>validating</strong> or <strong>critiquing</strong> any specific group?</div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg user">
-                  start critiquing and validating all of them
+                  <div class="chat-msg-body">start critiquing and validating all of them</div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg ai">
-                  I&rsquo;ll start working through all <strong>57</strong> pages. Let me organize them and begin the <code>critique</code> process.
+                  <div class="chat-msg-body">I&rsquo;ll start working through all <strong>57</strong> pages. Let me organize them and begin the <code>critique</code> process.</div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg ai">
-                  Let me start by critiquing the pages that are already <strong>validated</strong>. I&rsquo;ll begin with the <code>home</code> page.
+                  <div class="chat-msg-body">Let me start by critiquing the pages that are already <strong>validated</strong>. I&rsquo;ll begin with the <code>home</code> page.</div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg ai">
-                  I&rsquo;ll start the <code>critique workflow</code> for the home page. Let me work through all the steps systematically.
+                  <div class="chat-msg-body">I&rsquo;ll start the <code>critique workflow</code> for the home page. Let me work through all the steps systematically.</div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
-                <div class="chat-msg ai">
-                  <strong>Step 1: Initialize Session</strong> — Home Page
+                <div class="chat-msg ai chat-msg-agent-streaming chat-msg-single-line">
+                  <div class="chat-msg-body"><strong>Step 1: Initialize Session</strong> — Home Page</div>
+                  <div class="chat-msg-agent-actions">
+                    <span class="chat-msg-timer">1min</span>
+                    <span class="chat-msg-spinner" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+                        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity="0.25"/>
+                        <circle class="chat-spinner-arc" cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" stroke-dasharray="28 56" stroke-linecap="round"/>
+                      </svg>
+                    </span>
+                    <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
+                  </div>
                 </div>
               </div>
 
@@ -2663,26 +2680,90 @@
                   <div class="prompt-queue-items" id="prompt-queue-items"></div>
                 </div>
               </div>
-              <!-- Bottom status toolbar (thinking + queue + stop) -->
-              <div class="chat-status-bar" id="chat-status-bar">
-                <div class="chat-status-bar-left">
-                  <div class="chat-status-thinking" id="chat-status-thinking">
-                    <span class="chat-thinking-spinner" aria-hidden="true">
-                      <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
-                        <circle class="chat-spinner-track" cx="12" cy="12" r="9" stroke-width="2"/>
-                        <circle class="chat-spinner-arc" cx="12" cy="12" r="9" stroke-width="2" stroke-dasharray="28 56" stroke-linecap="round"/>
-                      </svg>
-                    </span>
-                    <button type="button" class="chat-toolbar-btn chat-status-stop-btn" id="interrupt-task-btn" data-tooltip="Interrupt task" aria-label="Interrupt task">
-                      <svg viewBox="0 0 18 18" focusable="false" aria-hidden="true"><path fill="currentColor" d="M9,1a8,8,0,1,0,8,8A8,8,0,0,0,9,1Zm4,11.5a.5.5,0,0,1-.5.5h-7a.5.5,0,0,1-.5-.5v-7A.5.5,0,0,1,5.5,5h7a.5.5,0,0,1,.5.5Z"/></svg>
-                    </button>
-                    <span class="chat-thinking-text" id="chat-thinking-text">thinking… (1min)</span>
+              <!-- Task progress panel (collapsible, unfolds above status bar) -->
+              <div class="task-progress-sticky collapsed" id="task-progress">
+                <div class="task-progress-content" id="task-progress-content">
+                  <div class="task-list">
+                    <div class="task-completed-section collapsed" id="task-completed-section">
+                      <div class="task-completed-toggle" id="task-completed-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="task-completed-items">
+                        <span class="task-completed-chevron" aria-hidden="true">
+                          <svg viewBox="0 0 20 20" width="16" height="16"><path fill="currentColor" d="M3.545 12.237c0-.196.077-.393.23-.54L9.48 6.21c.29-.28.749-.28 1.039 0l5.716 5.5c.3.287.308.763.02 1.06-.286.298-.76.308-1.059.02L9.998 7.791l-5.184 4.986c-.297.288-.772.279-1.06-.02-.14-.145-.21-.332-.21-.52"></path></svg>
+                        </span>
+                        2 completed
+                      </div>
+                      <div class="task-completed-items" id="task-completed-items">
+                        <div class="task-item task-item-completed">
+                          <span class="task-item-check completed">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M10 18.75c-4.825 0-8.75-3.925-8.75-8.75S5.175 1.25 10 1.25s8.75 3.925 8.75 8.75-3.925 8.75-8.75 8.75m0-16c-3.998 0-7.25 3.252-7.25 7.25s3.252 7.25 7.25 7.25 7.25-3.252 7.25-7.25S13.998 2.75 10 2.75"></path><path fill="currentColor" d="M9.223 13.5c-.212 0-.415-.09-.558-.248l-2.51-2.792c-.278-.309-.253-.782.055-1.06s.781-.252 1.06.056l1.893 2.107 3.487-4.756c.244-.334.711-.41 1.048-.161.334.244.406.713.161 1.047l-4.032 5.5c-.133.183-.342.295-.567.306z"></path></svg>
+                          </span>
+                          <span class="task-item-text">Create session directory structure and session.json</span>
+                        </div>
+                        <div class="task-item task-item-completed">
+                          <span class="task-item-check completed">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M10 18.75c-4.825 0-8.75-3.925-8.75-8.75S5.175 1.25 10 1.25s8.75 3.925 8.75 8.75-3.925 8.75-8.75 8.75m0-16c-3.998 0-7.25 3.252-7.25 7.25s3.252 7.25 7.25 7.25 7.25-3.252 7.25-7.25S13.998 2.75 10 2.75"></path><path fill="currentColor" d="M9.223 13.5c-.212 0-.415-.09-.558-.248l-2.51-2.792c-.278-.309-.253-.782.055-1.06s.781-.252 1.06.056l1.893 2.107 3.487-4.756c.244-.334.711-.41 1.048-.161.334.244.406.713.161 1.047l-4.032 5.5c-.133.183-.342.295-.567.306z"></path></svg>
+                          </span>
+                          <span class="task-item-text">Inspect original page - full screenshot and element collection</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="task-item task-item-in-progress">
+                      <span class="task-item-spinner" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+                          <circle class="task-spinner-track" cx="12" cy="12" r="9" stroke-width="2"/>
+                          <circle class="task-spinner-arc" cx="12" cy="12" r="9" stroke-width="2" stroke-dasharray="28 56" stroke-linecap="round"/>
+                        </svg>
+                      </span>
+                      <span class="task-item-text">Create new block implementations (LISTEN) for leadership lists and governance</span>
+                    </div>
+                    <div class="task-item">
+                      <span class="task-item-check pending"></span>
+                      <span class="task-item-text">Check blocks against original site and iterate on styles</span>
+                    </div>
+                    <div class="task-item">
+                      <span class="task-item-check pending"></span>
+                      <span class="task-item-text">Update import parsers for the new blocks</span>
+                    </div>
+                    <div class="task-item">
+                      <span class="task-item-check pending"></span>
+                      <span class="task-item-text">Re-import leadership list and governance pages</span>
+                    </div>
+                    <div class="task-item">
+                      <span class="task-item-check pending"></span>
+                      <span class="task-item-text">Add metadata to leadership pages</span>
+                    </div>
+                    <div class="task-item">
+                      <span class="task-item-check pending"></span>
+                      <span class="task-item-text">Validate all governance pages</span>
+                    </div>
+                    <div class="task-item">
+                      <span class="task-item-check pending"></span>
+                      <span class="task-item-text">Final QA and documentation</span>
+                    </div>
                   </div>
                 </div>
-                <div class="chat-status-bar-right">
+                <div class="progress-fill" id="progress-fill" style="width: 33.33%"></div>
+              </div>
+              <!-- Bottom status toolbar (thinking + tasks + queue + interrupt + download + clear) -->
+              <div class="chat-status-bar" id="chat-status-bar">
+                <div class="chat-status-bar-left">
+                  <div class="task-progress-header chat-status-tasks-btn" id="task-progress-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="task-progress-content" aria-label="Toggle task progress" data-tooltip="Toggle task list">
+                    <span class="chat-status-tasks-label">Tasks (2/9)</span>
+                    <svg class="chat-status-tasks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                  </div>
                   <button type="button" class="chat-status-queue-btn hidden" id="prompt-queue-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="prompt-queue-content" aria-label="Queue" data-tooltip="Queue">
-                    <span class="chat-status-queue-label" id="prompt-queue-label">0 queued</span>
+                    <span class="chat-status-queue-label" id="prompt-queue-label">Queue (0)</span>
                     <svg class="chat-status-queue-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                  </button>
+                </div>
+                <div class="chat-status-bar-right">
+                  <button type="button" class="chat-toolbar-btn" id="interrupt-task-btn" data-tooltip="Interrupt task" aria-label="Interrupt task">
+                    <svg viewBox="0 0 18 18" focusable="false" aria-hidden="true"><path fill="currentColor" d="M9,1a8,8,0,1,0,8,8A8,8,0,0,0,9,1Zm4,11.5a.5.5,0,0,1-.5.5h-7a.5.5,0,0,1-.5-.5v-7A.5.5,0,0,1,5.5,5h7a.5.5,0,0,1,.5.5Z"/></svg>
+                  </button>
+                  <button type="button" class="chat-toolbar-btn" id="download-chat-btn" data-tooltip="Download chat" aria-label="Download chat">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M13.53 9.427c-.292-.292-.766-.294-1.06 0l-1.717 1.714V2.75c0-.414-.336-.75-.75-.75s-.75.336-.75.75v8.4L7.53 9.426c-.293-.293-.767-.293-1.06 0s-.293.767 0 1.06l2.998 2.998c.146.147.338.22.53.22.191 0 .384-.073.53-.22l3.002-2.998c.293-.292.293-.767 0-1.06"></path><path fill="currentColor" d="M15.75 18H4.25C3.01 18 2 16.99 2 15.75v-2.021c0-.415.336-.75.75-.75s.75.335.75.75v2.021c0 .413.337.75.75.75h11.5c.413 0 .75-.337.75-.75v-2.021c0-.415.336-.75.75-.75s.75.335.75.75v2.021c0 1.24-1.01 2.25-2.25 2.25"></path></svg>
+                  </button>
+                  <button type="button" class="chat-toolbar-btn chat-toolbar-btn--disabled" id="clear-chat-btn" data-tooltip="Clear chat" aria-label="Clear chat" disabled>
+                    <svg viewBox="0 0 20 20" focusable="false"><path fill="currentColor" d="M8.249 15.021c-.4 0-.733-.317-.748-.72l-.25-6.5c-.017-.414.307-.763.72-.779H8c.4 0 .733.317.748.72l.25 6.5c.017.414-.307.763-.72.778zM11.751 15.021h-.03c-.413-.016-.737-.365-.72-.779l.25-6.5c.015-.403.348-.72.748-.72h.03c.413.016.737.365.72.779l-.25 6.5c-.015.403-.348.72-.748.72"/><path fill="currentColor" d="M17 4h-3.5v-.75C13.5 2.01 12.49 1 11.25 1h-2.5C7.51 1 6.5 2.01 6.5 3.25V4H3c-.414 0-.75.336-.75.75s.336.75.75.75h.52l.422 10.342C3.99 17.052 4.98 18 6.19 18h7.62c1.211 0 2.2-.948 2.248-2.158L16.48 5.5H17c.414 0 .75-.336.75-.75S17.414 4 17 4m-9-.75c0-.413.337-.75.75-.75h2.5c.413 0 .75.337.75.75V4H8zm6.56 12.531c-.017.404-.346.719-.75.719H6.19c-.404 0-.733-.315-.75-.719L5.02 5.5h9.96z"/></svg>
                   </button>
                 </div>
               </div>
@@ -2696,11 +2777,6 @@
                   <div class="chat-input-actions">
                     <span class="chat-disclaimer">AI responses may be inaccurate or misleading.<br><a href="#">Please verify all generated responses.</a></span>
                     <span class="chat-actions-spacer"></span>
-                    <div class="chat-queue-edit-actions" id="chat-queue-edit-actions">
-                      <span class="chat-queue-edit-spacer"></span>
-                      <button class="chat-queue-cancel-btn" type="button" id="chat-queue-cancel-btn" aria-label="Cancel">Cancel</button>
-                      <button class="chat-queue-save-btn" type="button" id="chat-queue-save-btn" aria-label="Save">Save</button>
-                    </div>
                     <button class="chat-attach-btn" type="button" aria-label="Attach file">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
                     </button>
@@ -3733,15 +3809,24 @@
     });
     var taskProgress = document.getElementById('task-progress');
     var taskProgressToggle = document.getElementById('task-progress-toggle');
+    var panelPending = { tasks: null, queue: null };
     var taskProgressContent = document.getElementById('task-progress-content');
-    var progressBarFill = document.querySelector('.progress-bar-wrap .progress-fill');
+    var progressBarFill = document.getElementById('progress-fill');
     var chatMessages = document.querySelector('.chat-messages');
     var clearChatBtn = document.getElementById('clear-chat-btn');
+    var downloadChatBtn = document.getElementById('download-chat-btn');
     var taskStopped = false;
+    function updateDownloadChatBtn() {
+      if (!downloadChatBtn || !chatMessages) return;
+      var hasMessages = chatMessages.querySelectorAll('.chat-msg').length > 0;
+      downloadChatBtn.disabled = !hasMessages;
+      downloadChatBtn.classList.toggle('chat-toolbar-btn--disabled', !hasMessages);
+    }
     function resetTaskProgress() {
       if (taskProgressToggle) {
-        taskProgressToggle.innerHTML = '';
-        taskProgressToggle.classList.add('task-progress-header-stopped');
+        var label = taskProgressToggle.querySelector('.chat-status-tasks-label');
+        if (label) label.textContent = 'Tasks';
+        taskProgressToggle.classList.add('task-progress-header-stopped', 'hidden');
         taskProgressToggle.removeAttribute('role');
         taskProgressToggle.removeAttribute('tabindex');
         taskProgressToggle.removeAttribute('aria-expanded');
@@ -3755,14 +3840,13 @@
     function interruptTask() {
       if (taskStopped) return;
       taskStopped = true;
-      var statusThinking = document.getElementById('chat-status-thinking');
-      var statusBar = document.getElementById('chat-status-bar');
-      if (statusThinking) statusThinking.classList.add('hidden');
-      if (statusBar) {
-        var queueLabel = document.getElementById('prompt-queue-label');
-        var hasQueue = queueLabel && parseInt(queueLabel.textContent || '0', 10) > 0;
-        if (!hasQueue) statusBar.classList.add('hidden');
+      var interruptBtn = document.getElementById('interrupt-task-btn');
+      if (interruptBtn) {
+        interruptBtn.disabled = true;
+        interruptBtn.classList.add('chat-toolbar-btn--disabled');
       }
+      var statusThinking = document.getElementById('chat-status-thinking');
+      if (statusThinking) statusThinking.classList.add('hidden');
       if (clearChatBtn) {
         clearChatBtn.disabled = false;
         clearChatBtn.classList.remove('chat-toolbar-btn--disabled');
@@ -3773,19 +3857,65 @@
       if (chatMessages) chatMessages.innerHTML = '<div class="chat-empty-state" aria-live="polite">Hi, I can help you migrate your website to Edge Delivery Services.</div>';
       resetTaskProgress();
       if (clearChatBtn) {
-        clearChatBtn.disabled = false;
-        clearChatBtn.classList.remove('chat-toolbar-btn--disabled');
+        clearChatBtn.disabled = true;
+        clearChatBtn.classList.add('chat-toolbar-btn--disabled');
       }
+      updateDownloadChatBtn();
     }
     document.getElementById('interrupt-task-btn')?.addEventListener('click', interruptTask);
+    if (chatMessages) {
+      chatMessages.addEventListener('click', function(e) {
+        var copyBtn = e.target.closest('.chat-msg-copy-btn');
+        if (!copyBtn) return;
+        var msg = copyBtn.closest('.chat-msg');
+        if (!msg) return;
+        var body = msg.querySelector('.chat-msg-body');
+        var text = body ? body.innerText || body.textContent || '' : '';
+        if (text && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text);
+        }
+      });
+      function updateChatMsgSingleLine(msg) {
+        var body = msg && msg.querySelector('.chat-msg-body');
+        if (!body) return;
+        var style = getComputedStyle(body);
+        var lineHeight = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.5;
+        if (body.scrollHeight <= lineHeight * 1.5) {
+          msg.classList.add('chat-msg-single-line');
+        } else {
+          msg.classList.remove('chat-msg-single-line');
+        }
+      }
+      chatMessages.querySelectorAll('.chat-msg').forEach(updateChatMsgSingleLine);
+      window.updateChatMsgSingleLine = updateChatMsgSingleLine;
+    }
     if (clearChatBtn) clearChatBtn.addEventListener('click', function() {
       if (!this.disabled) clearChatAndTask();
     });
+    updateDownloadChatBtn();
     if (taskProgress && taskProgressToggle) {
+      var PANEL_TRANSITION_MS = 250;
       function toggleTaskProgress() {
         if (taskStopped) return;
-        taskProgress.classList.toggle('collapsed');
-        taskProgressToggle.setAttribute('aria-expanded', !taskProgress.classList.contains('collapsed'));
+        var q = document.getElementById('prompt-queue');
+        var qBtn = document.getElementById('prompt-queue-toggle');
+        var queueOpen = q && !q.classList.contains('collapsed');
+        var willExpand = taskProgress.classList.contains('collapsed');
+        if (willExpand && queueOpen) {
+          if (panelPending.queue) clearTimeout(panelPending.queue);
+          panelPending.queue = null;
+          q.classList.add('collapsed');
+          if (qBtn) qBtn.setAttribute('aria-expanded', 'false');
+          panelPending.tasks = setTimeout(function() {
+            panelPending.tasks = null;
+            taskProgress.classList.remove('collapsed');
+            taskProgressToggle.setAttribute('aria-expanded', 'true');
+          }, PANEL_TRANSITION_MS);
+        } else {
+          if (panelPending.tasks) { clearTimeout(panelPending.tasks); panelPending.tasks = null; }
+          taskProgress.classList.toggle('collapsed');
+          taskProgressToggle.setAttribute('aria-expanded', !taskProgress.classList.contains('collapsed'));
+        }
       }
       taskProgressToggle.addEventListener('click', toggleTaskProgress);
       taskProgressToggle.addEventListener('keydown', function(e) {
@@ -3865,8 +3995,6 @@
       var textarea = document.getElementById('chat-prompt-textarea');
       var sendBtn = document.querySelector('.chat-send-btn');
       var inputWrap = document.querySelector('.chat-input-wrap');
-      var cancelBtn = document.getElementById('chat-queue-cancel-btn');
-      var saveBtn = document.getElementById('chat-queue-save-btn');
       var queueContainer = document.getElementById('prompt-queue');
       var queueLabel = document.getElementById('prompt-queue-label');
       var queueToggle = document.getElementById('prompt-queue-toggle');
@@ -3875,7 +4003,6 @@
       var statusThinking = document.getElementById('chat-status-thinking');
       var promptQueue = [];
       var expandedItems = [];
-      var editingQueueIndex = -1;
 
       function addToQueue(text) {
         var trimmed = text.trim();
@@ -3890,8 +4017,6 @@
       }
 
       function removeFromQueue(index) {
-        if (editingQueueIndex === index) exitEditMode();
-        else if (editingQueueIndex > index) editingQueueIndex--;
         promptQueue.splice(index, 1);
         expandedItems.splice(index, 1);
         renderQueue();
@@ -3904,58 +4029,29 @@
         }
       }
 
+      var copyBtnSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg>';
       function sendFromQueue(index) {
         var text = promptQueue[index];
         if (text === undefined) return;
-        if (editingQueueIndex === index) exitEditMode();
-        else if (editingQueueIndex > index) editingQueueIndex--;
         var msg = document.createElement('div');
         msg.className = 'chat-msg user';
-        msg.textContent = text;
-        if (chatMessages) chatMessages.appendChild(msg);
+        msg.innerHTML = '<div class="chat-msg-body"></div><div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy">' + copyBtnSvg + '</button></div>';
+        msg.querySelector('.chat-msg-body').textContent = text;
+        if (chatMessages) {
+          chatMessages.appendChild(msg);
+          if (typeof window.updateChatMsgSingleLine === 'function') {
+            window.updateChatMsgSingleLine(msg);
+          }
+        }
         if (chatMessages) chatMessages.scrollTop = chatMessages.scrollHeight;
         promptQueue.splice(index, 1);
         expandedItems.splice(index, 1);
         renderQueue();
-      }
-
-      function exitEditMode() {
-        editingQueueIndex = -1;
-        textarea.value = '';
-        if (inputWrap) inputWrap.classList.remove('editing-queue');
-        if (textarea.dispatchEvent) textarea.dispatchEvent(new Event('input', { bubbles: true }));
-      }
-
-      function enterEditMode(index) {
-        var text = promptQueue[index];
-        if (text === undefined) return;
-        editingQueueIndex = index;
-        textarea.value = text;
-        textarea.focus();
-        if (inputWrap) inputWrap.classList.add('editing-queue');
-        if (textarea.dispatchEvent) textarea.dispatchEvent(new Event('input', { bubbles: true }));
-      }
-
-      function saveEdit() {
-        if (editingQueueIndex < 0) return;
-        var trimmed = textarea.value.trim();
-        if (trimmed) {
-          promptQueue[editingQueueIndex] = trimmed;
-        } else {
-          promptQueue.splice(editingQueueIndex, 1);
-          expandedItems.splice(editingQueueIndex, 1);
-        }
-        exitEditMode();
-        renderQueue();
+        if (typeof updateDownloadChatBtn === 'function') updateDownloadChatBtn();
       }
 
       function updateStatusBar() {
-        var thinking = statusThinking && !statusThinking.classList.contains('hidden');
         var hasQueue = promptQueue.length > 0;
-        if (statusBar) {
-          if (thinking || hasQueue) statusBar.classList.remove('hidden');
-          else statusBar.classList.add('hidden');
-        }
         if (queueToggle) {
           if (hasQueue) queueToggle.classList.remove('hidden');
           else queueToggle.classList.add('hidden');
@@ -3963,11 +4059,11 @@
       }
       function renderQueue() {
         queueItems.innerHTML = '';
-        if (queueLabel) queueLabel.textContent = promptQueue.length + ' queued';
+        if (queueLabel) queueLabel.textContent = 'Queue (' + promptQueue.length + ')';
         if (queueToggle) {
           var n = promptQueue.length;
-          queueToggle.setAttribute('aria-label', n === 0 ? 'Queue' : n + ' message' + (n === 1 ? '' : 's') + ' queued');
-          queueToggle.setAttribute('data-tooltip', n === 0 ? 'Queue' : n + ' message' + (n === 1 ? '' : 's') + ' queued');
+          queueToggle.setAttribute('aria-label', 'Queue (' + n + ')');
+          queueToggle.setAttribute('data-tooltip', 'Queue (' + n + ')');
         }
         if (promptQueue.length === 0) {
           queueContainer.classList.add('empty');
@@ -3980,7 +4076,7 @@
           var expanded = expandedItems[i];
           item.className = 'prompt-queue-item' + (expanded ? ' expanded' : ' folded');
           var escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/\n/g, '<br>');
-          item.innerHTML = '<span class="prompt-queue-item-text" title="' + text.replace(/"/g, '&quot;') + '">' + escaped + '</span><div class="prompt-queue-item-actions"><button type="button" class="prompt-queue-item-unfold" aria-label="' + (expanded ? 'Collapse' : 'Expand') + '" data-index="' + i + '"><span class="prompt-queue-item-unfold-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="16" height="16" style="transform:rotate(180deg)"><path fill="currentColor" d="M3.545 12.237c0-.196.077-.393.23-.54L9.48 6.21c.29-.28.749-.28 1.039 0l5.716 5.5c.3.287.308.763.02 1.06-.286.298-.76.308-1.059.02L9.998 7.791l-5.184 4.986c-.297.288-.772.279-1.06-.02-.14-.145-.21-.332-.21-.52"></path></svg></span><span class="prompt-queue-item-unfold-icon-collapse"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="16" height="16"><path fill="currentColor" d="M3.545 12.237c0-.196.077-.393.23-.54L9.48 6.21c.29-.28.749-.28 1.039 0l5.716 5.5c.3.287.308.763.02 1.06-.286.298-.76.308-1.059.02L9.998 7.791l-5.184 4.986c-.297.288-.772.279-1.06-.02-.14-.145-.21-.332-.21-.52"></path></svg></span></button><button type="button" class="prompt-queue-item-send" aria-label="Send now" data-index="' + i + '"><svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M18.649 9.974c0-.295-.172-.563-.443-.683L4.058 2.933c-.257-.115-.557-.077-.776.098-.22.177-.323.46-.267.736l1.272 6.241-1.222 6.23c-.049.247.03.5.205.675q.031.03.065.058c.221.174.52.211.776.095l14.098-6.408c.268-.122.44-.39.44-.684m-4.243-.747-8.742.027L4.777 4.9zm-9.589 5.87.852-4.344 8.763-.027z"/></svg></button><button type="button" class="prompt-queue-item-edit" aria-label="Edit queued prompt" data-index="' + i + '"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" focusable="false" aria-hidden="true"><path fill="currentColor" d="M16.7835,4.1,13.9,1.216a.60751.60751,0,0,0-.433-.1765H13.45a.6855.6855,0,0,0-.4635.203L2.542,11.686a.49494.49494,0,0,0-.1255.211L1.0275,16.55c-.057.1885.2295.4255.3915.4255a.12544.12544,0,0,0,.031-.0035c.138-.0315,3.933-1.172,4.6555-1.389a.486.486,0,0,0,.207-.1245L16.7565,5.014a.686.686,0,0,0,.2-.4415A.61049.61049,0,0,0,16.7835,4.1ZM5.7,14.658c-1.0805.3245-2.431.7325-3.3645,1.011L3.34,12.304Z"/></svg></button><button type="button" class="prompt-queue-item-remove" aria-label="Remove from queue" data-index="' + i + '"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" focusable="false" aria-hidden="true"><path fill="currentColor" d="M13.2425,3.343,9,7.586,4.7575,3.343a.5.5,0,0,0-.707,0L3.343,4.05a.5.5,0,0,0,0,.707L7.586,9,3.343,13.2425a.5.5,0,0,0,0,.707l.707.7075a.5.5,0,0,0,.707,0L9,10.414l4.2425,4.243a.5.5,0,0,0,.707,0l.7075-.707a.5.5,0,0,0,0-.707L10.414,9l4.243-4.2425a.5.5,0,0,0,0-.707L13.95,3.343a.5.5,0,0,0-.70711-.00039Z"/></svg></button></div>';
+          item.innerHTML = '<span class="prompt-queue-item-text" title="' + text.replace(/"/g, '&quot;') + '">' + escaped + '</span><div class="prompt-queue-item-actions"><button type="button" class="prompt-queue-item-unfold" aria-label="' + (expanded ? 'Collapse' : 'Expand') + '" data-index="' + i + '"><span class="prompt-queue-item-unfold-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="16" height="16" style="transform:rotate(180deg)"><path fill="currentColor" d="M3.545 12.237c0-.196.077-.393.23-.54L9.48 6.21c.29-.28.749-.28 1.039 0l5.716 5.5c.3.287.308.763.02 1.06-.286.298-.76.308-1.059.02L9.998 7.791l-5.184 4.986c-.297.288-.772.279-1.06-.02-.14-.145-.21-.332-.21-.52"></path></svg></span><span class="prompt-queue-item-unfold-icon-collapse"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="16" height="16"><path fill="currentColor" d="M3.545 12.237c0-.196.077-.393.23-.54L9.48 6.21c.29-.28.749-.28 1.039 0l5.716 5.5c.3.287.308.763.02 1.06-.286.298-.76.308-1.059.02L9.998 7.791l-5.184 4.986c-.297.288-.772.279-1.06-.02-.14-.145-.21-.332-.21-.52"></path></svg></span></button><button type="button" class="prompt-queue-item-copy" aria-label="Copy" data-index="' + i + '">' + copyBtnSvg + '</button><button type="button" class="prompt-queue-item-send" aria-label="Send now" data-index="' + i + '"><svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M18.649 9.974c0-.295-.172-.563-.443-.683L4.058 2.933c-.257-.115-.557-.077-.776.098-.22.177-.323.46-.267.736l1.272 6.241-1.222 6.23c-.049.247.03.5.205.675q.031.03.065.058c.221.174.52.211.776.095l14.098-6.408c.268-.122.44-.39.44-.684m-4.243-.747-8.742.027L4.777 4.9zm-9.589 5.87.852-4.344 8.763-.027z"/></svg></button><button type="button" class="prompt-queue-item-remove" aria-label="Remove from queue" data-index="' + i + '"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" focusable="false" aria-hidden="true"><path fill="currentColor" d="M13.2425,3.343,9,7.586,4.7575,3.343a.5.5,0,0,0-.707,0L3.343,4.05a.5.5,0,0,0,0,.707L7.586,9,3.343,13.2425a.5.5,0,0,0,0,.707l.707.7075a.5.5,0,0,0,.707,0L9,10.414l4.2425,4.243a.5.5,0,0,0,.707,0l.7075-.707a.5.5,0,0,0,0-.707L10.414,9l4.243-4.2425a.5.5,0,0,0,0-.707L13.95,3.343a.5.5,0,0,0-.70711-.00039Z"/></svg></button></div>';
           queueItems.appendChild(item);
           if (text.indexOf('\n') >= 0) {
             item.classList.add('multi-line');
@@ -4013,20 +4109,20 @@
             sendFromQueue(parseInt(this.getAttribute('data-index'), 10));
           });
         });
-        queueItems.querySelectorAll('.prompt-queue-item-edit').forEach(function(btn) {
+        queueItems.querySelectorAll('.prompt-queue-item-copy').forEach(function(btn) {
           btn.addEventListener('click', function(e) {
             e.stopPropagation();
-            enterEditMode(parseInt(this.getAttribute('data-index'), 10));
+            var idx = parseInt(this.getAttribute('data-index'), 10);
+            var text = promptQueue[idx];
+            if (text && navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text);
+            }
           });
         });
       }
 
       function submit() {
-        if (editingQueueIndex >= 0) {
-          saveEdit();
-        } else {
-          addToQueue(textarea.value);
-        }
+        addToQueue(textarea.value);
       }
 
       if (textarea) {
@@ -4045,20 +4141,28 @@
           submit();
         });
       }
-      if (cancelBtn) {
-        cancelBtn.addEventListener('click', function() {
-          if (editingQueueIndex >= 0) exitEditMode();
-        });
-      }
-      if (saveBtn) {
-        saveBtn.addEventListener('click', function() {
-          saveEdit();
-        });
-      }
+      var PANEL_TRANSITION_MS = 250;
       if (queueToggle && queueContainer) {
         queueToggle.addEventListener('click', function() {
-          queueContainer.classList.toggle('collapsed');
-          queueToggle.setAttribute('aria-expanded', !queueContainer.classList.contains('collapsed'));
+          var tp = document.getElementById('task-progress');
+          var tpBtn = document.getElementById('task-progress-toggle');
+          var tasksOpen = tp && !tp.classList.contains('collapsed');
+          var willExpand = queueContainer.classList.contains('collapsed');
+          if (willExpand && tasksOpen) {
+            if (panelPending.tasks) clearTimeout(panelPending.tasks);
+            panelPending.tasks = null;
+            tp.classList.add('collapsed');
+            if (tpBtn) tpBtn.setAttribute('aria-expanded', 'false');
+            panelPending.queue = setTimeout(function() {
+              panelPending.queue = null;
+              queueContainer.classList.remove('collapsed');
+              queueToggle.setAttribute('aria-expanded', 'true');
+            }, PANEL_TRANSITION_MS);
+          } else {
+            if (panelPending.queue) { clearTimeout(panelPending.queue); panelPending.queue = null; }
+            queueContainer.classList.toggle('collapsed');
+            queueToggle.setAttribute('aria-expanded', !queueContainer.classList.contains('collapsed'));
+          }
         });
         queueToggle.addEventListener('keydown', function(e) {
           if (e.key === 'Enter' || e.key === ' ') {
