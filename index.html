@@ -802,13 +802,18 @@
     .task-completed-section:not(.collapsed) .task-completed-chevron {
       transform: none; /* points up when expanded */
     }
-    .task-completed-section.collapsed .task-completed-items {
-      display: none;
-    }
     .task-completed-items {
       display: flex;
       flex-direction: column;
       gap: var(--spectrum-spacing-100);
+      max-height: 200px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      transition: max-height 0.25s ease-out;
+    }
+    .task-completed-section.collapsed .task-completed-items {
+      max-height: 0 !important;
+      overflow: hidden;
     }
     .task-item {
       display: flex;
@@ -2254,6 +2259,9 @@
       height: var(--spectrum-static-size-200);
       fill: currentColor;
       flex-shrink: 0;
+    }
+    #toggle-browser-btn svg {
+      transition: transform 0.2s ease;
     }
     #toggle-browser-btn[aria-expanded="true"] svg {
       transform: rotate(180deg);
