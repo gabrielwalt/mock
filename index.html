@@ -625,6 +625,7 @@
       display: flex;
       align-items: center;
       gap: var(--spectrum-spacing-100);
+      margin-right: 2px;
     }
     .chat-status-bar-divider {
       width: var(--spectrum-border-width-100);
@@ -859,15 +860,17 @@
       width: var(--spectrum-icon-size-100);
       height: var(--spectrum-icon-size-100);
     }
-    .task-item-spinner .task-spinner-track {
+    .task-item-spinner .task-spinner-track,
+    .chat-msg-agent-streaming .chat-msg-spinner .task-spinner-track {
       stroke: var(--spectrum-gray-400);
     }
-    .task-item-spinner .task-spinner-arc {
+    .task-item-spinner .task-spinner-arc,
+    .chat-msg-agent-streaming .chat-msg-spinner .task-spinner-arc {
       stroke: var(--spectrum-blue-1000);
       transform-origin: center;
-      animation: task-spinner-rotate 0.8s linear infinite;
+      animation: spinner-rotate 0.8s linear infinite;
     }
-    @keyframes task-spinner-rotate {
+    @keyframes spinner-rotate {
       to { transform: rotate(360deg); }
     }
     .task-item-in-progress .task-item-text {
@@ -919,12 +922,10 @@
     }
     .chat-msg-copy-wrap {
       position: absolute;
-      top: calc(var(--spectrum-spacing-100) + 4px);
-      right: var(--spectrum-spacing-100);
+      top: 6px;
+      right: -6px;
       width: var(--spectrum-component-height-100);
       height: var(--spectrum-component-height-100);
-      padding: 4px;
-      margin: -4px;
       background: var(--spectrum-gray-25);
       display: flex;
       align-items: center;
@@ -969,10 +970,6 @@
       width: var(--spectrum-icon-size-100);
       height: var(--spectrum-icon-size-100);
     }
-    .chat-msg-single-line .chat-msg-copy-wrap {
-      top: 50%;
-      transform: translateY(calc(-50% + 4px));
-    }
     /* Last agent message: timer + spinner by default, copy on hover */
     .chat-msg-agent-streaming .chat-msg-agent-actions {
       position: absolute;
@@ -984,10 +981,6 @@
       gap: var(--spectrum-spacing-100);
       min-width: calc(var(--spectrum-component-height-100) + 3em);
     }
-    .chat-msg-agent-streaming.chat-msg-single-line .chat-msg-agent-actions {
-      top: 50%;
-      transform: translateY(-50%);
-    }
     .chat-msg-agent-streaming .chat-msg-timer {
       font-size: var(--spectrum-font-size-75);
       color: var(--spectrum-neutral-subdued-content-color-default);
@@ -997,30 +990,23 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      color: var(--spectrum-neutral-subdued-content-color-default);
+      flex-shrink: 0;
+      width: var(--spectrum-icon-size-100);
+      height: var(--spectrum-icon-size-100);
     }
     .chat-msg-agent-streaming .chat-msg-spinner svg {
       width: var(--spectrum-icon-size-100);
       height: var(--spectrum-icon-size-100);
     }
-    .chat-msg-agent-streaming .chat-msg-spinner .chat-spinner-arc {
-      stroke: currentColor;
-      transform-origin: center;
-      animation: chat-spinner-rotate 0.8s linear infinite;
-    }
-    @keyframes chat-spinner-rotate {
-      to { transform: rotate(360deg); }
-    }
     .chat-msg-agent-streaming .chat-msg-agent-actions .chat-msg-copy-wrap {
       position: absolute;
-      right: 0;
+      right: -6px;
       top: 50%;
       transform: translateY(calc(-50% + 4px));
       flex-shrink: 0;
     }
     .chat-msg-agent-streaming .chat-msg-copy-btn {
       position: static;
-      opacity: 0;
     }
     .chat-msg-agent-streaming:hover .chat-msg-timer,
     .chat-msg-agent-streaming:hover .chat-msg-spinner {
@@ -1036,10 +1022,8 @@
     .chat-msg + .chat-msg {
       margin-top: var(--spectrum-spacing-100);
     }
-    .chat-msg.ai .chat-msg-copy-wrap {
-      right: 0;
-    }
     .chat-msg.user .chat-msg-copy-wrap {
+      right: 6px;
       background: var(--spectrum-blue-200);
     }
     .chat-msg.ai {
@@ -1182,7 +1166,7 @@
     .prompt-queue-item {
       position: relative;
       padding: var(--spectrum-spacing-200);
-      background-color: #fff;
+      background-color: var(--spectrum-gray-75);
       color: var(--spectrum-gray-900);
       border-radius: var(--spectrum-corner-radius-100);
       border: 1px solid var(--spectrum-gray-300);
@@ -1192,41 +1176,34 @@
     }
     .prompt-queue-item-text {
       display: block;
-      padding-right: 80px;
     }
     .prompt-queue-item.folded .prompt-queue-item-text {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .prompt-queue-item-actions {
+    .chat-msg-queue-wrap {
       position: absolute;
-      top: calc(var(--spectrum-spacing-100) - 2px);
-      right: calc(var(--spectrum-spacing-100) - 2px);
+      top: 6px;
+      right: 6px;
       display: flex;
       align-items: center;
       gap: var(--spectrum-spacing-75);
-    }
-    .prompt-queue-item-unfold {
+      background: var(--spectrum-gray-75);
       opacity: 0;
+      pointer-events: none;
       transition: opacity 0.13s ease-out;
     }
-    .prompt-queue-item.multi-line:hover .prompt-queue-item-unfold {
+    .prompt-queue-item:hover .chat-msg-queue-wrap,
+    .prompt-queue-item:focus-within .chat-msg-queue-wrap {
       opacity: 1;
+      pointer-events: auto;
+    }
+    .prompt-queue-item-unfold {
+      transition: opacity 0.13s ease-out;
     }
     .prompt-queue-item:not(.multi-line) .prompt-queue-item-unfold {
       display: none;
-    }
-    .prompt-queue-item-send,
-    .prompt-queue-item-copy,
-    .prompt-queue-item-remove {
-      opacity: 0;
-      transition: opacity 0.13s ease-out;
-    }
-    .prompt-queue-item:hover .prompt-queue-item-send,
-    .prompt-queue-item:hover .prompt-queue-item-copy,
-    .prompt-queue-item:hover .prompt-queue-item-remove {
-      opacity: 1;
     }
     .prompt-queue-item-unfold .prompt-queue-item-unfold-icon-expand {
       display: inline-flex;
@@ -2609,67 +2586,67 @@
               <div class="chat-messages">
                 <div class="chat-msg ai">
                   <div class="chat-msg-body"><strong>Figma Repository Labels</strong> — I&rsquo;ll now listing every page with: <code>source URL</code>, and <code>description</code>. I — this was a duplicate of what <code>/sitemap_1.json</code> already made.</div>
-                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" data-tooltip="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg ai">
                   <div class="chat-msg-body">A short section closing: <code>/sitemap_1.json</code> is the <strong>single source of truth</strong> for all pages/segment tracking, with a...<br>- Read the <code>URL mapping convention</code> rules referencing sitemap paths</div>
-                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" data-tooltip="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg ai">
                   <div class="chat-msg-body"><strong>Updated Bulk Publish URL List</strong><br>Format: <code>Path</code>, <code>.html</code>, <code>Title</code> to <code>Read /sitemap_1.json and pages[1].webpath</code> — The sitemap is now the authoritative source for generating publish URL lists.</div>
-                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" data-tooltip="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg ai">
                   <div class="chat-msg-body"><strong>Click to submit this prompt!</strong> Mark the request as <code>separate form</code> and all <code>article pages</code> as generated accurately and verify the...</div>
-                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" data-tooltip="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg user">
                   <div class="chat-msg-body">For the following pages, I&rsquo;d need you to figure out what <strong>blocks</strong> to create for them. Make custom versions of blocks where you see gaps, or adjusting the content structure if needed, and eventually create <code>import infrastructure</code> for them.</div>
-                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" data-tooltip="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg ai">
                   <div class="chat-msg-body">Let me first handle the <code>sitemap</code> approach, while simultaneously analyzing the source pages.<br><br>I need ~<strong>241</strong> pages approved if separate form + <strong>234</strong> article-header pages. How let me analyze the...</div>
-                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" data-tooltip="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg user">
                   <div class="chat-msg-body">what files still need to be approved?</div>
-                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" data-tooltip="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg ai">
                   <div class="chat-msg-body">Let me check the migration status.</div>
-                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" data-tooltip="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg ai">
                   <div class="chat-msg-body"><strong>Here&rsquo;s the migration status breakdown:</strong><br><br><strong>Total pages:</strong> 302 | <strong>Approved:</strong> 245 | <strong>Not yet approved:</strong> 57<br><br>Of the 57 unapproved: <code>47</code> imported but not validated, <code>10</code> validated but ready for approval (<code>home</code>, <code>our-company</code>, <code>our-culture</code>, <code>our-strategy</code>, <code>our-impact</code>, <code>our-stories</code>, <code>customer-first</code>, <code>innovation-driven</code>, <code>people-led</code>, <code>political-engagement-policy</code>, <code>political-engagement-policy/archive</code>).<br><br>All fragments (<code>nav</code>, <code>footer</code>) are approved. All <strong>302</strong> pages have been imported.<br><br>Biggest groups needing work: <strong>20</strong> leadership bios, <strong>6</strong> governance pages, several <code>our-impact</code> sub-pages, newsroom pages (<code>awards</code>, <code>press-releases</code>, <code>statements</code>), misc pages.<br><br>Would you like me to start <strong>validating</strong> or <strong>critiquing</strong> any specific group?</div>
-                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" data-tooltip="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg user">
                   <div class="chat-msg-body">start critiquing and validating all of them</div>
-                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" data-tooltip="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg ai">
                   <div class="chat-msg-body">I&rsquo;ll start working through all <strong>57</strong> pages. Let me organize them and begin the <code>critique</code> process.</div>
-                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" data-tooltip="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg ai">
                   <div class="chat-msg-body">Let me start by critiquing the pages that are already <strong>validated</strong>. I&rsquo;ll begin with the <code>home</code> page.</div>
-                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" data-tooltip="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
                 <div class="chat-msg ai">
                   <div class="chat-msg-body">I&rsquo;ll start the <code>critique workflow</code> for the home page. Let me work through all the steps systematically.</div>
-                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
+                  <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" data-tooltip="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                 </div>
-                <div class="chat-msg ai chat-msg-agent-streaming chat-msg-single-line">
+                <div class="chat-msg ai chat-msg-agent-streaming">
                   <div class="chat-msg-body"><strong>Step 1: Initialize Session</strong> — Home Page</div>
                   <div class="chat-msg-agent-actions">
                     <span class="chat-msg-timer">1min</span>
                     <span class="chat-msg-spinner" aria-hidden="true">
                       <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
-                        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity="0.25"/>
-                        <circle class="chat-spinner-arc" cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" stroke-dasharray="28 56" stroke-linecap="round"/>
+                        <circle class="task-spinner-track" cx="12" cy="12" r="9" stroke-width="2"/>
+                        <circle class="task-spinner-arc" cx="12" cy="12" r="9" stroke-width="2" stroke-dasharray="28 56" stroke-linecap="round"/>
                       </svg>
                     </span>
-                    <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
+                    <div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" data-tooltip="Copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="currentColor"><rect height="1" rx="0.25" width="1" x="16" y="11"/><rect height="1" rx="0.25" width="1" x="16" y="9"/><rect height="1" rx="0.25" width="1" x="16" y="7"/><rect height="1" rx="0.25" width="1" x="16" y="5"/><rect height="1" rx="0.25" width="1" x="16" y="3"/><rect height="1" rx="0.25" width="1" x="16" y="1"/><rect height="1" rx="0.25" width="1" x="14" y="1"/><rect height="1" rx="0.25" width="1" x="12" y="1"/><rect height="1" rx="0.25" width="1" x="10" y="1"/><rect height="1" rx="0.25" width="1" x="8" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="1"/><rect height="1" rx="0.25" width="1" x="6" y="3"/><rect height="1" rx="0.25" width="1" x="6" y="5"/><rect height="1" rx="0.25" width="1" x="6" y="7"/><rect height="1" rx="0.25" width="1" x="6" y="9"/><rect height="1" rx="0.25" width="1" x="6" y="11"/><rect height="1" rx="0.25" width="1" x="8" y="11"/><rect height="1" rx="0.25" width="1" x="10" y="11"/><rect height="1" rx="0.25" width="1" x="12" y="11"/><rect height="1" rx="0.25" width="1" x="14" y="11"/><path d="M5,6H1.5a.5.5,0,0,0-.5.5v10a.5.5,0,0,0,.5.5h10a.5.5,0,0,0,.5-.5V13H5.5a.5.5,0,0,1-.5-.5Z"/></svg></button></div>
                   </div>
                 </div>
               </div>
@@ -2746,11 +2723,11 @@
               <!-- Bottom status toolbar (thinking + tasks + queue + interrupt + download + clear) -->
               <div class="chat-status-bar" id="chat-status-bar">
                 <div class="chat-status-bar-left">
-                  <div class="task-progress-header chat-status-tasks-btn" id="task-progress-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="task-progress-content" aria-label="Toggle task progress" data-tooltip="Toggle task list">
+                  <div class="task-progress-header chat-status-tasks-btn" id="task-progress-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="task-progress-content" aria-label="Toggle task progress" data-tooltip="Toggle task list (Ctrl+T)">
                     <span class="chat-status-tasks-label">Tasks (2/9)</span>
                     <svg class="chat-status-tasks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
                   </div>
-                  <button type="button" class="chat-status-queue-btn hidden" id="prompt-queue-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="prompt-queue-content" aria-label="Queue" data-tooltip="Queue">
+                  <button type="button" class="chat-status-queue-btn hidden" id="prompt-queue-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="prompt-queue-content" aria-label="Queue" data-tooltip="Toggle message queue (Ctrl+M)">
                     <span class="chat-status-queue-label" id="prompt-queue-label">Queue (0)</span>
                     <svg class="chat-status-queue-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
                   </button>
@@ -2777,14 +2754,14 @@
                   <div class="chat-input-actions">
                     <span class="chat-disclaimer">AI responses may be inaccurate or misleading.<br><a href="#">Please verify all generated responses.</a></span>
                     <span class="chat-actions-spacer"></span>
-                    <button class="chat-attach-btn" type="button" aria-label="Attach file">
+                    <button class="chat-attach-btn" type="button" aria-label="Attach files" data-tooltip="Attach files">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
                     </button>
                     <div class="chat-mode-switcher">
-                      <button class="chat-mode-btn" type="button" aria-label="Plan mode" title="Plan">
+                      <button class="chat-mode-btn" type="button" aria-label="Plan mode" data-tooltip="Plan mode (Ctrl+P)">
                         <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M10 2.241c-.414 0-.75-.336-.75-.75v-.7c0-.414.336-.75.75-.75s.75.336.75.75v.7c0 .414-.336.75-.75.75M18.454 10.021h-.7c-.414 0-.75-.335-.75-.75s.336-.75.75-.75h.7c.414 0 .75.336.75.75s-.336.75-.75.75M2.232 10.021h-.7c-.414 0-.75-.335-.75-.75s.336-.75.75-.75h.7c.414 0 .75.336.75.75s-.336.75-.75.75M4.51 4.54c-.192 0-.383-.074-.53-.22l-.495-.496c-.293-.293-.293-.767 0-1.06s.768-.293 1.06 0l.496.495c.293.293.293.767 0 1.06-.146.147-.338.22-.53.22M15.476 4.54c-.193 0-.384-.074-.53-.22-.294-.294-.294-.768 0-1.061l.494-.495c.293-.293.768-.293 1.061 0s.293.767 0 1.06l-.495.495c-.147.147-.338.22-.53.22M16 9.5c0-3.309-2.691-6-6-6s-6 2.691-6 6c0 2.216 1.21 4.15 3.001 5.189L7 14.695V16.5c0 1.654 1.346 3 3 3s3-1.346 3-3v-1.812c1.79-1.04 3-2.973 3-5.188m-4.5 7c0 .827-.673 1.5-1.5 1.5s-1.5-.673-1.5-1.5v-1.198c.48.125.981.198 1.5.198s1.02-.073 1.5-.198zM10 14c-2.481 0-4.5-2.019-4.5-4.5S7.519 5 10 5s4.5 2.019 4.5 4.5S12.481 14 10 14"/></svg>
                       </button>
-                      <button class="chat-mode-btn active" type="button" aria-label="Execute mode" title="Execute">
+                      <button class="chat-mode-btn active" type="button" aria-label="Execute mode" data-tooltip="Execute mode (Ctrl+E)">
                         <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M15.05 7.2c0-.601-.235-1.167-.658-1.59-.849-.85-2.333-.852-3.183 0L9.388 7.43q-.033.034-.06.069-.037.029-.07.062l-7.599 7.598c-.425.425-.659.99-.659 1.591s.234 1.166.66 1.59.99.66 1.59.66 1.166-.234 1.59-.66l9.55-9.549c.425-.425.66-.99.66-1.59M3.78 17.28c-.283.283-.777.283-1.06 0-.142-.141-.22-.33-.22-.53s.078-.389.22-.53l7.2-7.2 1.065 1.055zm9.55-9.55-1.284 1.285-1.066-1.056 1.29-1.29c.283-.282.777-.283 1.06.002.142.14.22.329.22.53s-.078.388-.22.53M18.706 10.832l-1.261-.499-.203-1.342c-.065-.428-.758-.505-.916-.104l-.499 1.262-1.342.202c-.213.032-.379.203-.403.418s.098.418.299.498l1.262.5.202 1.34c.032.213.203.38.418.404s.418-.098.498-.3l.5-1.26 1.34-.203c.215-.033.38-.204.404-.418s-.099-.42-.299-.498M14.336 3.642l1.262.5.202 1.341c.032.213.204.38.418.403.215.025.418-.097.498-.299l.5-1.26 1.341-.204c.214-.032.379-.203.403-.418s-.098-.419-.299-.498l-1.26-.498-.204-1.342c-.065-.428-.758-.505-.916-.105l-.498 1.263-1.342.201c-.213.032-.38.204-.404.418s.098.418.3.498M5.78 4.69l1.023.406.164 1.088c.026.173.166.307.34.327.173.02.339-.08.404-.243l.405-1.023 1.088-.165c.174-.026.308-.165.328-.339s-.08-.34-.243-.404l-1.023-.404-.165-1.09c-.053-.347-.615-.41-.743-.084l-.405 1.024-1.089.164c-.173.026-.308.165-.327.34-.02.173.079.338.242.403"/></svg>
                       </button>
                     </div>
@@ -2850,7 +2827,7 @@
                     <svg viewBox="0 0 20 20" focusable="false"><path fill="currentColor" d="M18.207 3.897c-.406-.094-.809.15-.906.554l-.38 1.575C15.523 3.594 12.919 2.02 10 2.02c-3.685 0-6.875 2.5-7.76 6.08-.099.403.147.81.55.909.4.1.808-.147.907-.55.718-2.907 3.31-4.939 6.303-4.939 2.517 0 4.735 1.447 5.809 3.633l-2.102-.508c-.404-.094-.808.15-.906.553s.15.808.553.905l3.245.785c.125.088.274.142.432.142q.09 0 .18-.021c.048-.012.086-.041.13-.061.069-.019.142-.02.205-.058.17-.104.29-.27.338-.464l.875-3.624c.097-.403-.15-.808-.552-.906M17.21 11.032c-.396-.096-.807.147-.907.55-.718 2.908-3.31 4.94-6.303 4.94-2.517 0-4.735-1.447-5.81-3.634l2.103.508c.403.092.809-.15.906-.553s-.15-.808-.553-.905l-3.255-.787c-.171-.118-.385-.171-.602-.119-.015.004-.026.015-.04.02-.104.013-.205.044-.295.1-.17.103-.29.27-.338.463l-.875 3.624c-.097.403.15.808.552.906q.09.02.177.02c.339 0 .646-.23.729-.574l.38-1.575c1.398 2.432 4.002 4.005 6.921 4.005 3.685 0 6.876-2.5 7.76-6.08.099-.403-.147-.81-.549-.909"/></svg>
                   </button>
                   <div class="viewport-dropdown" id="viewport-dropdown">
-                    <button class="viewport-dropdown-trigger" type="button" data-viewport="desktop" data-tooltip="Viewport (Ctrl+Shift+1/2/3)" aria-label="Viewport" aria-haspopup="true" aria-expanded="false">
+                    <button class="viewport-dropdown-trigger" type="button" data-viewport="desktop" data-tooltip="Viewport" aria-label="Viewport" aria-haspopup="true" aria-expanded="false">
                       <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true"><path fill="currentColor" d="M14 18.5H6c-.414 0-.75-.336-.75-.75S5.586 17 6 17h8c.414 0 .75.336.75.75s-.336.75-.75.75M16.75 16H3.25C2.01 16 1 14.99 1 13.75v-8.5C1 4.01 2.01 3 3.25 3h13.5C17.99 3 19 4.01 19 5.25v8.5c0 1.24-1.01 2.25-2.25 2.25M3.25 4.5c-.413 0-.75.337-.75.75v8.5c0 .413.337.75.75.75h13.5c.413 0 .75-.337.75-.75v-8.5c0-.413-.337-.75-.75-.75z"/></svg>
                     </button>
                     <div class="viewport-dropdown-overlay">
@@ -3154,18 +3131,18 @@
     </div>
   </div>
   <script>
-    // Tooltip positioning (fixed to escape overflow/header)
-    document.querySelectorAll('[data-tooltip]').forEach(function(el) {
-      el.addEventListener('mouseenter', function(e) {
-        var r = this.getBoundingClientRect();
-        if (el.closest('.exmod-nav') || el.getAttribute('data-tooltip-position') === 'right') {
-          this.style.setProperty('--tt-x', (r.right + 8) + 'px');
-          this.style.setProperty('--tt-y', (r.top + r.height / 2) + 'px');
-        } else {
-          this.style.setProperty('--tt-x', (r.left + r.width / 2) + 'px');
-          this.style.setProperty('--tt-y', r.top + 'px');
-        }
-      });
+    // Tooltip positioning (fixed to escape overflow/header) – event delegation for dynamically created elements
+    document.addEventListener('mouseover', function(e) {
+      var el = e.target.closest('[data-tooltip]');
+      if (!el) return;
+      var r = el.getBoundingClientRect();
+      if (el.closest('.exmod-nav') || el.getAttribute('data-tooltip-position') === 'right') {
+        el.style.setProperty('--tt-x', (r.right + 8) + 'px');
+        el.style.setProperty('--tt-y', (r.top + r.height / 2) + 'px');
+      } else {
+        el.style.setProperty('--tt-x', (r.left + r.width / 2) + 'px');
+        el.style.setProperty('--tt-y', r.top + 'px');
+      }
     });
     // Chat panel resize (drag handle between chat and preview)
     (function() {
@@ -3875,19 +3852,6 @@
           navigator.clipboard.writeText(text);
         }
       });
-      function updateChatMsgSingleLine(msg) {
-        var body = msg && msg.querySelector('.chat-msg-body');
-        if (!body) return;
-        var style = getComputedStyle(body);
-        var lineHeight = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.5;
-        if (body.scrollHeight <= lineHeight * 1.5) {
-          msg.classList.add('chat-msg-single-line');
-        } else {
-          msg.classList.remove('chat-msg-single-line');
-        }
-      }
-      chatMessages.querySelectorAll('.chat-msg').forEach(updateChatMsgSingleLine);
-      window.updateChatMsgSingleLine = updateChatMsgSingleLine;
     }
     if (clearChatBtn) clearChatBtn.addEventListener('click', function() {
       if (!this.disabled) clearChatAndTask();
@@ -3925,6 +3889,18 @@
         }
       });
     }
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key.toLowerCase() === 't') {
+        e.preventDefault();
+        var btn = document.getElementById('task-progress-toggle');
+        if (btn && !btn.classList.contains('hidden')) btn.click();
+      }
+      if (e.ctrlKey && e.key.toLowerCase() === 'm') {
+        e.preventDefault();
+        var btn = document.getElementById('prompt-queue-toggle');
+        if (btn && !btn.classList.contains('hidden')) btn.click();
+      }
+    });
     /* Keep chat scroll position fixed when task list opens/closes */
     if (chatMessages) {
       var lastChatHeight = chatMessages.clientHeight;
@@ -4035,13 +4011,10 @@
         if (text === undefined) return;
         var msg = document.createElement('div');
         msg.className = 'chat-msg user';
-        msg.innerHTML = '<div class="chat-msg-body"></div><div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" title="Copy">' + copyBtnSvg + '</button></div>';
+        msg.innerHTML = '<div class="chat-msg-body"></div><div class="chat-msg-copy-wrap"><button class="chat-msg-copy-btn" type="button" aria-label="Copy" data-tooltip="Copy">' + copyBtnSvg + '</button></div>';
         msg.querySelector('.chat-msg-body').textContent = text;
         if (chatMessages) {
           chatMessages.appendChild(msg);
-          if (typeof window.updateChatMsgSingleLine === 'function') {
-            window.updateChatMsgSingleLine(msg);
-          }
         }
         if (chatMessages) chatMessages.scrollTop = chatMessages.scrollHeight;
         promptQueue.splice(index, 1);
@@ -4063,7 +4036,7 @@
         if (queueToggle) {
           var n = promptQueue.length;
           queueToggle.setAttribute('aria-label', 'Queue (' + n + ')');
-          queueToggle.setAttribute('data-tooltip', 'Queue (' + n + ')');
+          queueToggle.setAttribute('data-tooltip', 'Toggle message queue (Ctrl+M)');
         }
         if (promptQueue.length === 0) {
           queueContainer.classList.add('empty');
@@ -4075,8 +4048,10 @@
           var item = document.createElement('div');
           var expanded = expandedItems[i];
           item.className = 'prompt-queue-item' + (expanded ? ' expanded' : ' folded');
-          var escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/\n/g, '<br>');
-          item.innerHTML = '<span class="prompt-queue-item-text" title="' + text.replace(/"/g, '&quot;') + '">' + escaped + '</span><div class="prompt-queue-item-actions"><button type="button" class="prompt-queue-item-unfold" aria-label="' + (expanded ? 'Collapse' : 'Expand') + '" data-index="' + i + '"><span class="prompt-queue-item-unfold-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="16" height="16" style="transform:rotate(180deg)"><path fill="currentColor" d="M3.545 12.237c0-.196.077-.393.23-.54L9.48 6.21c.29-.28.749-.28 1.039 0l5.716 5.5c.3.287.308.763.02 1.06-.286.298-.76.308-1.059.02L9.998 7.791l-5.184 4.986c-.297.288-.772.279-1.06-.02-.14-.145-.21-.332-.21-.52"></path></svg></span><span class="prompt-queue-item-unfold-icon-collapse"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="16" height="16"><path fill="currentColor" d="M3.545 12.237c0-.196.077-.393.23-.54L9.48 6.21c.29-.28.749-.28 1.039 0l5.716 5.5c.3.287.308.763.02 1.06-.286.298-.76.308-1.059.02L9.998 7.791l-5.184 4.986c-.297.288-.772.279-1.06-.02-.14-.145-.21-.332-.21-.52"></path></svg></span></button><button type="button" class="prompt-queue-item-copy" aria-label="Copy" data-index="' + i + '">' + copyBtnSvg + '</button><button type="button" class="prompt-queue-item-send" aria-label="Send now" data-index="' + i + '"><svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M18.649 9.974c0-.295-.172-.563-.443-.683L4.058 2.933c-.257-.115-.557-.077-.776.098-.22.177-.323.46-.267.736l1.272 6.241-1.222 6.23c-.049.247.03.5.205.675q.031.03.065.058c.221.174.52.211.776.095l14.098-6.408c.268-.122.44-.39.44-.684m-4.243-.747-8.742.027L4.777 4.9zm-9.589 5.87.852-4.344 8.763-.027z"/></svg></button><button type="button" class="prompt-queue-item-remove" aria-label="Remove from queue" data-index="' + i + '"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" focusable="false" aria-hidden="true"><path fill="currentColor" d="M13.2425,3.343,9,7.586,4.7575,3.343a.5.5,0,0,0-.707,0L3.343,4.05a.5.5,0,0,0,0,.707L7.586,9,3.343,13.2425a.5.5,0,0,0,0,.707l.707.7075a.5.5,0,0,0,.707,0L9,10.414l4.2425,4.243a.5.5,0,0,0,.707,0l.7075-.707a.5.5,0,0,0,0-.707L10.414,9l4.243-4.2425a.5.5,0,0,0,0-.707L13.95,3.343a.5.5,0,0,0-.70711-.00039Z"/></svg></button></div>';
+          var hasLineBreaks = text.indexOf('\n') >= 0;
+          var displayText = (!expanded && hasLineBreaks) ? text.split(/\r?\n/)[0] + '\u2026' : text;
+          var escaped = displayText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/\n/g, '<br>');
+          item.innerHTML = '<span class="prompt-queue-item-text" title="' + text.replace(/"/g, '&quot;') + '">' + escaped + '</span><div class="chat-msg-queue-wrap"><button type="button" class="prompt-queue-item-unfold" aria-label="' + (expanded ? 'Collapse' : 'Expand') + '" data-tooltip="' + (expanded ? 'Collapse' : 'Expand') + '" data-index="' + i + '"><span class="prompt-queue-item-unfold-icon-expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="16" height="16" style="transform:rotate(180deg)"><path fill="currentColor" d="M3.545 12.237c0-.196.077-.393.23-.54L9.48 6.21c.29-.28.749-.28 1.039 0l5.716 5.5c.3.287.308.763.02 1.06-.286.298-.76.308-1.059.02L9.998 7.791l-5.184 4.986c-.297.288-.772.279-1.06-.02-.14-.145-.21-.332-.21-.52"></path></svg></span><span class="prompt-queue-item-unfold-icon-collapse"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="16" height="16"><path fill="currentColor" d="M3.545 12.237c0-.196.077-.393.23-.54L9.48 6.21c.29-.28.749-.28 1.039 0l5.716 5.5c.3.287.308.763.02 1.06-.286.298-.76.308-1.059.02L9.998 7.791l-5.184 4.986c-.297.288-.772.279-1.06-.02-.14-.145-.21-.332-.21-.52"></path></svg></span></button><button type="button" class="prompt-queue-item-copy" aria-label="Copy" data-tooltip="Copy" data-index="' + i + '">' + copyBtnSvg + '</button><button type="button" class="prompt-queue-item-send" aria-label="Send now" data-tooltip="Send now" data-index="' + i + '"><svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M18.649 9.974c0-.295-.172-.563-.443-.683L4.058 2.933c-.257-.115-.557-.077-.776.098-.22.177-.323.46-.267.736l1.272 6.241-1.222 6.23c-.049.247.03.5.205.675q.031.03.065.058c.221.174.52.211.776.095l14.098-6.408c.268-.122.44-.39.44-.684m-4.243-.747-8.742.027L4.777 4.9zm-9.589 5.87.852-4.344 8.763-.027z"/></svg></button><button type="button" class="prompt-queue-item-remove" aria-label="Remove from queue" data-tooltip="Remove from queue" data-index="' + i + '"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" focusable="false" aria-hidden="true"><path fill="currentColor" d="M13.2425,3.343,9,7.586,4.7575,3.343a.5.5,0,0,0-.707,0L3.343,4.05a.5.5,0,0,0,0,.707L7.586,9,3.343,13.2425a.5.5,0,0,0,0,.707l.707.7075a.5.5,0,0,0,.707,0L9,10.414l4.2425,4.243a.5.5,0,0,0,.707,0l.7075-.707a.5.5,0,0,0,0-.707L10.414,9l4.243-4.2425a.5.5,0,0,0,0-.707L13.95,3.343a.5.5,0,0,0-.70711-.00039Z"/></svg></button></div>';
           queueItems.appendChild(item);
           if (text.indexOf('\n') >= 0) {
             item.classList.add('multi-line');
