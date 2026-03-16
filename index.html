@@ -795,10 +795,12 @@
       width: var(--spectrum-icon-size-100);
       flex-shrink: 0;
       transition: transform 0.2s ease;
-      transform: rotate(180deg); /* points down when expanded */
     }
     .task-completed-section.collapsed .task-completed-chevron {
-      transform: rotate(90deg); /* points right when collapsed */
+      transform: rotate(180deg); /* points down when collapsed */
+    }
+    .task-completed-section:not(.collapsed) .task-completed-chevron {
+      transform: none; /* points up when expanded */
     }
     .task-completed-section.collapsed .task-completed-items {
       display: none;
