@@ -1478,16 +1478,6 @@
       flex-shrink: 0;
       height: var(--spectrum-component-height-100);
       line-height: var(--spectrum-component-height-100);
-      cursor: pointer;
-      border-radius: var(--spectrum-corner-radius-100);
-      transition: background-color 0.13s ease-out;
-    }
-    .content-toolbar .page-title:hover {
-      background: var(--spectrum-button-hover-overlay);
-    }
-    .content-toolbar .page-title:focus-visible {
-      outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
-      outline-offset: var(--spectrum-focus-indicator-gap);
     }
     .toolbar-right {
       display: flex;
@@ -2261,6 +2251,9 @@
       fill: currentColor;
       flex-shrink: 0;
     }
+    #toggle-browser-btn[aria-expanded="true"] svg {
+      transform: rotate(180deg);
+    }
 
     /* Spectrum-style tooltip (immediate on hover, fixed to escape overflow) */
     [data-tooltip] {
@@ -2320,6 +2313,60 @@
     [data-tooltip]:hover::after {
       opacity: 1;
       visibility: visible;
+    }
+    /* Hide default tooltip when shortcut variant is used (JS creates custom one) */
+    [data-tooltip][data-tooltip-shortcut]:hover::after {
+      opacity: 0;
+      visibility: hidden;
+    }
+    [data-tooltip][data-tooltip-shortcut]:hover::before {
+      opacity: 0;
+      visibility: hidden;
+    }
+    /* Custom tooltip with shortcut (created by JS) */
+    .tooltip-with-shortcut {
+      position: fixed;
+      display: flex;
+      align-items: center;
+      gap: var(--spectrum-spacing-100);
+      padding: var(--spectrum-spacing-100);
+      background: var(--spectrum-gray-800);
+      color: var(--spectrum-gray-50);
+      font-size: var(--spectrum-font-size-75);
+      font-weight: var(--spectrum-medium-font-weight);
+      line-height: 1;
+      white-space: nowrap;
+      border-radius: var(--spectrum-corner-radius-75);
+      pointer-events: none;
+      z-index: 10000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .tooltip-with-shortcut::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -6px;
+      width: 10px;
+      height: 6px;
+      margin-left: -5px;
+      background: var(--spectrum-gray-800);
+      clip-path: polygon(50% 100%, 0 0, 100% 0);
+    }
+    .tooltip-with-shortcut.tooltip-right::before {
+      left: auto;
+      right: 12px;
+      bottom: 50%;
+      margin-left: 0;
+      margin-bottom: -3px;
+      width: 6px;
+      height: 10px;
+      clip-path: polygon(0 50%, 100% 0, 100% 100%);
+    }
+    .tooltip-with-shortcut .tooltip-shortcut {
+      padding: 2px 6px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 4px;
+      font-weight: var(--spectrum-medium-font-weight);
     }
     .exmod-nav [data-tooltip]::after,
     [data-tooltip-position="right"]::after {
@@ -2754,11 +2801,11 @@
               <!-- Bottom status toolbar (thinking + tasks + queue + interrupt + download + clear) -->
               <div class="chat-status-bar" id="chat-status-bar">
                 <div class="chat-status-bar-left">
-                  <div class="task-progress-header chat-status-tasks-btn" id="task-progress-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="task-progress-content" aria-label="Toggle task progress" data-tooltip="Toggle task list (Ctrl+T)">
+                  <div class="task-progress-header chat-status-tasks-btn" id="task-progress-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="task-progress-content" aria-label="Toggle task progress" data-tooltip="Toggle task list" data-tooltip-shortcut="Ctrl+T">
                     <span class="chat-status-tasks-label">Tasks (2/9)</span>
                     <svg class="chat-status-tasks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
                   </div>
-                  <button type="button" class="chat-status-queue-btn hidden" id="prompt-queue-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="prompt-queue-content" aria-label="Queue" data-tooltip="Toggle message queue (Ctrl+M)">
+                  <button type="button" class="chat-status-queue-btn hidden" id="prompt-queue-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="prompt-queue-content" aria-label="Queue" data-tooltip="Toggle message queue" data-tooltip-shortcut="Ctrl+M">
                     <span class="chat-status-queue-label" id="prompt-queue-label">Queue (0)</span>
                     <svg class="chat-status-queue-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
                   </button>
@@ -2786,10 +2833,10 @@
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
                     </button>
                     <div class="chat-mode-switcher">
-                      <button class="chat-mode-btn" type="button" aria-label="Plan mode" data-tooltip="Plan mode (Ctrl+P)">
+                      <button class="chat-mode-btn" type="button" aria-label="Plan mode" data-tooltip="Plan mode" data-tooltip-shortcut="Ctrl+P">
                         <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M10 2.241c-.414 0-.75-.336-.75-.75v-.7c0-.414.336-.75.75-.75s.75.336.75.75v.7c0 .414-.336.75-.75.75M18.454 10.021h-.7c-.414 0-.75-.335-.75-.75s.336-.75.75-.75h.7c.414 0 .75.336.75.75s-.336.75-.75.75M2.232 10.021h-.7c-.414 0-.75-.335-.75-.75s.336-.75.75-.75h.7c.414 0 .75.336.75.75s-.336.75-.75.75M4.51 4.54c-.192 0-.383-.074-.53-.22l-.495-.496c-.293-.293-.293-.767 0-1.06s.768-.293 1.06 0l.496.495c.293.293.293.767 0 1.06-.146.147-.338.22-.53.22M15.476 4.54c-.193 0-.384-.074-.53-.22-.294-.294-.294-.768 0-1.061l.494-.495c.293-.293.768-.293 1.061 0s.293.767 0 1.06l-.495.495c-.147.147-.338.22-.53.22M16 9.5c0-3.309-2.691-6-6-6s-6 2.691-6 6c0 2.216 1.21 4.15 3.001 5.189L7 14.695V16.5c0 1.654 1.346 3 3 3s3-1.346 3-3v-1.812c1.79-1.04 3-2.973 3-5.188m-4.5 7c0 .827-.673 1.5-1.5 1.5s-1.5-.673-1.5-1.5v-1.198c.48.125.981.198 1.5.198s1.02-.073 1.5-.198zM10 14c-2.481 0-4.5-2.019-4.5-4.5S7.519 5 10 5s4.5 2.019 4.5 4.5S12.481 14 10 14"/></svg>
                       </button>
-                      <button class="chat-mode-btn active" type="button" aria-label="Execute mode" data-tooltip="Execute mode (Ctrl+E)">
+                      <button class="chat-mode-btn active" type="button" aria-label="Execute mode" data-tooltip="Execute mode" data-tooltip-shortcut="Ctrl+E">
                         <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M15.05 7.2c0-.601-.235-1.167-.658-1.59-.849-.85-2.333-.852-3.183 0L9.388 7.43q-.033.034-.06.069-.037.029-.07.062l-7.599 7.598c-.425.425-.659.99-.659 1.591s.234 1.166.66 1.59.99.66 1.59.66 1.166-.234 1.59-.66l9.55-9.549c.425-.425.66-.99.66-1.59M3.78 17.28c-.283.283-.777.283-1.06 0-.142-.141-.22-.33-.22-.53s.078-.389.22-.53l7.2-7.2 1.065 1.055zm9.55-9.55-1.284 1.285-1.066-1.056 1.29-1.29c.283-.282.777-.283 1.06.002.142.14.22.329.22.53s-.078.388-.22.53M18.706 10.832l-1.261-.499-.203-1.342c-.065-.428-.758-.505-.916-.104l-.499 1.262-1.342.202c-.213.032-.379.203-.403.418s.098.418.299.498l1.262.5.202 1.34c.032.213.203.38.418.404s.418-.098.498-.3l.5-1.26 1.34-.203c.215-.033.38-.204.404-.418s-.099-.42-.299-.498M14.336 3.642l1.262.5.202 1.341c.032.213.204.38.418.403.215.025.418-.097.498-.299l.5-1.26 1.341-.204c.214-.032.379-.203.403-.418s-.098-.419-.299-.498l-1.26-.498-.204-1.342c-.065-.428-.758-.505-.916-.105l-.498 1.263-1.342.201c-.213.032-.38.204-.404.418s.098.418.3.498M5.78 4.69l1.023.406.164 1.088c.026.173.166.307.34.327.173.02.339-.08.404-.243l.405-1.023 1.088-.165c.174-.026.308-.165.328-.339s-.08-.34-.243-.404l-1.023-.404-.165-1.09c-.053-.347-.615-.41-.743-.084l-.405 1.024-1.089.164c-.173.026-.308.165-.327.34-.02.173.079.338.242.403"/></svg>
                       </button>
                     </div>
@@ -2852,11 +2899,15 @@
                     </div>
                   </div>
                 </div>
-                <h3 class="page-title" id="document-tree-toggle" role="button" tabindex="0" aria-label="Toggle document tree" aria-expanded="true" data-tooltip="Toggle browser">ups-accelerates-intra-asia-trade-with-capacity-and-speed-enhance</h3>
+                <button class="toolbar-icon-btn" type="button" id="toggle-browser-btn" aria-label="Toggle browser" aria-expanded="true" data-tooltip="Toggle browser" data-tooltip-shortcut="Ctrl+F">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" width="18" height="18" focusable="false" aria-hidden="true"><path fill="currentColor" d="M15,9a.994.994,0,0,1-.2925.7045l-3.9915,3.99a1,1,0,1,1-1.4355-1.386l.0245-.0245L12.5905,9,9.3045,5.715A1,1,0,0,1,10.691,4.28l.0245.0245,3.9915,3.99A.994.994,0,0,1,15,9Z"/><path fill="currentColor" d="M9,9a.994.994,0,0,1-.2925.7045l-3.9915,3.99a1,1,0,1,1-1.436-1.385l.0245-.0245L6.5905,9,3.3045,5.715A1,1,0,0,1,4.6915,4.28l.0245.0245,3.9915,3.99A.994.994,0,0,1,9,9Z"/></svg>
+                </button>
+                <div class="chat-toolbar-divider" aria-hidden="true"></div>
+                <h3 class="page-title" id="page-title">ups-accelerates-intra-asia-trade-with-capacity-and-speed-enhance</h3>
               </div>
               <div class="toolbar-right">
                 <div class="toolbar-preview-only">
-                  <button class="toolbar-icon-btn" type="button" id="refresh-btn" data-tooltip="Refresh (Ctrl+R)" aria-label="Refresh">
+                  <button class="toolbar-icon-btn" type="button" id="refresh-btn" data-tooltip="Refresh" data-tooltip-shortcut="Ctrl+R" aria-label="Refresh">
                     <svg viewBox="0 0 20 20" focusable="false"><path fill="currentColor" d="M18.207 3.897c-.406-.094-.809.15-.906.554l-.38 1.575C15.523 3.594 12.919 2.02 10 2.02c-3.685 0-6.875 2.5-7.76 6.08-.099.403.147.81.55.909.4.1.808-.147.907-.55.718-2.907 3.31-4.939 6.303-4.939 2.517 0 4.735 1.447 5.809 3.633l-2.102-.508c-.404-.094-.808.15-.906.553s.15.808.553.905l3.245.785c.125.088.274.142.432.142q.09 0 .18-.021c.048-.012.086-.041.13-.061.069-.019.142-.02.205-.058.17-.104.29-.27.338-.464l.875-3.624c.097-.403-.15-.808-.552-.906M17.21 11.032c-.396-.096-.807.147-.907.55-.718 2.908-3.31 4.94-6.303 4.94-2.517 0-4.735-1.447-5.81-3.634l2.103.508c.403.092.809-.15.906-.553s-.15-.808-.553-.905l-3.255-.787c-.171-.118-.385-.171-.602-.119-.015.004-.026.015-.04.02-.104.013-.205.044-.295.1-.17.103-.29.27-.338.463l-.875 3.624c-.097.403.15.808.552.906q.09.02.177.02c.339 0 .646-.23.729-.574l.38-1.575c1.398 2.432 4.002 4.005 6.921 4.005 3.685 0 6.876-2.5 7.76-6.08.099-.403-.147-.81-.549-.909"/></svg>
                   </button>
                   <div class="viewport-dropdown" id="viewport-dropdown">
@@ -2882,7 +2933,7 @@
                     </div>
                   </div>
                 </div>
-                <button class="btn-add-to-chat" type="button" id="add-to-chat-btn" data-tooltip="Add to chat (Ctrl+L)" aria-label="Add to chat">
+                <button class="btn-add-to-chat" type="button" id="add-to-chat-btn" data-tooltip="Add to chat" data-tooltip-shortcut="Ctrl+L" aria-label="Add to chat">
                   <svg viewBox="0 0 18 18" focusable="false" aria-hidden="true"><path fill="currentColor" d="M7.375,14H4.793a.5.5,0,0,0-.3535.1465L3,15.5855V14.5a.5.5,0,0,0-.5-.5h-1a.5.5,0,0,1-.5-.5v-6A.5.5,0,0,1,1.5,7h8a.5.5,0,0,1,.5.5v.9465a6.12921,6.12921,0,0,1,1-.562V7.5A1.5,1.5,0,0,0,9.5,6h-8A1.5,1.5,0,0,0,0,7.5v6A1.5,1.5,0,0,0,1.5,15H2v2.3965a.25.25,0,0,0,.427.177L5,15H7.542A6.11074,6.11074,0,0,1,7.375,14Z"/><path fill="currentColor" d="M12,7.3v.242A6.1045,6.1045,0,0,1,17.8465,9.15,1.48587,1.48587,0,0,0,18,8.5v-6A1.5,1.5,0,0,0,16.5,1h-9A1.5,1.5,0,0,0,6,2.5V5H9.7A2.3,2.3,0,0,1,12,7.3Z"/><path fill="currentColor" d="M13.5,9.05a4.45,4.45,0,1,0,4.45,4.45A4.45,4.45,0,0,0,13.5,9.05Zm2.5,4.7a.25.25,0,0,1-.25.25H14v1.75a.25.25,0,0,1-.25.25h-.5a.25.25,0,0,1-.25-.25V14H11.25a.25.25,0,0,1-.25-.25v-.5a.25.25,0,0,1,.25-.25H13V11.25a.25.25,0,0,1,.25-.25h.5a.25.25,0,0,1,.25.25V13h1.75a.25.25,0,0,1,.25.25Z"/></svg>
                 </button>
                 <div class="actions-dropdown actions-dropdown-content" id="actions-dropdown-content">
@@ -3177,6 +3228,66 @@
         el.style.setProperty('--tt-y', r.top + 'px');
       }
     });
+    // Tooltips with shortcut: show shortcut in a slightly lighter box, with modifier key icons (⌃ ⌘ ⇧)
+    (function() {
+      var tooltipEl = null;
+      var MODIFIER_SYMBOLS = { Ctrl: '\u2303', Control: '\u2303', Cmd: '\u2318', Command: '\u2318', Shift: '\u21E7', Alt: '\u2325', Option: '\u2325' };
+      function formatShortcut(str) {
+        if (!str) return '';
+        var parts = str.split('+').map(function(p) { return p.trim(); });
+        var out = '';
+        var key = '';
+        for (var i = 0; i < parts.length; i++) {
+          var p = parts[i];
+          var sym = MODIFIER_SYMBOLS[p];
+          if (sym) out += sym;
+          else key = p;
+        }
+        return out + key;
+      }
+      function escapeHtml(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+      function hideTooltip() {
+        if (tooltipEl && tooltipEl.parentNode) tooltipEl.parentNode.removeChild(tooltipEl);
+        tooltipEl = null;
+      }
+      document.addEventListener('mouseover', function(e) {
+        var el = e.target.closest('[data-tooltip][data-tooltip-shortcut]');
+        if (!el) {
+          hideTooltip();
+          return;
+        }
+        hideTooltip();
+        var label = el.getAttribute('data-tooltip');
+        var shortcut = el.getAttribute('data-tooltip-shortcut');
+        if (!label || !shortcut) return;
+        var shortcutFormatted = formatShortcut(shortcut);
+        var r = el.getBoundingClientRect();
+        var rightPos = el.closest('.exmod-nav') || el.getAttribute('data-tooltip-position') === 'right';
+        tooltipEl = document.createElement('div');
+        tooltipEl.className = 'tooltip-with-shortcut' + (rightPos ? ' tooltip-right' : '');
+        tooltipEl.innerHTML = '<span class="tooltip-label">' + escapeHtml(label) + '</span><span class="tooltip-shortcut">' + escapeHtml(shortcutFormatted) + '</span>';
+        document.body.appendChild(tooltipEl);
+        var tr = tooltipEl.getBoundingClientRect();
+        if (rightPos) {
+          tooltipEl.style.left = (r.right + 8) + 'px';
+          tooltipEl.style.top = (r.top + r.height / 2 - tr.height / 2) + 'px';
+          tooltipEl.style.transform = 'none';
+        } else {
+          tooltipEl.style.left = (r.left + r.width / 2) + 'px';
+          tooltipEl.style.top = (r.top - tr.height - 10) + 'px';
+          tooltipEl.style.transform = 'translateX(-50%)';
+        }
+      });
+      document.addEventListener('mouseout', function(e) {
+        var el = e.target.closest('[data-tooltip][data-tooltip-shortcut]');
+        var related = e.relatedTarget;
+        if (!el || (related && el.contains(related))) return;
+        if (related && tooltipEl && (related === tooltipEl || tooltipEl.contains(related))) return;
+        hideTooltip();
+      });
+    })();
     // Chat panel resize (drag handle between chat and preview)
     (function() {
       var grid = document.querySelector('.exmod-grid');
@@ -3359,10 +3470,11 @@
         }
       });
     })();
-    // Keyboard shortcuts: Refresh (Ctrl+R), Add to chat (Ctrl+L)
+    // Keyboard shortcuts: Refresh (Ctrl+R), Add to chat (Ctrl+L), Toggle browser (Ctrl+F)
     (function() {
       var refreshBtn = document.getElementById('refresh-btn');
       var addToChatBtn = document.getElementById('add-to-chat-btn');
+      var toggleBrowserBtn = document.getElementById('toggle-browser-btn');
       document.addEventListener('keydown', function(e) {
         if (e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey) {
           if (e.key === 'r' || e.key === 'R') {
@@ -3373,6 +3485,11 @@
           } else if (e.key === 'l' || e.key === 'L') {
             if (addToChatBtn) {
               addToChatBtn.click();
+              e.preventDefault();
+            }
+          } else if (e.key === 'f' || e.key === 'F') {
+            if (toggleBrowserBtn) {
+              toggleBrowserBtn.click();
               e.preventDefault();
             }
           }
@@ -3502,8 +3619,8 @@
       });
     }
 
-    // Document tree / Code tree toggle (page title)
-    var documentTreeToggle = document.getElementById('document-tree-toggle');
+    // Document tree / Code tree toggle (browser panel)
+    var documentTreeToggle = document.getElementById('toggle-browser-btn');
     var previewContent = document.getElementById('preview-content');
     var previewCode = document.getElementById('preview-code');
     var codeTree = document.querySelector('.code-tree');
@@ -3606,7 +3723,7 @@
           if (previewCode) {
             previewCode.classList.toggle('code-view-changes', isChanges);
           }
-          var documentTreeToggle = document.getElementById('document-tree-toggle');
+          var documentTreeToggle = document.getElementById('toggle-browser-btn');
           if (documentTreeToggle && previewCode) {
             documentTreeToggle.setAttribute('aria-expanded', !previewCode.classList.contains('code-tree-collapsed'));
           }
@@ -3618,6 +3735,10 @@
         } else {
           exmodPreview.classList.remove('content-mode-code');
           if (contentToolbar) contentToolbar.classList.remove('code-file-selected');
+          var documentTreeToggleContent = document.getElementById('toggle-browser-btn');
+          if (documentTreeToggleContent && previewContent) {
+            documentTreeToggleContent.setAttribute('aria-expanded', !previewContent.classList.contains('tree-collapsed'));
+          }
           if (pageTitle) {
             var contentFile = document.querySelector('.file-item.selected .file-name');
             if (contentFile) pageTitle.textContent = (contentFile.getAttribute('data-full-title') || contentFile.textContent).trim();
@@ -4081,7 +4202,7 @@
         if (queueToggle) {
           var n = promptQueue.length;
           queueToggle.setAttribute('aria-label', 'Queue (' + n + ')');
-          queueToggle.setAttribute('data-tooltip', 'Toggle message queue (Ctrl+M)');
+          queueToggle.setAttribute('data-tooltip', 'Toggle message queue');
         }
         if (promptQueue.length === 0) {
           queueContainer.classList.add('empty');
