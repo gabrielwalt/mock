@@ -1001,8 +1001,7 @@
     .chat-msg-agent-streaming .chat-msg-agent-actions .chat-msg-copy-wrap {
       position: absolute;
       right: -6px;
-      top: 50%;
-      transform: translateY(calc(-50% + 4px));
+      top: calc(50% - var(--spectrum-component-height-100) / 2 + 4px);
       flex-shrink: 0;
     }
     .chat-msg-agent-streaming .chat-msg-copy-btn {
@@ -1399,6 +1398,38 @@
     }
     .exmod-chat[data-mode="plan"] .chat-send-btn:hover {
       background: var(--spectrum-plan-accent-hover);
+    }
+    .chat-send-interrupt-slot {
+      position: relative;
+      display: flex;
+      flex-shrink: 0;
+    }
+    .chat-send-interrupt-slot .chat-send-btn.hidden,
+    .chat-send-interrupt-slot .chat-interrupt-btn.hidden {
+      display: none;
+    }
+    .chat-interrupt-btn {
+      width: var(--spectrum-component-height-100);
+      height: var(--spectrum-component-height-100);
+      border: none;
+      background: #000;
+      border-radius: 50%;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background-color 0.13s ease-out;
+    }
+    .chat-interrupt-btn svg {
+      width: var(--spectrum-icon-size-100);
+      height: var(--spectrum-icon-size-100);
+    }
+    .chat-interrupt-btn:hover { background: #333; }
+    .chat-interrupt-btn:focus-visible {
+      outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
+      outline-offset: var(--spectrum-focus-indicator-gap);
     }
     .exmod-chat[data-mode="plan"] .chat-input-wrap:focus-within {
       border-color: var(--spectrum-plan-accent-default);
@@ -2733,9 +2764,6 @@
                   </button>
                 </div>
                 <div class="chat-status-bar-right">
-                  <button type="button" class="chat-toolbar-btn" id="interrupt-task-btn" data-tooltip="Interrupt task" aria-label="Interrupt task">
-                    <svg viewBox="0 0 18 18" focusable="false" aria-hidden="true"><path fill="currentColor" d="M9,1a8,8,0,1,0,8,8A8,8,0,0,0,9,1Zm4,11.5a.5.5,0,0,1-.5.5h-7a.5.5,0,0,1-.5-.5v-7A.5.5,0,0,1,5.5,5h7a.5.5,0,0,1,.5.5Z"/></svg>
-                  </button>
                   <button type="button" class="chat-toolbar-btn" id="download-chat-btn" data-tooltip="Download chat" aria-label="Download chat">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M13.53 9.427c-.292-.292-.766-.294-1.06 0l-1.717 1.714V2.75c0-.414-.336-.75-.75-.75s-.75.336-.75.75v8.4L7.53 9.426c-.293-.293-.767-.293-1.06 0s-.293.767 0 1.06l2.998 2.998c.146.147.338.22.53.22.191 0 .384-.073.53-.22l3.002-2.998c.293-.292.293-.767 0-1.06"></path><path fill="currentColor" d="M15.75 18H4.25C3.01 18 2 16.99 2 15.75v-2.021c0-.415.336-.75.75-.75s.75.335.75.75v2.021c0 .413.337.75.75.75h11.5c.413 0 .75-.337.75-.75v-2.021c0-.415.336-.75.75-.75s.75.335.75.75v2.021c0 1.24-1.01 2.25-2.25 2.25"></path></svg>
                   </button>
@@ -2765,9 +2793,14 @@
                         <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M15.05 7.2c0-.601-.235-1.167-.658-1.59-.849-.85-2.333-.852-3.183 0L9.388 7.43q-.033.034-.06.069-.037.029-.07.062l-7.599 7.598c-.425.425-.659.99-.659 1.591s.234 1.166.66 1.59.99.66 1.59.66 1.166-.234 1.59-.66l9.55-9.549c.425-.425.66-.99.66-1.59M3.78 17.28c-.283.283-.777.283-1.06 0-.142-.141-.22-.33-.22-.53s.078-.389.22-.53l7.2-7.2 1.065 1.055zm9.55-9.55-1.284 1.285-1.066-1.056 1.29-1.29c.283-.282.777-.283 1.06.002.142.14.22.329.22.53s-.078.388-.22.53M18.706 10.832l-1.261-.499-.203-1.342c-.065-.428-.758-.505-.916-.104l-.499 1.262-1.342.202c-.213.032-.379.203-.403.418s.098.418.299.498l1.262.5.202 1.34c.032.213.203.38.418.404s.418-.098.498-.3l.5-1.26 1.34-.203c.215-.033.38-.204.404-.418s-.099-.42-.299-.498M14.336 3.642l1.262.5.202 1.341c.032.213.204.38.418.403.215.025.418-.097.498-.299l.5-1.26 1.341-.204c.214-.032.379-.203.403-.418s-.098-.419-.299-.498l-1.26-.498-.204-1.342c-.065-.428-.758-.505-.916-.105l-.498 1.263-1.342.201c-.213.032-.38.204-.404.418s.098.418.3.498M5.78 4.69l1.023.406.164 1.088c.026.173.166.307.34.327.173.02.339-.08.404-.243l.405-1.023 1.088-.165c.174-.026.308-.165.328-.339s-.08-.34-.243-.404l-1.023-.404-.165-1.09c-.053-.347-.615-.41-.743-.084l-.405 1.024-1.089.164c-.173.026-.308.165-.327.34-.02.173.079.338.242.403"/></svg>
                       </button>
                     </div>
-                    <button class="chat-send-btn" type="button" aria-label="Send">
-                      <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M18.649 9.974c0-.295-.172-.563-.443-.683L4.058 2.933c-.257-.115-.557-.077-.776.098-.22.177-.323.46-.267.736l1.272 6.241-1.222 6.23c-.049.247.03.5.205.675q.031.03.065.058c.221.174.52.211.776.095l14.098-6.408c.268-.122.44-.39.44-.684m-4.243-.747-8.742.027L4.777 4.9zm-9.589 5.87.852-4.344 8.763-.027z"/></svg>
-                    </button>
+                    <div class="chat-send-interrupt-slot">
+                      <button class="chat-send-btn" type="button" id="chat-send-btn" aria-label="Send" data-tooltip="Send">
+                        <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true" role="img"><path fill="currentColor" d="M18.649 9.974c0-.295-.172-.563-.443-.683L4.058 2.933c-.257-.115-.557-.077-.776.098-.22.177-.323.46-.267.736l1.272 6.241-1.222 6.23c-.049.247.03.5.205.675q.031.03.065.058c.221.174.52.211.776.095l14.098-6.408c.268-.122.44-.39.44-.684m-4.243-.747-8.742.027L4.777 4.9zm-9.589 5.87.852-4.344 8.763-.027z"/></svg>
+                      </button>
+                      <button class="chat-interrupt-btn" type="button" id="interrupt-task-btn" aria-label="Interrupt all tasks" data-tooltip="Interrupt all tasks">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" width="18" height="18" focusable="false" aria-hidden="true"><rect fill="currentColor" height="14" rx="0.5" width="12" x="3" y="2"/></svg>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -3814,14 +3847,25 @@
       if (progressBarFill) progressBarFill.style.width = '0%';
       if (taskProgress) taskProgress.classList.add('collapsed');
     }
+    function updateSendInterruptButton() {
+      var sendBtn = document.getElementById('chat-send-btn');
+      var interruptBtn = document.getElementById('interrupt-task-btn');
+      var textarea = document.getElementById('chat-prompt-textarea');
+      var hasText = textarea && textarea.value.trim().length > 0;
+      var showSend = taskStopped || hasText;
+      if (sendBtn) {
+        sendBtn.classList.toggle('hidden', !showSend);
+        sendBtn.setAttribute('data-tooltip', hasText ? 'Add to queue' : 'Send');
+        sendBtn.setAttribute('aria-label', hasText ? 'Add to queue' : 'Send');
+      }
+      if (interruptBtn) {
+        interruptBtn.classList.toggle('hidden', showSend);
+      }
+    }
     function interruptTask() {
       if (taskStopped) return;
       taskStopped = true;
-      var interruptBtn = document.getElementById('interrupt-task-btn');
-      if (interruptBtn) {
-        interruptBtn.disabled = true;
-        interruptBtn.classList.add('chat-toolbar-btn--disabled');
-      }
+      updateSendInterruptButton();
       var statusThinking = document.getElementById('chat-status-thinking');
       if (statusThinking) statusThinking.classList.add('hidden');
       if (clearChatBtn) {
@@ -3840,6 +3884,7 @@
       updateDownloadChatBtn();
     }
     document.getElementById('interrupt-task-btn')?.addEventListener('click', interruptTask);
+    updateSendInterruptButton();
     if (chatMessages) {
       chatMessages.addEventListener('click', function(e) {
         var copyBtn = e.target.closest('.chat-msg-copy-btn');
@@ -4109,6 +4154,9 @@
             e.preventDefault();
             submit();
           }
+        });
+        textarea.addEventListener('input', function() {
+          if (typeof updateSendInterruptButton === 'function') updateSendInterruptButton();
         });
       }
       if (sendBtn) {
