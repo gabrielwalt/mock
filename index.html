@@ -683,6 +683,7 @@
       width: var(--spectrum-icon-size-100);
       height: var(--spectrum-icon-size-100);
       transition: transform 0.2s ease;
+      transform: rotate(180deg); /* points up when collapsed */
     }
     .task-progress-header {
       display: flex;
@@ -1107,7 +1108,7 @@
       transition: border-color 0.25s ease, border-top-color 0.01s 0.25s;
     }
     .queue-panel-sticky:not(.collapsed) ~ .chat-status-bar .chat-status-queue-chevron {
-      transform: rotate(180deg); /* points up when expanded */
+      transform: none; /* points down when expanded */
     }
     .chat-status-tasks-btn {
       display: inline-flex;
@@ -1139,9 +1140,10 @@
       width: var(--spectrum-icon-size-100);
       height: var(--spectrum-icon-size-100);
       transition: transform 0.2s ease;
+      transform: rotate(180deg); /* points up when collapsed */
     }
     .task-progress-sticky:not(.collapsed) ~ .chat-status-bar .chat-status-tasks-chevron {
-      transform: rotate(180deg);
+      transform: none; /* points down when expanded */
     }
     .queue-panel-content {
       max-height: var(--spectrum-task-list-max-height);
