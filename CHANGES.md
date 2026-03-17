@@ -48,6 +48,63 @@ Names for every panel, toolbar, and group in the mock. Use these when referring 
 
 ---
 
+## Functional Behaviors (How Things Work)
+
+Brief summary of toggle behaviors, button logic, and interactions in the mock. Use this when implementing the changes.
+
+### Toggle browser button
+- **Behavior:** Click toggles the document tree (content view) or code tree (code view) visibility. Chevron rotates: points left when tree is visible, right when collapsed. **Ctrl+F** triggers the same toggle.
+- **State:** `aria-expanded="true"` when tree visible, `"false"` when collapsed.
+- **Content vs Code:** In content view, toggles `preview-content.tree-collapsed`. In code view, toggles `preview-code.code-tree-collapsed`.
+
+### View mode dropdown
+- **Behavior:** Click opens dropdown; select Preview, Document, Code Files, or Changes. **Ctrl+Cmd+1** through **Ctrl+Cmd+4** switch modes directly.
+- **Panel swap:** Preview/Document use the content panel (document tree + page preview); Code Files/Changes use the code panel (code tree + changes + editor). Panels are swapped in/out of the preview slot.
+- **Toolbar visibility:** Refresh and Viewport dropdown appear only when mode is Preview; they hide for Document, Code Files, Changes. Content actions vs Code actions dropdown shown based on mode.
+
+### Task progress panel (Tasks button)
+- **Behavior:** Click "Tasks (2/9)" to expand/collapse the task list. Chevron: up when collapsed, down when expanded. **Ctrl+T** triggers toggle.
+- **Mutual exclusion:** When expanding Tasks, if Queue is open, Queue collapses first (250ms delay), then Tasks expands.
+- **When no task running:** Tasks button can be hidden; task list is empty.
+
+### Queue panel (Queue button)
+- **Behavior:** Click "Queue (0)" to expand/collapse. Shown only when queue has items. Chevron: up when collapsed, down when expanded. **Ctrl+M** triggers toggle.
+- **Queue items:** Each item has expand/collapse, copy, send now, remove. Enter in empty input does nothing; with text, Enter adds to queue. Shift+Enter = new line.
+
+### Completed tasks section
+- **Behavior:** Click "2 completed" to expand/collapse the list of completed tasks. Chevron: down when collapsed, up when expanded. Animated max-height transition.
+
+### Send / Interrupt slot
+- **Behavior:** Single slot. When a task is running and input is empty: show **Interrupt** (black stop icon). When task stopped or user has typed text: show **Send**. Tooltip: "Send" when empty, "Add to queue" when typing.
+- **Interrupt:** Stops task, clears task progress, re-enables Clear, shows Send again.
+
+### Plan / Execute mode switcher
+- **Behavior:** Two buttons; one active. Plan mode vs Execute mode affects how the agent processes prompts (mock does not implement backend logic).
+
+### Breadcrumb path dropdown
+- **Behavior:** When path has multiple folders between root and current, they collapse into a dropdown. Click trigger to open; select folder to navigate. Dropdown options ordered: deepest at top, shallowest at bottom.
+
+### File list (document tree)
+- **Behavior:** Click folder or file to select; selection updates Page title. Folders sorted before files; both sorted by name. Only files (not folders) drive the page preview when selected.
+
+### Content actions dropdown / Code actions dropdown
+- **Behavior:** Click Sync button to open. Options: Push content, Pull content, Delete page (content); Push code, Pull code, GitHub info, Switch repo/branch (code). Click outside to close.
+- **Code actions:** Shows connection state (User, Repository, Branch). Logout disconnects; Reconnect restores.
+
+### Chat resize handle
+- **Behavior:** Drag to resize chat panel width. Affects the split between chat and preview panels.
+
+### Chat scroll on task/queue expand
+- **Behavior:** When task list or queue expands (reducing chat messages height), scroll position adjusts so visible content stays stable (bottom fixed when opening, top fixed when closing).
+
+### Copy on chat messages
+- **Behavior:** Each message has a copy button (visible on hover). Click copies message body to clipboard.
+
+### Queue items (when queue has messages)
+- **Behavior:** Each queued message: expand/collapse (for multi-line), copy, send now, remove. Send now moves message to chat and removes from queue.
+
+---
+
 ## Part A: Bigger Changes (Implemented in Mock)
 
 ### A1. Global layout — Single toolbar split into two parts
@@ -61,9 +118,9 @@ Names for every panel, toolbar, and group in the mock. Use these when referring 
 ### A2. Task list and chat actions moved to bottom status bar
 
 **Change:** The task list, queue toggle, download chat, and clear chat have moved from the top of the chat panel to a **bottom status bar** above the message input. The bar shows:
-- **Tasks (2/9)** — toggle to expand/collapse the task list (chevron: up when collapsed, down when expanded)
-- **Queue (0)** — toggle to expand/collapse the message queue (when queue has items)
-- **Download** and **Clear** buttons
+- **Tasks (2/9)** — toggle to expand/collapse the task list (chevron: up when collapsed, down when expanded). **Ctrl+T**. If Queue is open when expanding Tasks, Queue collapses first.
+- **Queue (0)** — toggle to expand/collapse the message queue; shown only when queue has items. **Ctrl+M**.
+- **Download** and **Clear** buttons — Download disabled when no messages; Clear disabled when chat empty.
 
 **Why:** Keeps task progress and chat actions close to the input while freeing up space at the top. The task list unfolds above the status bar when expanded.
 
@@ -71,7 +128,7 @@ Names for every panel, toolbar, and group in the mock. Use these when referring 
 
 ### A3. Toggle browser button separate from filename
 
-**Change:** The current UI already uses only the chevron to toggle the file browser (the filename is display). The mock separates them visually: a dedicated **Toggle browser** button (double-chevron icon) sits after the view switcher, followed by a vertical separator, then the filename as plain text. Keyboard shortcut: **Ctrl+F**.
+**Change:** The current UI already uses only the chevron to toggle the file browser (the filename is display). The mock separates them visually: a dedicated **Toggle browser** button (double-chevron icon) sits after the view switcher, followed by a vertical separator, then the filename as plain text. **Behavior:** Click toggles document tree (content view) or code tree (code view). Chevron rotates: left when tree visible, right when collapsed. **Ctrl+F** triggers toggle.
 
 **Why:** Clear visual separation between the toggle control and the filename improves scannability and makes the filename read-only context.
 
@@ -79,7 +136,7 @@ Names for every panel, toolbar, and group in the mock. Use these when referring 
 
 ### A4. Interrupt button in send slot
 
-**Change:** When a task is running, the send button is **replaced** by an interrupt button (same circular shape, all black) in the same slot. Tooltips: "Interrupt all tasks" when showing interrupt; "Send" when empty; "Add to queue" when typing. When the user starts typing, the send button reappears (with "Add to queue" tooltip).
+**Change:** When a task is running, the send button is **replaced** by an interrupt button (same circular shape, all black) in the same slot. **Behavior:** Show Interrupt when task running and input empty; show Send when task stopped or user has typed. Tooltips: "Interrupt all tasks" / "Send" / "Add to queue" (when typing). Interrupt stops the task, clears task progress, re-enables Clear, and shows Send again.
 
 **Why:** Interrupt is always in the same place as send, reducing cognitive load and saving space.
 
@@ -95,7 +152,7 @@ Names for every panel, toolbar, and group in the mock. Use these when referring 
 
 ### A6. Single view switcher — content, document, code, and changes
 
-**Change:** A single dropdown at the left of the content toolbar switches between content preview, document view, code files, and changes. Previously, there were two buttons in a vertical toolbar at the far left and a separate switcher in a horizontal toolbar at the far right.
+**Change:** A single dropdown at the left of the content toolbar switches between content preview, document view, code files, and changes. **Behavior:** Preview and Document use the content panel (document tree + page preview); Code Files and Changes use the code panel (code tree + changes + editor). Panels are swapped in/out of the preview slot. **Ctrl+Cmd+1** through **Ctrl+Cmd+4** switch modes directly.
 
 **Why:** To consolidate view switching into one control, place it next to the panel it affects, and eliminate the split between left and right edges.
 
@@ -111,7 +168,7 @@ Names for every panel, toolbar, and group in the mock. Use these when referring 
 
 ### A8. Preview options and viewport
 
-**Change:** Preview options are merged into the content toolbar. The Picker, Refresh, and Viewport icons only appear when the switcher is on "Preview"; they disappear when switching to "Document View". Viewport options (Desktop, Tablet, Phone) are grouped in a dropdown.
+**Change:** Preview options are merged into the content toolbar. **Behavior:** Refresh and Viewport dropdown appear only when view mode is Preview; they hide for Document, Code Files, Changes. Viewport options (Desktop, Tablet, Phone) are in a dropdown. **Ctrl+R** for Refresh. Viewport shortcuts: **Ctrl+Shift+1/2/3** for Desktop/Tablet/Phone.
 
 **Why:** To reduce clutter and show only relevant controls for the current mode.
 
@@ -119,7 +176,7 @@ Names for every panel, toolbar, and group in the mock. Use these when referring 
 
 ### A9. Document actions menu
 
-**Change:** Instead of "Upload Content", a more generic Actions menu. Besides push, an explicit "Sync" option to pull content. The menu also includes Delete.
+**Change:** Instead of "Upload Content", a more generic Actions menu (Sync button with dropdown). **Behavior:** Click Sync to open; options: Push content, Pull content, Delete page. Click outside to close. Content actions shown in Preview/Document mode; Code actions (with GitHub info) shown in Code Files/Changes mode.
 
 **Why:** To support bidirectional content flow and to consolidate document operations in one place.
 
@@ -127,7 +184,7 @@ Names for every panel, toolbar, and group in the mock. Use these when referring 
 
 ### A10. Code view and GitHub actions
 
-**Change:** A GitHub Actions menu when switching to code view. GitHub info (user, repo, branch) is merged into the same menu. The "Add to chat" button is moved into the top menu.
+**Change:** A GitHub Actions menu when switching to code view. **Behavior:** Code actions dropdown shows Push code, Pull code, User/Repo/Branch labels, Switch repository, Switch branch, Logout, Reconnect. Connection state toggles: Logout shows "not connected"; Reconnect restores. Add to chat button stays in the content toolbar; adds current context (file/page) to chat. **Ctrl+L** for Add to chat.
 
 **Why:** To consolidate GitHub-related controls and reduce toolbar sprawl.
 
@@ -151,7 +208,7 @@ These are grouped by developer task. Implement each group as a single unit.
 
 **Current:** Content toolbar has: breadcrumb (Workspace > destinations > bulgaria, with dropdown when multiple folders are collapsed), then chevron (toggle) + filename. Only the chevron toggles the file browser. Right side: Copy, Duplicate, Delete icons and "Upload content" button.
 
-**Change:** Implement the mock layout: view switcher (Preview dropdown) at left, then Toggle browser button (chevron only, visually separate), vertical separator, filename as plain text. Move Copy, Duplicate, Delete into the Actions menu or another appropriate location. Replace "Upload content" with the Sync/Actions menu as in A9. Note: Current UI uses a dropdown picker when file browser is open; mock uses a persistent sidebar tree—decide which pattern to adopt.
+**Change:** Implement the mock layout: view switcher (Preview dropdown) at left, then Toggle browser button (chevron only, visually separate), vertical separator, filename as plain text. Move Copy, Duplicate, Delete into the Actions menu or another appropriate location. Replace "Upload content" with the Sync/Actions menu as in A9. **Behavior:** Page title updates when selected file changes in document tree or code tree. Note: Current UI uses a dropdown picker when file browser is open; mock uses a persistent sidebar tree—decide which pattern to adopt.
 
 ---
 
@@ -167,7 +224,7 @@ These are grouped by developer task. Implement each group as a single unit.
 
 **Current:** Old UI has: paperclip, lightbulb, emoji, image, microphone, and red record/stop button next to the input.
 
-**Change:** Align with mock: attachment, Plan/Execute mode switcher, send/interrupt slot. Remove or relocate emoji, image, and record button if they are not part of the new design. Ensure the Plan/Execute mode switcher is present.
+**Change:** Align with mock: attachment, Plan/Execute mode switcher, send/interrupt slot. Remove or relocate emoji, image, and record button if they are not part of the new design. Ensure the Plan/Execute mode switcher is present. **Behavior:** Plan/Execute are two mutually exclusive buttons. Send/Interrupt share one slot: Interrupt when task running and input empty; Send otherwise. Enter with text adds to queue (or sends; mock uses queue); Shift+Enter = new line. Textarea auto-grows 1–12 lines, then scrolls.
 
 ---
 
@@ -175,7 +232,7 @@ These are grouped by developer task. Implement each group as a single unit.
 
 **Current:** Task Progress at top of chat panel with "4/4 completed" and chevron; a nested "✓ 4 completed" subsection with its own chevron expands to show individual tasks. Green progress bar. Card-style layout. Chevron directions are inconsistent (main section vs subsection).
 
-**Change:** Move to bottom status bar with "Tasks (2/9)" style labeling. Ensure chevron directions: Tasks/Queue buttons — up when collapsed, down when expanded; completed section — down when collapsed, up when expanded. Add animated collapse/expand for the task list and completed section.
+**Change:** Move to bottom status bar with "Tasks (2/9)" style labeling. Ensure chevron directions: Tasks/Queue buttons — up when collapsed, down when expanded; completed section — down when collapsed, up when expanded. Add animated collapse/expand (max-height transition 0.25s). **Behavior:** When expanding Tasks, if Queue is open, collapse Queue first (250ms), then expand Tasks. Chat scroll stays stable when panels expand/collapse.
 
 ---
 
