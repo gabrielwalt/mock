@@ -2,7 +2,7 @@
    preview.css — Preview panel, dropdowns, and tooltips
    Includes: .exmod-preview, content toolbar, view mode dropdown, preview slot,
    code view, document tree, iframe container, viewport dropdown, actions
-   dropdown, toolbar icon buttons, tooltip system, and responsive dropdown.
+   dropdown, toolbar icon buttons, and tooltip system.
    ============================================================================= */
 
 /* === PREVIEW PANEL (Right) === */
@@ -100,65 +100,6 @@
 .exmod-preview.content-mode-code .toolbar-preview-only {
   display: none;
 }
-/* Spectrum Button - fill (primary) */
-.content-toolbar .btn-accent {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spectrum-spacing-100);
-  height: var(--spectrum-component-height-100);
-  padding: 0 var(--spectrum-spacing-300);
-  background: var(--spectrum-accent-background-color-default);
-  color: var(--spectrum-gray-25);
-  border: none;
-  border-radius: 9999px;
-  font-size: var(--spectrum-font-size-100);
-  font-weight: var(--spectrum-medium-font-weight);
-  cursor: pointer;
-  white-space: nowrap;
-  font-family: var(--spectrum-sans-serif-font-family);
-  transition: background-color 0.13s ease-out;
-}
-.btn-accent:hover { background: var(--spectrum-accent-background-color-hover); }
-.btn-accent:focus-visible {
-  outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
-  outline-offset: var(--spectrum-focus-indicator-gap);
-}
-/* Spectrum Button - outline (secondary) */
-.content-toolbar .btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spectrum-spacing-200);
-  height: var(--spectrum-component-height-100);
-  padding: 0 var(--spectrum-spacing-200);
-  background: transparent;
-  color: var(--spectrum-gray-800);
-  border: none;
-  border-radius: var(--spectrum-corner-radius-100);
-  font-size: var(--spectrum-font-size-75);
-  font-weight: var(--spectrum-medium-font-weight);
-  cursor: pointer;
-  white-space: nowrap;
-  font-family: var(--spectrum-sans-serif-font-family);
-  transition: background-color 0.13s ease-out, border-color 0.13s ease-out;
-}
-.btn-ghost:hover {
-  background: var(--spectrum-button-hover-overlay);
-}
-.btn-ghost:focus-visible {
-  outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
-  outline-offset: var(--spectrum-focus-indicator-gap);
-}
-.btn-ghost svg {
-  width: var(--spectrum-static-size-200);
-  height: var(--spectrum-static-size-200);
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
 .breadcrumb-sep {
   display: inline-flex;
   align-items: center;
@@ -671,12 +612,6 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.file-item .file-item-text {
-  min-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
 /* Iframe Container */
 .iframe-container {
   flex: 1;
@@ -1025,19 +960,6 @@
 .actions-dropdown.open .actions-dropdown-overlay {
   display: block;
 }
-.actions-dropdown-header {
-  padding: var(--spectrum-spacing-100) var(--spectrum-spacing-200);
-  font-size: var(--spectrum-font-size-100);
-  color: var(--spectrum-gray-700);
-}
-.actions-dropdown-header-row {
-  display: flex;
-  align-items: center;
-  gap: var(--spectrum-spacing-100);
-  padding: var(--spectrum-spacing-75) var(--spectrum-spacing-200);
-  font-size: var(--spectrum-font-size-100);
-  color: var(--spectrum-gray-700);
-}
 .actions-dropdown-label {
   display: flex;
   align-items: center;
@@ -1061,12 +983,6 @@
   min-height: 6px;
   border-radius: 50%;
   flex-shrink: 0;
-}
-.actions-dropdown-dot-green {
-  background: var(--spectrum-green-600);
-}
-.actions-dropdown-dot-blue {
-  background: var(--spectrum-blue-800);
 }
 .actions-dropdown-dot-red {
   background: var(--spectrum-red-600);

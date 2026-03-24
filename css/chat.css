@@ -153,13 +153,6 @@
   gap: var(--spectrum-spacing-100);
   margin-right: 2px;
 }
-.chat-status-bar-divider {
-  width: var(--spectrum-border-width-100);
-  height: var(--spectrum-static-size-300);
-  background: var(--spectrum-gray-300);
-  border-radius: 1px;
-  flex-shrink: 0;
-}
 .chat-status-thinking {
   display: flex;
   align-items: center;
@@ -238,12 +231,6 @@
 .task-progress-header h3 {
   margin: 0;
 }
-.completed-count {
-  font-size: var(--spectrum-font-size-100);
-  color: var(--spectrum-neutral-subdued-content-color-default);
-  font-weight: var(--spectrum-medium-font-weight);
-}
-
 /* Task Progress collapsible content - unfolds below header when expanded */
 .task-progress-content {
   max-height: var(--spectrum-task-list-max-height);
@@ -596,26 +583,6 @@
   padding: 2px 6px;
   border-radius: var(--spectrum-corner-radius-75);
 }
-.chat-thinking-separator {
-  margin: var(--spectrum-spacing-200) 16px;
-  border: none;
-  border-top: var(--spectrum-border-width-100) solid var(--spectrum-gray-200);
-}
-.chat-thinking {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spectrum-spacing-200);
-  padding: var(--spectrum-spacing-200) var(--spectrum-spacing-200) var(--spectrum-spacing-200) var(--spectrum-spacing-150);
-  color: var(--spectrum-neutral-subdued-content-color-default);
-  font-size: var(--spectrum-font-size-100);
-}
-.chat-thinking-content {
-  display: flex;
-  align-items: center;
-  gap: var(--spectrum-spacing-100);
-}
-
 /* Chat Input */
 .chat-input {
   padding: var(--spectrum-spacing-200);
