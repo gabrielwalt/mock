@@ -1,43 +1,14 @@
 // dropdowns.js — closeAllDropdowns, viewport, keyboard shortcuts (Ctrl+R/L/F), breadcrumb, actions, and GitHub actions menu
 
-// Shared: close all dropdown menus except the one being opened (call before opening any menu)
+// Shared: close all open dropdown menus (optionally exclude one being opened)
 function closeAllDropdowns(excludeEl) {
-  document.querySelectorAll('.viewport-dropdown.open').forEach(function(d) {
-    if (d !== excludeEl) {
-      d.classList.remove('open');
-      var t = d.querySelector('.viewport-dropdown-trigger');
-      if (t) t.setAttribute('aria-expanded', 'false');
-    }
-  });
-  document.querySelectorAll('.breadcrumb-path-dropdown.open').forEach(function(d) {
-    if (d !== excludeEl) {
-      d.classList.remove('open');
-      var t = d.querySelector('.breadcrumb-path-trigger');
-      if (t) t.setAttribute('aria-expanded', 'false');
-    }
-  });
-  document.querySelectorAll('.actions-dropdown.open').forEach(function(d) {
-    if (d !== excludeEl) {
-      d.classList.remove('open');
-      var t = d.querySelector('.btn-actions');
-      if (t) t.setAttribute('aria-expanded', 'false');
-    }
-  });
-  document.querySelectorAll('.responsive-dropdown.open').forEach(function(d) {
-    if (d !== excludeEl) {
-      d.classList.remove('open');
-      var t = d.querySelector('.responsive-dropdown-trigger');
-      if (t) t.setAttribute('aria-expanded', 'false');
-    }
-  });
-  document.querySelectorAll('.view-mode-dropdown.open').forEach(function(d) {
-    if (d !== excludeEl) {
-      d.classList.remove('open');
-      var t = d.querySelector('.view-mode-dropdown-trigger');
-      if (t) t.setAttribute('aria-expanded', 'false');
-      var overlay = d.querySelector('.view-mode-dropdown-overlay');
-      if (overlay) overlay.setAttribute('aria-hidden', 'true');
-    }
+  document.querySelectorAll('.viewport-dropdown.open, .breadcrumb-path-dropdown.open, .actions-dropdown.open, .view-mode-dropdown.open').forEach(function(d) {
+    if (d === excludeEl) return;
+    d.classList.remove('open');
+    var t = d.querySelector('[aria-expanded]');
+    if (t) t.setAttribute('aria-expanded', 'false');
+    var overlay = d.querySelector('.view-mode-dropdown-overlay');
+    if (overlay) overlay.setAttribute('aria-hidden', 'true');
   });
 }
 
@@ -73,10 +44,6 @@ function closeAllDropdowns(excludeEl) {
     });
   });
   setViewport(trigger.getAttribute('data-viewport') || 'desktop');
-  document.addEventListener('click', function() {
-    dropdown.classList.remove('open');
-    trigger.setAttribute('aria-expanded', 'false');
-  });
   document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.shiftKey && e.key >= '1' && e.key <= '3') {
       var v = { '1': 'desktop', '2': 'tablet', '3': 'phone' }[e.key];
@@ -130,10 +97,6 @@ if (breadcrumbPathDropdown) {
       breadcrumbPathDropdown.classList.remove('open');
       pathTrigger.setAttribute('aria-expanded', 'false');
     });
-  });
-  document.addEventListener('click', function() {
-    breadcrumbPathDropdown.classList.remove('open');
-    if (pathTrigger) pathTrigger.setAttribute('aria-expanded', 'false');
   });
 }
 // Actions dropdowns (content: Upload/Sync/Delete; code: Sync/Push/Switch branch/etc.)
@@ -197,10 +160,6 @@ if (breadcrumbPathDropdown) {
   }
   updateUI();
 })();
-document.addEventListener('click', function() {
-  document.querySelectorAll('.actions-dropdown.open').forEach(function(d) {
-    d.classList.remove('open');
-    var t = d.querySelector('.btn-actions');
-    if (t) t.setAttribute('aria-expanded', 'false');
-  });
-});
+
+// Close all dropdowns on any outside click
+document.addEventListener('click', function() { closeAllDropdowns(); });

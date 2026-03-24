@@ -171,13 +171,6 @@ if (viewModeTrigger && viewModeOverlay) {
     viewModeTrigger.setAttribute('aria-expanded', isOpen);
     viewModeOverlay.setAttribute('aria-hidden', !isOpen);
   });
-  document.addEventListener('click', function() {
-    if (viewModeDropdown) {
-      viewModeDropdown.classList.remove('open');
-      if (viewModeTrigger) viewModeTrigger.setAttribute('aria-expanded', 'false');
-      if (viewModeOverlay) viewModeOverlay.setAttribute('aria-hidden', 'true');
-    }
-  });
   viewModeOverlay.addEventListener('click', function(e) { e.stopPropagation(); });
 }
 

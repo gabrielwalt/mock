@@ -16,14 +16,7 @@ var taskProgressContent = document.getElementById('task-progress-content');
 var progressBarFill = document.getElementById('progress-fill');
 var chatMessages = document.querySelector('.chat-messages');
 var clearChatBtn = document.getElementById('clear-chat-btn');
-var downloadChatBtn = document.getElementById('download-chat-btn');
 var taskStopped = false;
-function updateDownloadChatBtn() {
-  if (!downloadChatBtn || !chatMessages) return;
-  var hasMessages = chatMessages.querySelectorAll('.chat-msg').length > 0;
-  downloadChatBtn.disabled = !hasMessages;
-  downloadChatBtn.classList.toggle('chat-toolbar-btn--disabled', !hasMessages);
-}
 function resetTaskProgress() {
   if (taskProgressToggle) {
     var label = taskProgressToggle.querySelector('.chat-status-tasks-label');
@@ -73,7 +66,6 @@ function clearChatAndTask() {
     clearChatBtn.disabled = true;
     clearChatBtn.classList.add('chat-toolbar-btn--disabled');
   }
-  updateDownloadChatBtn();
 }
 document.getElementById('interrupt-task-btn')?.addEventListener('click', interruptTask);
 updateSendInterruptButton();
@@ -93,7 +85,6 @@ if (chatMessages) {
 if (clearChatBtn) clearChatBtn.addEventListener('click', function() {
   if (!this.disabled) clearChatAndTask();
 });
-updateDownloadChatBtn();
 if (taskProgress && taskProgressToggle) {
   var PANEL_TRANSITION_MS = 250;
   function toggleTaskProgress() {
@@ -257,7 +248,6 @@ if (chatMessages) {
     promptQueue.splice(index, 1);
     expandedItems.splice(index, 1);
     renderQueue();
-    if (typeof updateDownloadChatBtn === 'function') updateDownloadChatBtn();
   }
 
   function updateStatusBar() {
