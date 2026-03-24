@@ -138,7 +138,6 @@ function setViewMode(mode) {
       if (previewCode) {
         previewCode.classList.toggle('code-view-changes', isChanges);
       }
-      var documentTreeToggle = document.getElementById('toggle-browser-btn');
       if (documentTreeToggle && previewCode) {
         documentTreeToggle.setAttribute('aria-expanded', !previewCode.classList.contains('code-tree-collapsed'));
       }
@@ -150,9 +149,8 @@ function setViewMode(mode) {
     } else {
       exmodPreview.classList.remove('content-mode-code');
       if (contentToolbar) contentToolbar.classList.remove('code-file-selected');
-      var documentTreeToggleContent = document.getElementById('toggle-browser-btn');
-      if (documentTreeToggleContent && previewContent) {
-        documentTreeToggleContent.setAttribute('aria-expanded', !previewContent.classList.contains('tree-collapsed'));
+      if (documentTreeToggle && previewContent) {
+        documentTreeToggle.setAttribute('aria-expanded', !previewContent.classList.contains('tree-collapsed'));
       }
       if (pageTitle) {
         var contentFile = document.querySelector('.file-item.selected .file-name');
