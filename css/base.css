@@ -1,0 +1,86 @@
+/* =============================================================================
+   base.css — Reset + shared button components
+   Includes: box-sizing reset, html/body base styles, .icon-btn and .icon-btn-sm
+   Spectrum-style ActionButton components (32px and 28px touch targets).
+   ============================================================================= */
+
+/* --- Reset --- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--spectrum-sans-serif-font-family);
+  font-size: var(--spectrum-font-size-100);
+  line-height: 1.5;
+  color: var(--spectrum-neutral-content-color-default);
+  background: var(--spectrum-gray-50);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Spectrum-style buttons (ActionButton) --- */
+/* Spectrum-style icon buttons: 32px touch target, 18px icon (spectrum workflow size S) */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spectrum-component-height-100);
+  height: var(--spectrum-component-height-100);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--spectrum-neutral-content-color-default);
+  border-radius: var(--spectrum-corner-radius-100);
+  padding: 0;
+  transition: background-color 0.13s ease-out, color 0.13s ease-out;
+}
+.icon-btn:hover { background: var(--spectrum-button-hover-overlay); }
+.icon-btn:focus-visible {
+  outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
+  outline-offset: var(--spectrum-focus-indicator-gap);
+}
+.icon-btn svg {
+  width: var(--spectrum-icon-size-100);
+  height: var(--spectrum-icon-size-100);
+  fill: currentColor;
+  flex-shrink: 0;
+}
+.icon-btn svg.spectrum-icon-outline {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon-btn-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spectrum-component-height-150);
+  height: var(--spectrum-component-height-150);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--spectrum-neutral-content-color-default);
+  border-radius: var(--spectrum-corner-radius-100);
+  padding: 0;
+  transition: background-color 0.13s ease-out, color 0.13s ease-out;
+}
+.icon-btn-sm:hover { background: var(--spectrum-button-hover-overlay); }
+.icon-btn-sm:focus-visible {
+  outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
+  outline-offset: var(--spectrum-focus-indicator-gap);
+}
+.icon-btn-sm svg {
+  width: var(--spectrum-static-size-200);
+  height: var(--spectrum-static-size-200);
+  fill: currentColor;
+  flex-shrink: 0;
+}
+.icon-btn-sm svg.spectrum-icon-outline {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

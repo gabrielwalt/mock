@@ -1,0 +1,289 @@
+/* =============================================================================
+   layout.css — Layout shell
+   Includes: .exmod-root, global header, left nav sidebar, main content area,
+   chat+preview grid, and resize handles (chat and document-tree).
+   ============================================================================= */
+
+/* --- Layout Shell --- */
+.exmod-root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--spectrum-gray-50);
+}
+
+/* === GLOBAL HEADER === */
+.exmod-header {
+  height: var(--header-height);
+  min-height: var(--header-height);
+  max-height: var(--header-height);
+  padding: 0 16px;
+  box-sizing: border-box;
+  background: var(--spectrum-background-layer-1-color);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  flex-grow: 0;
+  z-index: 100;
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spectrum-spacing-200);
+}
+.header-left > .icon-btn:first-child {
+  width: var(--spectrum-nav-item-size);
+  height: var(--spectrum-nav-item-size);
+  margin-left: 0;
+}
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spectrum-spacing-200);
+  margin-left: calc(
+    (var(--nav-width) - var(--spectrum-spacing-300) - var(--spectrum-component-height-100) - var(--spectrum-spacing-200))
+    - (((var(--nav-width) - var(--spectrum-component-height-100)) / 2) - var(--spectrum-spacing-300))
+  );
+}
+.header-brand .adobe-logo {
+  width: var(--spectrum-component-height-200);
+  height: var(--spectrum-component-height-200);
+  flex-shrink: 0;
+}
+.header-title {
+  font-size: var(--spectrum-font-size-200);
+  font-weight: var(--spectrum-bold-font-weight);
+  color: var(--spectrum-gray-900);
+  white-space: nowrap;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spectrum-spacing-200);
+}
+.request-support-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spectrum-spacing-75);
+  font-size: var(--spectrum-font-size-100);
+  font-weight: var(--spectrum-bold-font-weight);
+  color: var(--spectrum-neutral-subdued-content-color-default);
+  text-decoration: none;
+  padding: var(--spectrum-spacing-75) var(--spectrum-spacing-100);
+  border-radius: var(--spectrum-corner-radius-100);
+  transition: background-color 0.13s ease-out, color 0.13s ease-out;
+}
+.request-support-link:hover {
+  background: var(--spectrum-button-hover-overlay);
+  color: var(--spectrum-neutral-content-color-default);
+}
+.request-support-link .spectrum-icon-outline {
+  width: var(--spectrum-icon-size-100);
+  height: var(--spectrum-icon-size-100);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.user-avatar {
+  width: var(--spectrum-component-height-150);
+  height: var(--spectrum-component-height-150);
+  color: var(--spectrum-gray-600);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.user-avatar svg {
+  width: var(--spectrum-icon-size-100);
+  height: var(--spectrum-icon-size-100);
+  fill: currentColor;
+}
+
+/* === SHELL: NAV + MAIN === */
+.exmod-shell {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+  position: relative;
+  z-index: 101;
+}
+
+/* === LEFT NAV SIDEBAR (Spectrum Sidenav style) === */
+.exmod-nav {
+  width: var(--nav-width);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spectrum-spacing-100) 0;
+  background: var(--spectrum-background-layer-1-color);
+  border: none;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spectrum-nav-item-size);
+  height: var(--spectrum-nav-item-size);
+  border-radius: var(--spectrum-corner-radius-100);
+  cursor: pointer;
+  color: var(--spectrum-neutral-content-color-default);
+  text-decoration: none;
+  margin-bottom: var(--spectrum-spacing-75);
+  position: relative;
+  transition: background-color 0.13s ease-out, color 0.13s ease-out;
+}
+.nav-item:hover { background: var(--spectrum-button-hover-overlay); }
+.nav-item:focus-visible {
+  outline: var(--spectrum-focus-indicator-thickness) solid var(--spectrum-focus-indicator-color);
+  outline-offset: var(--spectrum-focus-indicator-gap);
+}
+.nav-item svg {
+  width: var(--spectrum-icon-size-100);
+  height: var(--spectrum-icon-size-100);
+  fill: currentColor;
+  flex-shrink: 0;
+}
+.nav-item svg.nav-icon-outline,
+.nav-item svg.spectrum-icon-outline {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.nav-item.nav-selected {
+  background: var(--spectrum-gray-800);
+  color: var(--spectrum-gray-50);
+}
+.nav-item.nav-selected:hover { background: var(--spectrum-gray-700); }
+.nav-separator {
+  width: var(--spectrum-icon-size-300);
+  height: var(--spectrum-border-width-100);
+  background: var(--spectrum-gray-200);
+  margin: calc(var(--spectrum-spacing-200) - var(--spectrum-spacing-75)) 0 var(--spectrum-spacing-200) 0;
+}
+.nav-spacer { flex: 1; }
+.nav-section-label {
+  font-size: var(--spectrum-font-size-75);
+  font-weight: var(--spectrum-bold-font-weight);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--spectrum-gray-500);
+  margin-bottom: var(--spectrum-spacing-75);
+  writing-mode: vertical-rl;
+  display: none;
+}
+
+/* === MAIN CONTENT AREA === */
+.exmod-main {
+  flex: 1;
+  min-width: 0;
+  background: var(--spectrum-gray-25);
+  overflow: hidden;
+  margin-left: 16px;
+  margin-right: 16px;
+  border-radius: 16px 16px 0 0;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+  border-left: 1px solid var(--spectrum-gray-200);
+  border-top: 0;
+  border-right: 1px solid var(--spectrum-gray-200);
+  display: flex;
+  flex-direction: column;
+}
+
+/* === GRID: CHAT + PREVIEW === */
+.exmod-grid {
+  display: grid;
+  min-width: 500px;
+  grid-template-columns: var(--chat-width, minmax(var(--spectrum-chat-grid-min), 33.33%)) 5px 1fr;
+  grid-template-rows: 1fr;
+  column-gap: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Resize handle: 1px visual line; child grip is 5px draggable zone (visible on hover/drag) */
+.chat-resize-handle {
+  width: 2px;
+  min-width: 2px;
+  flex-shrink: 0;
+  align-self: stretch;
+  margin: 0 auto;
+  display: block;
+  position: relative;
+  z-index: 2;
+  overflow: visible;
+  background: var(--spectrum-gray-300);
+}
+.chat-resize-handle-grip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 5px;
+  margin-left: -2.5px;
+  cursor: col-resize;
+  user-select: none;
+  background: transparent;
+  transition: background-color 0.13s ease-out;
+}
+.chat-resize-handle:hover .chat-resize-handle-grip,
+.chat-resize-handle.dragging .chat-resize-handle-grip {
+  background: var(--spectrum-gray-200);
+}
+.chat-resize-handle.dragging .chat-resize-handle-grip {
+  background: var(--spectrum-blue-200);
+}
+.document-tree-resize-handle {
+  width: 1px;
+  min-width: 1px;
+  flex-shrink: 0;
+  align-self: stretch;
+  margin: 0 auto;
+  display: block;
+  position: relative;
+  z-index: 2;
+  overflow: visible;
+  background: var(--spectrum-gray-300);
+}
+.document-tree-resize-handle-grip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 5px;
+  margin-left: -2.5px;
+  cursor: col-resize;
+  user-select: none;
+  background: transparent;
+  transition: background-color 0.13s ease-out;
+}
+.document-tree-resize-handle:hover .document-tree-resize-handle-grip,
+.document-tree-resize-handle.dragging .document-tree-resize-handle-grip {
+  background: var(--spectrum-gray-200);
+}
+.document-tree-resize-handle.dragging .document-tree-resize-handle-grip {
+  background: var(--spectrum-blue-200);
+}
+/* Disable width transition during resize for instant feedback (chat panel has none) */
+.preview-content.tree-resizing .document-tree,
+.preview-code.tree-resizing .code-tree {
+  transition: none;
+}
+.preview-content.tree-collapsed .document-tree-resize-handle,
+.preview-code.code-tree-collapsed .document-tree-resize-handle {
+  display: none;
+}
+.preview-content.tree-collapsed .iframe-container {
+  margin-left: -2px;
+}
+.preview-code.code-tree-collapsed .code-changes,
+.preview-code.code-tree-collapsed .code-changes-empty-state,
+.preview-code.code-tree-collapsed .code-tree-editor {
+  margin-left: -2px;
+}
