@@ -102,15 +102,6 @@
   fill: currentColor;
 }
 
-/* === SHELL: NAV + MAIN === */
-.exmod-shell {
-  display: flex;
-  flex: 1;
-  min-height: 0;
-  padding: 0;
-  position: relative;
-  z-index: 101;
-}
 
 /* === LEFT NAV SIDEBAR (Spectrum Sidenav style) === */
 .exmod-nav {
@@ -182,7 +173,10 @@
 /* === MAIN CONTENT AREA === */
 .exmod-main {
   flex: 1;
+  min-height: 0;
   min-width: 0;
+  position: relative;
+  z-index: 101;
   background: var(--spectrum-gray-25);
   overflow: hidden;
   margin-left: 16px;

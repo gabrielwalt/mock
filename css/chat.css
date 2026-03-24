@@ -80,11 +80,6 @@
   color: var(--spectrum-gray-900);
   margin: 0;
 }
-.chat-toolbar-right {
-  display: flex;
-  align-items: center;
-  gap: var(--spectrum-spacing-100);
-}
 .chat-toolbar-divider {
   width: var(--spectrum-border-width-100);
   height: var(--spectrum-static-size-300);
